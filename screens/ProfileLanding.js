@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet,Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {  Button } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -24,36 +24,53 @@ const ProfileLandingScreen = () => {
     };
 
     const navigateToALS = async () => {
-      navigation.navigate('ALScreen')
+      navigation.navigate('Register')
       fetchAndConsoleStoredCredits();
     };
-  
+    const imageUrl = 'https://th.bing.com/th/id/R.dba7c2e0beae32f5dcc9bb7a11bcfc9a?rik=iVMsLRscBKLqYw&riu=http%3a%2f%2fclipart-library.com%2fimages_k%2fdollar-signs-transparent%2fdollar-signs-transparent-19.png&ehk=MnJi%2b9rQhoH1dgkMOR3qurQN7XV7SzLe9IvHncEFfeM%3d&risl=&pid=ImgRaw&r=0';
     const handleViewPrevious = () => {
       // Navigate to the "Previous" screen or any other screen you want
-      navigation.navigate('Previous');
+      navigation.navigate('Register');
     };
   
     return (
       <View style={styles.container}>
         {/* Welcome Text */}
-        <Text style={styles.welcomeText}>Welcome, John Doe!</Text>
+
+        <Image source={{ uri: imageUrl }} style={{ width: '50%', height: 300,marginTop:80 }} />
+        <Text style={styles.welcomeText}>Win Big With</Text>
+        <Text style={styles.welcomeTextTwo}>Afro Lottery System</Text>
   
         {/* No Games Text */}
         <Text style={styles.noGamesText}>
-          You have not played any games with us yet. Get started!
+        Six numbers can change your life 
+        Get Started Today and try your luck with us
         </Text>
   
         
-        <Button mode="contained" onPress={navigateToALS} style={{ width: '100%', marginVertical: 10 }}>
-        Start Playing
+        <Button mode="contained" onPress={navigateToALS} 
+        
+        contentStyle={{
+          height: 60,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        style={{
+          backgroundColor: '#31A062',
+          width: '100%',
+          marginVertical: 10,
+          marginTop: 15,
+        }}>
+       Create Account
       </Button>
+
+      <TouchableOpacity  onPress={()=> navigation.navigate('Login')}>
+      <Text style={styles.login}>Login</Text>
+      </TouchableOpacity>
   
         {/* View Previous Button */}
         
-     
-        <Button mode="contained" onPress={navigateToALS} style={{ width: '100%', marginVertical: 10 }}>
-        View Previous
-      </Button>
+   
       </View>
     );
   };
@@ -62,19 +79,35 @@ const ProfileLandingScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     paddingHorizontal: 20,
+    
   },
   welcomeText: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
+     
+    marginTop:20
+  },
+  welcomeTextTwo: {
+    fontSize: 24,
+    fontWeight: 'bold',
+     
+   
+  },
+  login: {
+    fontSize: 17,
+    color:'#31A062'
+ 
+     
+   
   },
   noGamesText: {
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 20,
+    marginTop:20
   },
   startPlayingButton: {
     backgroundColor: 'green',

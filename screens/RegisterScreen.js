@@ -120,37 +120,42 @@
 // export default RegisterScreen;
 
 
-import React, { useState } from 'react';
-import { View, Text, StyleSheet,TouchableOpacity } from 'react-native';
+import React, { useState,useEffect } from 'react';
+import { View, Text, StyleSheet,TouchableOpacity,Modal } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import {CountryPicker} from "react-native-country-codes-picker";
 import { useNavigation } from '@react-navigation/native';
-
-const africanCountryNames = ['Algeria', 'Angola', /* Add more African country names */];
-
-const ListHeaderComponent = ({ countries, lang, onPress }) => (
-  <View
-    style={{
-      paddingBottom: 20,
-    }}
-  >
-    <Text>
-      Popular African countries
-    </Text>
-    {countries
-      ?.filter(country => africanCountryNames.includes(country?.name?.[lang || 'en']))
-      .map((country, index) => (
-        <CountryButton key={index} item={country} name={country?.name?.[lang || 'en']} onPress={() => onPress(country)} />
-      ))}
-  </View>
-);
+import axios from 'axios';
+import { TextInput as PaperTextInput } from 'react-native-paper';
 
 
-const CountryButton = ({ item, name, onPress }) => (
-  <TouchableOpacity onPress={onPress} style={styles.countryButton}>
-    <Text>{name}</Text>
-  </TouchableOpacity>
-);
+const CustomPicker = ({ visible, onClose, onSelect, data }) => {
+  return (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={visible}
+      onRequestClose={() => onClose()}
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          {data.map((country) => (
+            <TouchableOpacity
+              key={country.countryCode}
+              style={styles.countryItem}
+              onPress={() => {
+                onSelect(country.countryCode);
+                onClose();
+              }}
+            >
+              <Text>{`${country.country} - ${country.countryCode}`}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+    </Modal>
+  );
+};
 const RegisterScreen = () => {
   // State for input fields
   const [name, setName] = useState('');
@@ -159,138 +164,338 @@ const RegisterScreen = () => {
   const [mobileNumber, setMobileNumber] = useState('');
   const [countryCode, setCountryCode] = useState('');
   const [show, setShow] = useState(false);
-
-
-
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+ 
   const handleRegister = async () => {
     try {
-      // Validate input fields
-      if (!name || !email || !password || !mobileNumber) {
+      // Validate input fields (you may want to add more validation)
+      if (!name || !email || !password || !mobileNumber || !selectedCountry) {
         console.log('Please fill in all fields');
         return;
       }
-
+      const mobileWithCountry = `${selectedCountry}${mobileNumber}`;
       // Make API request to register user using Axios
-      const response = await axios.post('https://lottery-backend-tau.vercel.app/api/v1/user/register', {
-        email,
-        password,
-        name,
-        mobileNumber: `${countryCode}${mobileNumber}`, // Combine country code and mobile number
-      });
-
+      const response = await axios.post('https://lottery-backend-tau.vercel.app/api/v1/user/register', { email, password ,name});
+  
       if (response.status === 200) {
         console.log('Registration successful:', response.data.message);
-        // Navigate to another screen or perform authentication logic here
+        navigation.navigate('OTP',{
+          email,
+          name,
+          mobile: mobileWithCountry
+        });
+        // You may want to navigate to another screen or perform authentication logic here
+  
       } else {
         console.log('Registration failed:', response.data.message);
-        // Handle registration error
+        // Handle registration error (e.g., display an error message to the user)
       }
     } catch (error) {
       console.error('Error during registration:', error.message);
       // Handle unexpected errors during registration
     }
   };
+  
   const navigation = useNavigation();
-
+  useEffect(() => {
+    fetchCountries();
+  }, []);
+  const logSelectedCountryCode = () => {
+    console.log('Selected Country Code:', selectedCountry,mobileNumber);
+  };
+  
+  const fetchCountries = async () => {
+    try {
+      const response = await axios.get(
+        'https://lottery-backend-tau.vercel.app//api/v1/admin/get-country'
+      );
+      const countriesData = response.data.message;
+      setCountries(countriesData);
+    } catch (error) {
+      console.error('Error fetching countries:', error.message);
+    }
+  };
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-    <Text style={styles.circleText}>LOGO</Text>
-    <Text>Sign Up</Text>
-    <TextInput
-      label="Name"
-      mode="outlined"
-      style={{ width: '100%', marginVertical: 10 }}
-      value={name}
-      onChangeText={setName}
-    />
+    <View style={{ flex:1,alignItems: 'center',justifyContent:'center' , padding: 16 }}>
+
+    <Text  style={styles.createaccountText}>Create an Account</Text>
+    <Text  style={styles.createaccountTextTwo}>Play the game and get lucky</Text>
+
+    <View style={{ borderColor: 'black',
+      backgroundColor: 'white',
+      width: '100%',
+      borderWidth: 0.5,
+      borderStyle: 'solid',
+      fontSize: 15,
+      height:60,
+      borderRadius: 25,
+      color: 'white',  // Text color
+      overflow: "hidden",}}>
+  <TextInput
+    label="Name"
+    
+    value={name}
+    onChangeText={setName}
+     style={{
+      color: 'white',
+     
+      backgroundColor: 'white',
+      height:60,
+     }}
+  />
+</View>
+
+
+
+<View style={{ borderColor: 'black',
+marginTop:15,
+      backgroundColor: 'white',
+      width: '100%',
+      borderWidth: 0.5,
+      borderStyle: 'solid',
+      fontSize: 15,
+      borderRadius: 25,
+      height:60,
+      color: 'white',  // Text color
+      overflow: "hidden",}}>
     <TextInput
       label="Email"
-      mode="outlined"
-      style={{ width: '100%', marginVertical: 10 }}
+     
+
+      style={{
+        color: 'white',
+        backgroundColor: 'white',
+        height:60,
+        borderWidth: 0.5,
+       }}
       keyboardType="email-address"
       autoCapitalize="none"
       value={email}
       onChangeText={setEmail}
     />
+    </View>
 
-<View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-<TouchableOpacity
-        onPress={() => setShow(true)}
-        style={{
-            width: '15%',
-            height: 50,
-            backgroundColor: 'white',
-            padding: 10,
-            marginRight:10,
-            marginTop:2
-        }}
-      >
-        <Text style={{
-            color: 'black',
-            fontSize: 20
-        }}>
-            {countryCode}
+<View style={{ flexDirection: 'row', alignItems: 'center', marginTop:15, }}>
+
+<View style={{ borderColor: 'black',
+      backgroundColor: 'white',
+      width: '20%',
+      borderWidth: 0.5,
+            borderStyle: 'solid',
+      fontSize: 15,
+      borderRadius: 25,
+      marginRight:15,
+      color: 'white',  // Text color
+      overflow: "hidden",}}>
+<TouchableOpacity onPress={() => {setModalVisible(true);  logSelectedCountryCode()}}>
+        <Text style={styles.selectedCountryText}>
+          {selectedCountry || 'Est'}
         </Text>
       </TouchableOpacity>
+      <CustomPicker
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onSelect={(value) => setSelectedCountry(value)}
+        data={countries}
+      />
+</View>
 
 
+<View style={{ borderColor: 'black',
+      backgroundColor: 'white',
+      width: '75%',
+      borderWidth: 1,
+      height:60,
+      borderWidth: 0.5,
+      borderStyle: 'solid',
+      fontSize: 15,
+      borderRadius: 25,
+      color: 'white',  // Text color
+      overflow: "hidden",}}>
     <TextInput
       label="Mobile Number"
-      mode="outlined"
-      style={{ width: '80%', marginVertical: 10 }}
+      
+      
       keyboardType="phone-pad"
       value={mobileNumber}
       onChangeText={setMobileNumber}
       right={
         <TextInput.Icon
-          name={() => <Text onPress={() => setShow(true)}>{countryCode || 'Select'}</Text>}
+          name={() => <Text onPress={() => setShow(true)}>{countryCode || 'Ext'}</Text>}
         />
       }
+
+      style={{
+        color: 'white',
+        backgroundColor: 'white',
+        height:60,
+       
+       }}
     />
+
+</View>
+
  
 </View>
       
-<CountryPicker
-        show={show}
-        pickerButtonOnPress={(item) => {
-          setCountryCode(item.dial_code);
-          setShow(false);
-        }}
-        ListHeaderComponent={() => (
-          <ListHeaderComponent
-            lang={'en'} // or specify your desired language
-            onPress={(selectedCountry) => {
-              setCountryCode(selectedCountry.code);
-              setShow(false);
-            }}
-          />
-        )}
-        popularCountries={['en', 'ua', 'pl']}
-      />
 
 
+<View style={{ borderColor: 'black',
+      backgroundColor: 'white',
+      marginTop:15,
+      width: '100%',
+      height:60,
+      borderWidth: 0.5,
+      borderStyle: 'solid',
+      fontSize: 15,
+      borderRadius: 25,
+      color: 'white',  
+      overflow: "hidden",}}>
     <TextInput
       label="Password"
-      mode="outlined"
-      style={{ width: '100%', marginVertical: 10 }}
+      
+      style={{
+        color: 'white',
+        backgroundColor: 'white',
+        height:60,
+      
+       }}
       secureTextEntry
       value={password}
       onChangeText={setPassword}
     />
-    <Button mode="contained" onPress={handleRegister} style={{ width: '100%', marginVertical: 10 }}>
-      Register
-    </Button>
-    <Text style={{ marginVertical: 10 }}>
-      Already registered?{' '}
-      <Text style={{ color: 'blue' }} onPress={() => navigation.navigate('Login')}>
-        Login
-      </Text>
+ </View>
+ <Button
+  mode="contained"
+  onPress={handleRegister}
+  contentStyle={{
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }}
+  style={{
+    backgroundColor: '#31A062',
+    width: '100%',
+    marginVertical: 10,
+    marginTop: 15,
+  }}
+>
+  Create Account
+</Button>
+
+<View style={{ flex:1  }}>
+  <Text style={{ marginVertical: 10 ,textAlign:'center'  ,color: '#31A062'}}>
+    Already registered?{' '}
+    <Text style={{ color: 'blue' ,color: '#31A062' }} onPress={() => navigation.navigate('Login')}>
+      Login
     </Text>
+  </Text>
+</View>
+
+
+
   </View>
   );
 };
 
 const styles = StyleSheet.create({
+  selectedCountryText: {
+    fontSize: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    
+    borderColor: 'gray',
+    
+    backgroundColor: 'white',
+    height: 51,
+    marginTop: 7,
+    marginRight: 10,
+   
+  },
+  createaccountText: {
+    
+   
+    // Add this line to align text to the left
+    width: 354,
+    height: 41,
+    top: 103,
+    left: 30,
+
+    fontSize: 34, // Adjust the font size as needed
+    fontWeight: 'bold',
+    marginBottom:100
+  },
+
+  textInput: {
+    borderColor: 'black',
+    backgroundColor: 'white',
+    width: '100%',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    fontSize: 15,
+    borderRadius: 25,
+    color: 'white', // Add this line to set the text color to white
+  },
+  
+
+  createaccountTextTwo: {
+    
+    fontSize: 17,
+    width: 354,
+    height: 22,
+    top: 10,
+    left: 38,
+  
+    fontSize: 13,
+    marginBottom: 80,
+    textAlign: 'left', // Add this line to align text to the left
+  },
+  
+  
+
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    selectedCountryText: {
+      fontSize: 16,
+      paddingVertical: 10,
+      paddingHorizontal: 10,
+      borderWidth: 1,
+      borderColor: 'gray',
+      borderRadius: 4,
+      backgroundColor: 'white',
+    },
+   
+    modalContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    modalContent: {
+      backgroundColor: 'white',
+      padding: 20,
+      borderRadius: 10,
+      elevation: 5,
+    },
+    countryItem: {
+      paddingVertical: 10,
+      borderBottomWidth: 1,
+      borderBottomColor: 'gray',
+    },
+    elevation: 5,
+  },
+  countryItem: {
+    paddingVertical: 10,
+    
+    borderBottomColor: 'gray',
+  },
   circleText: {
     backgroundColor: 'white',
     borderRadius: 50,
@@ -304,3 +509,6 @@ const styles = StyleSheet.create({
 });
 
 export default RegisterScreen;
+
+
+

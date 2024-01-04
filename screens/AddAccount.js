@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { View,Text, TextInput } from 'react-native';
+import { View,Text,StyleSheet,Image } from 'react-native';
+import { TextInput } from 'react-native-paper';
 import { Appbar, Button } from 'react-native-paper';
 
 const AddAccount = () => {
@@ -12,69 +13,155 @@ const AddAccount = () => {
     navigation.navigate('ChooseAccount');
   };
   return (
-    <View>
+    <View  style={{backgroundColor: 'white',height:900}}>
       <Appbar.Header>
         <Appbar.BackAction />
         <Appbar.Content title="Add Account" />
       </Appbar.Header>
 
 
-      <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: 10, marginTop: 10 }}>
-          Add Account
-        </Text>
+      
 
       <View style={{ padding: 16 }}>
-        <Text>Account Holder Name</Text>
+      <Image
+        source={{ uri: 'https://th.bing.com/th/id/OIP.DCKkGl_css_ZFeb-8wvb4gHaHa?rs=1&pid=ImgDetMain' }}
+        style={styles.profilePicture}
+      />   
+
+        <View style={{ flexDirection: 'row', alignItems: 'center',  justifyContent:'space-between',marginTop:20 }}>
+
+      
+        
         <TextInput
+        
           value={accountHolderName}
           onChangeText={text => setAccountHolderName(text)}
           placeholder="Enter account holder name"
           style={{
             height: 40,
-            borderColor: 'gray',
-            borderWidth: 1,
+            color:'white',
             marginTop: 8,
             paddingLeft: 8,
+            backgroundColor: 'white',
           }}
         />
+        <Text  style={{color:'#31A062'}}>Change</Text>
+        </View>
+         <View style={styles.underline} />
+
+         <View style={{ flexDirection: 'row', alignItems: 'center',  justifyContent:'space-between', marginTop:25 }}>
+              
+              <TextInput
+                value={accountHolderName}
+                onChangeText={text => setAccountHolderName(text)}
+                placeholder="Account Number"
+                style={{
+                  height: 40,
+                  backgroundColor: 'white',
+                  marginTop: 8,
+                  paddingLeft: 8,
+                }}
+              />
+              <Text  style={{color:'#31A062'}}>Change</Text>
+              </View>
+               <View style={styles.underline} />
+
+
+               <View style={{ flexDirection: 'row', alignItems: 'center',  justifyContent:'space-between', marginTop:25 }}>
+              
+              <TextInput
+                value={accountHolderName}
+                onChangeText={text => setAccountHolderName(text)}
+                placeholder="BIC Code "
+                style={{
+                  height: 40,
+                  backgroundColor: 'white',
+                  marginTop: 8,
+                  paddingLeft: 8,
+                }}
+              />
+              <Text  style={{color:'#31A062'}}>Change</Text>
+              </View>
+               <View style={styles.underline} />
+
+
+
+
+
+               <View style={{ flexDirection: 'row', alignItems: 'center',  justifyContent:'space-between', marginTop:25 }}>
+              
+              <TextInput
+                value={accountHolderName}
+                onChangeText={text => setAccountHolderName(text)}
+                placeholder="Branch "
+                style={{
+                  height: 40,
+                  backgroundColor: 'white',
+                  marginTop: 8,
+                  paddingLeft: 8,
+                }}
+              />
+              <Text  style={{color:'#31A062'}}>Change</Text>
+              </View>
+               <View style={styles.underline} />
+               <View style={{ flexDirection: 'row', alignItems: 'center',  justifyContent:'space-between', marginTop:25 }}>
+              
+              <TextInput
+                value={accountHolderName}
+                onChangeText={text => setAccountHolderName(text)}
+                placeholder="Bank Name"
+                style={{
+                  height: 40,
+                  backgroundColor: 'white',
+                  marginTop: 8,
+                  paddingLeft: 8,
+                }}
+              />
+              <Text  style={{color:'#31A062'}}>Change</Text>
+              </View>
+               <View style={styles.underline} />
       </View>
 
-      <View style={{ padding: 16 }}>
-        <Text>Bic Code</Text>
-        <TextInput
-          value={accountHolderName}
-          onChangeText={text => setAccountHolderName(text)}
-          placeholder="Bic Code"
-          style={{
-            height: 40,
-            borderColor: 'gray',
-            borderWidth: 1,
-            marginTop: 8,
-            paddingLeft: 8,
-          }}
-        />
-      </View>
 
-      <View style={{ padding: 16 }}>
-        <Text>Account Number</Text>
-        <TextInput
-          value={accountHolderName}
-          onChangeText={text => setAccountHolderName(text)}
-          placeholder="Account Number"
-          style={{
-            height: 40,
-            borderColor: 'gray',
-            borderWidth: 1,
-            marginTop: 8,
-            paddingLeft: 8,
-          }}
-        />
-      </View>
 
-      <Button onPress={handleChooseAccount}> Submit </Button>
+      <Button mode="contained" onPress={()=>navigation.navigate('Redeem')}  contentStyle={{
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }}
+  style={{
+    backgroundColor: '#31A062',
+    width: 352,
+    marginVertical: 10,
+    marginTop: 15,
+    alignSelf:'center'
+  }}>
+        Submit
+      </Button>
     </View>
   );
 };
+
+const styles =  StyleSheet.create({
+  container: {
+    marginTop: 8,
+  },
+  textInput: {
+    height: 40,
+    paddingLeft: 8,
+  },
+  underline: {
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,
+  },
+  
+  profilePicture: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    alignSelf:'center'
+  },
+});
 
 export default AddAccount;
 

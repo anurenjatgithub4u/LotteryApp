@@ -48,33 +48,78 @@ console.log(userId);
   };
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-      <Text style={styles.circleText}>LOCO</Text>
-      <Text>Reset Password</Text>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', padding: 16 }}>
+       <Text  style={styles.createaccountText}>Reset Password</Text>
+    <Text  style={styles.createaccountTextTwo}>Enter Your Password and Confirm</Text>
 
       {/* Enter New Password */}
+
+      <View style={{ borderColor: 'black',
+marginTop:15,
+      backgroundColor: 'white',
+      width: '100%',
+      borderWidth: 0.5,
+      borderStyle: 'solid',
+      fontSize: 15,
+      borderRadius: 25,
+      height:60,
+      color: 'white',  // Text color
+      overflow: "hidden",}}>
       <TextInput
         label="Enter New Password"
-        mode="outlined"
-        style={{ width: '100%', marginVertical: 10 }}
+       
+        style={{
+          color: 'white',
+          backgroundColor: 'white',
+          height:60,
+          borderWidth: 0.5,
+         }}
         secureTextEntry
         value={newPassword}
         onChangeText={setNewPassword}
       />
+      </View>
 
       {/* Re-enter New Password */}
+      <View style={{ borderColor: 'black',
+marginTop:15,
+      backgroundColor: 'white',
+      width: '100%',
+      borderWidth: 0.5,
+      borderStyle: 'solid',
+      fontSize: 15,
+      borderRadius: 25,
+      height:60,
+      color: 'white',  // Text color
+      overflow: "hidden",}}>
       <TextInput
         label="Re-enter New Password"
-        mode="outlined"
-        style={{ width: '100%', marginVertical: 10 }}
+        
+        style={{
+          color: 'white',
+          backgroundColor: 'white',
+          height:60,
+          borderWidth: 0.5,
+         }}
         secureTextEntry
         value={confirmNewPassword}
         onChangeText={setConfirmNewPassword}
       />
+      </View>
 
       {/* Submit Button */}
-      <Button mode="contained" onPress={handleResetPassword} style={{ width: '100%', marginVertical: 10 }}>
-        Submit
+      <Button mode="contained" onPress={handleResetPassword} contentStyle={{
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }}
+  style={{
+    backgroundColor: '#31A062',
+    width: '100%',
+    marginVertical: 10,
+    marginTop: 15,
+  }}>
+        Reset
       </Button>
     </View>
   );
@@ -90,6 +135,31 @@ const styles = StyleSheet.create({
     lineHeight: 100,
     fontSize: 20,
     marginTop: -20,
+  },
+  createaccountText: {
+    
+   
+    // Add this line to align text to the left
+    width: 354,
+    height: 41,
+    top: 103,
+    left: 30,
+
+    fontSize: 34, // Adjust the font size as needed
+    fontWeight: 'bold',
+    marginBottom:100
+  },
+  createaccountTextTwo: {
+    
+    fontSize: 17,
+    width: 354,
+    height: 22,
+    top: 10,
+    left: 38,
+  
+    fontSize: 13,
+    marginBottom: 80,
+    textAlign: 'left', // Add this line to align text to the left
   },
 });
 

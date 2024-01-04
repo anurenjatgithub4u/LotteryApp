@@ -270,4 +270,484 @@ const styles = StyleSheet.create({
 
   
 });
-export default PlayScreen
+
+
+
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import axios from 'axios';
+
+const CustomPicker = ({ visible, onClose, onSelect, data }) => {
+  return (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={visible}
+      onRequestClose={() => onClose()}
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          {data.map((country) => (
+            <TouchableOpacity
+              key={country.countryCode}
+              style={styles.countryItem}
+              onPress={() => {
+                onSelect(country.countryCode);
+                onClose();
+              }}
+            >
+              <Text>{`${country.country} - ${country.countryCode}`}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+    </Modal>
+  );
+};
+
+const RegisterScreen = () => {
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    fetchCountries();
+  }, []);
+
+  const fetchCountries = async () => {
+    try {
+      const response = await axios.get(
+        'https://lottery-backend-tau.vercel.app//api/v1/admin/get-country'
+      );
+      const countriesData = response.data.message;
+      setCountries(countriesData);
+    } catch (error) {
+      console.error('Error fetching countries:', error.message);
+    }
+  };
+
+  return (
+    <View style={{ marginTop: 100 }}>
+      <Text>Select Country:</Text>
+      <TouchableOpacity onPress={() => setModalVisible(true)}>
+        <Text style={styles.selectedCountryText}>
+          {selectedCountry || 'Select a country'}
+        </Text>
+      </TouchableOpacity>
+      <CustomPicker
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onSelect={(value) => setSelectedCountry(value)}
+        data={countries}
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  selectedCountryText: {
+    fontSize: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    width:'20%',
+    backgroundColor: 'white',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    elevation: 5,
+  },
+  countryItem: {
+    paddingVertical: 10,
+   
+    borderBottomColor: 'gray',
+  },
+});
+
+
+
+import React, { useState,useEffect } from 'react';
+import { View, Text, StyleSheet,TouchableOpacity,Modal } from 'react-native';
+import { TextInput, Button } from 'react-native-paper';
+import {CountryPicker} from "react-native-country-codes-picker";
+import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+
+
+const CustomPicker = ({ visible, onClose, onSelect, data }) => {
+  return (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={visible}
+      onRequestClose={() => onClose()}
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          {data.map((country) => (
+            <TouchableOpacity
+              key={country.countryCode}
+              style={styles.countryItem}
+              onPress={() => {
+                onSelect(country.countryCode);
+                onClose();
+              }}
+            >
+              <Text>{`${country.country} - ${country.countryCode}`}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+    </Modal>
+  );
+};
+const RegisterScreen = () => {
+  // State for input fields
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [mobileNumber, setMobileNumber] = useState('');
+  const [countryCode, setCountryCode] = useState('');
+  const [show, setShow] = useState(false);
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+
+
+  const handleRegister = async () => {
+    try {
+      // Validate input fields
+      if (!name || !email || !password || !mobileNumber) {
+        console.log('Please fill in all fields');
+        return;
+      }
+
+      // Make API request to register user using Axios
+      const response = await axios.post('https://lottery-backend-tau.vercel.app/api/v1/user/register', {
+        email,
+        password,
+        name,
+        mobileNumber: `${selectedCountry}${mobileNumber}`, // Combine country code and mobile number
+      });
+
+      if (response.status === 200) {
+        console.log('Registration successful:', response.data.message);
+        // Navigate to another screen or perform authentication logic here
+        navigation.navigate('OTP')
+      } else {
+        console.log('Registration failed:', response.data.message);
+        // Handle registration error
+      }
+    } catch (error) {
+      console.error('Error during registration:', error.message);
+      // Handle unexpected errors during registration
+    }
+  };
+  const navigation = useNavigation();
+  useEffect(() => {
+    fetchCountries();
+  }, []);
+  const logSelectedCountryCode = () => {
+    console.log('Selected Country Code:', selectedCountry,mobileNumber);
+  };
+  
+  const fetchCountries = async () => {
+    try {
+      const response = await axios.get(
+        'https://lottery-backend-tau.vercel.app//api/v1/admin/get-country'
+      );
+      const countriesData = response.data.message;
+      setCountries(countriesData);
+    } catch (error) {
+      console.error('Error fetching countries:', error.message);
+    }
+  };
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+    <Text style={styles.circleText}>LOGO</Text>
+    <Text>Sign Up</Text>
+    <TextInput
+      label="Name"
+      mode="outlined"
+      style={{ width: '100%', marginVertical: 10 }}
+      value={name}
+      onChangeText={setName}
+    />
+    <TextInput
+      label="Email"
+      mode="outlined"
+      style={{ width: '100%', marginVertical: 10 }}
+      keyboardType="email-address"
+      autoCapitalize="none"
+      value={email}
+      onChangeText={setEmail}
+    />
+
+<View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+<TouchableOpacity onPress={() => setModalVisible(true)}>
+        <Text style={styles.selectedCountryText}>
+          {selectedCountry || 'Select'}
+        </Text>
+      </TouchableOpacity>
+      <CustomPicker
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onSelect={(value) => setSelectedCountry(value)}
+        data={countries}
+      />
+
+
+    <TextInput
+      label="Mobile Number"
+      mode="outlined"
+      style={{ width: '80%', marginVertical: 10 }}
+      keyboardType="phone-pad"
+      value={mobileNumber}
+      onChangeText={setMobileNumber}
+      right={
+        <TextInput.Icon
+          name={() => <Text onPress={() => setShow(true)}>{countryCode || 'Select'}</Text>}
+        />
+      }
+    />
+ 
+</View>
+      
+
+
+
+    <TextInput
+      label="Password"
+      mode="outlined"
+      style={{ width: '100%', marginVertical: 10 }}
+      secureTextEntry
+      value={password}
+      onChangeText={setPassword}
+    />
+    <Button mode="contained" onPress={handleRegister} style={{ width: '100%', marginVertical: 10 }}>
+      Register
+    </Button>
+    <Text style={{ marginVertical: 10 }}>
+      Already registered?{' '}
+      <Text style={{ color: 'blue' }} onPress={() => navigation.navigate('Login')}>
+        Login
+      </Text>
+    </Text>
+  </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  selectedCountryText: {
+    fontSize: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    backgroundColor: 'white',
+    height: 51,
+    marginTop: 7,
+    marginRight: 10,
+    width:'100%'
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    selectedCountryText: {
+      fontSize: 16,
+      paddingVertical: 10,
+      paddingHorizontal: 10,
+      borderWidth: 1,
+      borderColor: 'gray',
+      borderRadius: 4,
+      backgroundColor: 'white',
+    },
+    modalContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    modalContent: {
+      backgroundColor: 'white',
+      padding: 20,
+      borderRadius: 10,
+      elevation: 5,
+    },
+    countryItem: {
+      paddingVertical: 10,
+      borderBottomWidth: 1,
+      borderBottomColor: 'gray',
+    },
+    elevation: 5,
+  },
+  countryItem: {
+    paddingVertical: 10,
+    
+    borderBottomColor: 'gray',
+  },
+  circleText: {
+    backgroundColor: 'white',
+    borderRadius: 50,
+    width: 100,
+    height: 100,
+    textAlign: 'center',
+    lineHeight: 100,
+    fontSize: 20,
+    marginTop: -20, // Adjust the negative margin top to move the circle upward
+  },
+});
+
+export default RegisterScreen;
+
+
+
+
+const ContactinfoScreen = () => {
+  const [accountHolderName, setAccountHolderName] = useState('');
+  const navigation = useNavigation();
+  
+  const handleChooseAccount = () => {
+    // Navigate to the "Home" screen or any other screen you want
+    navigation.navigate('ChooseAccount');
+  };
+  return (
+    <View  style={{backgroundColor: 'white',}}>
+     
+
+
+      
+
+      <View style={{ padding: 16 }}>
+
+      <Image
+        source={{ uri: 'https://th.bing.com/th/id/R.fa0ca630a6a3de8e33e03a009e406acd?rik=MMtJ1mm73JsM6w&riu=http%3a%2f%2fclipart-library.com%2fimg%2f1905734.png&ehk=iv2%2fLMRQKA2W8JFWCwwq6BdYfKr2FmBAlFys22RmPI8%3d&risl=&pid=ImgRaw&r=0' }}
+        style={styles.profilePicture}
+      />
+        
+
+        <View style={{ flexDirection: 'row', alignItems: 'center',  justifyContent:'space-between',marginTop:20 }}>
+              
+        <TextInput
+        
+          value={accountHolderName}
+          onChangeText={text => setAccountHolderName(text)}
+          placeholder="Name"
+          style={{
+            height: 40,
+            color:'white',
+            marginTop: 8,
+            paddingLeft: 8,
+            backgroundColor: 'white',
+          }}
+        />
+        <Text  style={{color:'#31A062'}}>Change</Text>
+        </View>
+         <View style={styles.underline} />
+
+         <View style={{ flexDirection: 'row', alignItems: 'center',  justifyContent:'space-between', marginTop:25 }}>
+              
+              <TextInput
+                value={accountHolderName}
+                onChangeText={text => setAccountHolderName(text)}
+                placeholder="Email"
+                style={{
+                  height: 40,
+                  backgroundColor: 'white',
+                  marginTop: 8,
+                  paddingLeft: 8,
+                }}
+              />
+              <Text  style={{color:'#31A062'}}>Change</Text>
+              </View>
+               <View style={styles.underline} />
+
+
+               <View style={{ flexDirection: 'row', alignItems: 'center',  justifyContent:'space-between', marginTop:25 }}>
+              
+              <TextInput
+                value={accountHolderName}
+                onChangeText={text => setAccountHolderName(text)}
+                placeholder="Phone Number"
+                style={{
+                  height: 40,
+                  backgroundColor: 'white',
+                  marginTop: 8,
+                  paddingLeft: 8,
+                }}
+              />
+              <Text  style={{color:'#31A062'}}>Change</Text>
+              </View>
+               <View style={styles.underline} />
+
+
+
+
+
+               <View style={{ flexDirection: 'row', alignItems: 'center',  justifyContent:'space-between', marginTop:25 }}>
+              
+              <TextInput
+                value={accountHolderName}
+                onChangeText={text => setAccountHolderName(text)}
+                placeholder="Branch "
+                style={{
+                  height: 40,
+                  backgroundColor: 'white',
+                  marginTop: 8,
+                  paddingLeft: 8,
+                }}
+              />
+              <Text  style={{color:'#31A062'}}>Change</Text>
+              </View>
+               <View style={styles.underline} />
+               <View style={{ flexDirection: 'row', alignItems: 'center',  justifyContent:'space-between', marginTop:25 }}>
+              
+              <TextInput
+                value={accountHolderName}
+                onChangeText={text => setAccountHolderName(text)}
+                placeholder="Bank Name"
+                style={{
+                  height: 40,
+                  backgroundColor: 'white',
+                  marginTop: 8,
+                  paddingLeft: 8,
+                }}
+              />
+              <Text  style={{color:'#31A062'}}>Change</Text>
+              </View>
+               <View style={styles.underline} />
+      </View>
+
+
+
+      <Button mode="contained" onPress={""}  contentStyle={{
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }}
+  style={{
+    backgroundColor: '#31A062',
+    width: 352,
+    marginVertical: 10,
+    marginTop: 15,
+    alignSelf:'center'
+  }}>
+        Login
+      </Button>
+    </View>
+  );
+};

@@ -10,7 +10,7 @@ import { EvilIcons } from '@expo/vector-icons';
 
  // Make sure to import FontAwesome5 from the correct package
 
- const HelpScreen = () => {
+ const HelpDetailScreen = () => {
 
 
   const navigation = useNavigation();
@@ -42,34 +42,6 @@ import { EvilIcons } from '@expo/vector-icons';
 
 <Text style={{ fontSize: 31, fontWeight: '700', marginLeft: '5%' }}>Help & FAQs</Text>
 
-<View style={styles.searchContainer}>
-  <TextInput
-    style={styles.searchInput}
-    placeholder="Search..."
-  />
-</View>
-
-<View style={{flexDirection:'column'}}>
-
-<TouchableOpacity onPress={() => navigation.navigate('HelpDetail')}>
-<View  style={{flexDirection:'column'}}>
-
-<Text style={styles.textStyle}>
-Game types and levels
-</Text>
-<Text style={styles.textStyleTwo}>
-This is how you set your foot for 2020 Stock market recession. What’s next...
-</Text>
-
-<View style={styles.underline} />
-</View>
-</TouchableOpacity>
-
-
-
-
-
-</View>
 
 
 </View>
@@ -220,6 +192,4 @@ const styles = StyleSheet.create({
   },
   
 });
-export default HelpScreen;
-
-
+export default HelpDetailScreen;

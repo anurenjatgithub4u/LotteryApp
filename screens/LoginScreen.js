@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback,createRef } from 'react';
-import { View, Text,StyleSheet } from 'react-native';
+import { View, Text,StyleSheet,TouchableOpacity,Modal } from 'react-native';
 import * as Font from 'expo-font';
 import { Entypo } from '@expo/vector-icons';
 import * as SplashScreen from 'expo-splash-screen';
@@ -11,12 +11,48 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { BackHandler } from 'react-native';
 import { useAuth } from './auth/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+
+
+
+const CustomPicker = ({ visible, onClose, onSelect, data }) => {
+  return (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={visible}
+      onRequestClose={() => onClose()}
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          {data.map((country) => (
+            <TouchableOpacity
+              key={country.countryCode}
+              style={styles.countryItem}
+              onPress={() => {
+                onSelect(country.countryCode);
+                onClose();
+              }}
+            >
+              <Text>{`${country.country} - ${country.countryCode}`}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+    </Modal>
+  );
+};
+
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [mobileNumberLogin, setMobileNumberLogin] = useState('');
   const { setAccessToken } = useAuth();
-
+  const [countryCode, setCountryCode] = useState('');
+  const [show, setShow] = useState(false);
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
   useEffect(() => {
     // Add event listener for hardware back button press
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -38,7 +74,24 @@ const LoginScreen = ({ navigation }) => {
     return () => backHandler.remove();
   }, [navigation]);
 
-
+  useEffect(() => {
+    fetchCountries();
+  }, []);
+  const logSelectedCountryCode = () => {
+    console.log('Selected Country Code:', selectedCountry,mobileNumber);
+  };
+  
+  const fetchCountries = async () => {
+    try {
+      const response = await axios.get(
+        'https://lottery-backend-tau.vercel.app//api/v1/admin/get-country'
+      );
+      const countriesData = response.data.message;
+      setCountries(countriesData);
+    } catch (error) {
+      console.error('Error fetching countries:', error.message);
+    }
+  };
 
   // const handleLogin = async () => {
   //   try {
@@ -189,12 +242,14 @@ const LoginScreen = ({ navigation }) => {
 
         const credits = result.data.user.credits;
         const userId = result.data.user._id;
+        const userName = result.data.user.name;
         // Access user details from the response
         const user = result.message.user;
         console.log('User Details:', user);
         console.log('Access Token:', accessToken);
         console.log('Credits:', credits);
         console.log('UserId',userId);
+        console.log('UserName..',userName);
 
         console.log('Refresh Token:', result.message.refreshToken);
         // Store user details or navigate to another screen
@@ -202,6 +257,7 @@ const LoginScreen = ({ navigation }) => {
          await AsyncStorage.setItem('refreshToken', refreshToken);
 
          await AsyncStorage.setItem('userId', userId);
+         await AsyncStorage.setItem('userName', userName);
          await AsyncStorage.setItem('credits', credits.toString());
 
         // await AsyncStorage.setItem('userDetails', JSON.stringify(user));
@@ -211,7 +267,7 @@ const LoginScreen = ({ navigation }) => {
         fetchAndConsoleStoredAccessToken();
         // setAccessToken(result.message.accessToken);
         // You may want to navigate to another screen or perform authentication
-        navigation.navigate('ProfileLanding');
+        navigation.navigate('ALScreen');
       } else {
         // If login fails, handle the error (show an alert, etc.)
         console.error('Login failed');
@@ -223,46 +279,147 @@ const LoginScreen = ({ navigation }) => {
   
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-      <Text style={styles.circleText}>LOGO</Text>
-      <Text>Sign in </Text>
+    <View style={{ flex:1,alignItems: 'center',justifyContent:'flex-start' , padding: 16 }}>
+         <Text  style={styles.createaccountText}>Login</Text>
+    <Text  style={styles.createaccountTextTwo}>Play and manage your games</Text>
+
+
+    <View style={{ borderColor: 'black',
+      backgroundColor: 'white',
+      width: '100%',
+      borderWidth: 0.5,
+      borderStyle: 'solid',
+      fontSize: 15,
+      height:60,
+      borderRadius: 25,
+
+      color: 'white',  // Text color
+      overflow: "hidden",}}>
       <TextInput
         label="Email"
-        mode="outlined"
-        style={{ width: '100%', marginVertical: 10 }}
+       
+        style={{ color: 'white',
+     
+        backgroundColor: 'white',
+        height:60.5, }}
         keyboardType="email-address"
         autoCapitalize="none"
         value={email}
         onChangeText={setEmail}
         onSubmitEditing={() => Keyboard.dismiss()}
       />
+      </View>
+
+
+      <View style={{ borderColor: 'black',
+      backgroundColor: 'white',
+      width: '100%',
+      borderWidth: 0.5,
+      borderStyle: 'solid',
+      fontSize: 15,
+      height:60,
+      borderRadius: 25,
+      marginTop:15,
+      color: 'white',  // Text color
+      overflow: "hidden",}}>
       <TextInput
         label="Password"
-        mode="outlined"
-        style={{ width: '100%', marginVertical: 10 }}
+        
+        style={{ color: 'white',
+     
+        backgroundColor: 'white',
+        height:60.5, }}
         secureTextEntry
         value={password}
         onChangeText={setPassword}
         onSubmitEditing={() => Keyboard.dismiss()}
       />
-<Text style={{ marginVertical: 10 }}>Or</Text>
 
+      
+   </View>
+
+   <Text style={{ marginVertical: 10, color: '#31A062' }}>Or</Text>
+
+
+
+<View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+
+
+
+<View style={{ borderColor: 'black',
+      backgroundColor: 'white',
+      width: '20%',
+      borderWidth: 0.5,
+            borderStyle: 'solid',
+      fontSize: 15,
+      borderRadius: 25,
+      marginRight:15,
+      color: 'white',  // Text color
+      overflow: "hidden",}}>
+<TouchableOpacity onPress={() => setModalVisible(true)}>
+        <Text style={styles.selectedCountryText}>
+          {selectedCountry || 'Ext'}
+        </Text>
+      </TouchableOpacity>
+      <CustomPicker
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onSelect={(value) => setSelectedCountry(value)}
+        data={countries}
+      />
+</View>
+
+
+
+<View style={{ borderColor: 'black',
+      backgroundColor: 'white',
+      width: '75%',
+      borderWidth: 1,
+      height:60,
+      borderWidth: 0.5,
+      borderStyle: 'solid',
+      fontSize: 15,
+      borderRadius: 25,
+      color: 'white',  // Text color
+      overflow: "hidden",}}>
 <TextInput
       label="Mobile Number"
-      mode="outlined"
-      style={{ width: '100%', marginVertical: 10 }}
+      
+      style={{
+        color: 'white',
+        backgroundColor: 'white',
+        height:60,
+       
+       }}
       keyboardType="phone-pad" // Use 'phone-pad' keyboard type for mobile numbers
       value={mobileNumberLogin}
       onChangeText={setMobileNumberLogin}
       onSubmitEditing={() => Keyboard.dismiss()}
     />
-      <Button mode="contained" onPress={handleLogin} style={{ width: '100%', marginVertical: 10 }}>
+ </View>
+
+
+</View>
+
+      <Button mode="contained" onPress={handleLogin}  contentStyle={{
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }}
+  style={{
+    backgroundColor: '#31A062',
+    width: '100%',
+    marginVertical: 10,
+    marginTop: 15,
+  }}>
         Login
       </Button>
-      <Text style={{ marginVertical: 10 }}  onPress={() => navigation.navigate('ForgotPassword')}>Forgot Password?</Text>
-      <Text style={{ marginVertical: 10, color: 'blue' }} onPress={() => navigation.navigate('Register')}>
-        Sign Up
+
+      <Text style={{ marginVertical: 10, color: '#31A062' }} onPress={() => navigation.navigate('Register')}>
+       Create an account?
       </Text>
+      <Text style={{ marginVertical: 10  , color: '#31A062' }}  onPress={() => navigation.navigate('ForgotPassword')}>Forgot Password?</Text>
+      
     </View>
   );
 };
@@ -277,5 +434,87 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginTop: -20, // Adjust the negative margin top to move the circle upward
   },
+  selectedCountryText: {
+    fontSize: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    
+    borderColor: 'gray',
+    
+    backgroundColor: 'white',
+    height: 51,
+    marginTop: 7,
+    marginRight: 10,
+   
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  createaccountText: {
+    
+   
+    // Add this line to align text to the left
+    width: 354,
+    height: 41,
+    top: 99,
+    left: 30,
+
+    fontSize: 34, // Adjust the font size as needed
+    fontWeight: 'bold',
+    marginBottom:100
+  },
+
+  createaccountTextTwo: {
+    
+    fontSize: 17,
+    width: 354,
+    height: 22,
+    top: 10,
+    left: 38,
+  
+    fontSize: 13,
+    marginBottom: 80,
+    textAlign: 'left', // Add this line to align text to the left
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    selectedCountryText: {
+      fontSize: 16,
+      paddingVertical: 10,
+      paddingHorizontal: 10,
+      borderWidth: 1,
+      borderColor: 'gray',
+      borderRadius: 4,
+      backgroundColor: 'white',
+    },
+    modalContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    modalContent: {
+      backgroundColor: 'white',
+      padding: 20,
+      borderRadius: 10,
+      elevation: 5,
+    },
+    countryItem: {
+      paddingVertical: 10,
+      borderBottomWidth: 1,
+      borderBottomColor: 'gray',
+    },
+    elevation: 5,
+  },
+  countryItem: {
+    paddingVertical: 10,
+    
+    borderBottomColor: 'gray',
+  },
 });
 export default LoginScreen;
+
+

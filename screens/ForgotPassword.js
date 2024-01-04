@@ -168,7 +168,7 @@
 
 import { useNavigation } from '@react-navigation/native';
 import React, { useRef, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet  ,TouchableOpacity,Modal } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import axios from 'axios';
 const ForgotPassword = () => {
@@ -177,6 +177,38 @@ const ForgotPassword = () => {
     const navigation = useNavigation();
   const [userData, setUserData] = useState('');
   const otpInputsRef = useRef(Array(6).fill(null));
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [mobileNumberLogin, setMobileNumberLogin] = useState('');
+  
+const CustomPicker = ({ visible, onClose, onSelect, data }) => {
+  return (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={visible}
+      onRequestClose={() => onClose()}
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          {data.map((country) => (
+            <TouchableOpacity
+              key={country.countryCode}
+              style={styles.countryItem}
+              onPress={() => {
+                onSelect(country.countryCode);
+                onClose();
+              }}
+            >
+              <Text>{`${country.country} - ${country.countryCode}`}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+    </Modal>
+  );
+};
   const handleResetLink = async () => {
 
      console.log("hello")
@@ -214,7 +246,17 @@ const ForgotPassword = () => {
     }
   };
 
-
+  const fetchCountries = async () => {
+    try {
+      const response = await axios.get(
+        'https://lottery-backend-tau.vercel.app//api/v1/admin/get-country'
+      );
+      const countriesData = response.data.message;
+      setCountries(countriesData);
+    } catch (error) {
+      console.error('Error fetching countries:', error.message);
+    }
+  };
 
 
   const handleVerifyOtp = async () => {
@@ -264,27 +306,127 @@ const ForgotPassword = () => {
  
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-      <Text style={styles.circleText}>LOGO</Text>
-      <Text style={{ marginVertical: 30, fontSize: 18,}}>Forgot Password </Text>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', padding: 16 }}>
+      <Text style={styles.forgotpasswordText}>Forgot Password</Text>
+      <Text style={styles.forgotPasswordTwo}>Reset using your email and phone </Text>
+
+      <View style={{ borderColor: 'black',
+      backgroundColor: 'white',
+      marginTop:15,
+      width: '100%',
+      height:60,
+      borderWidth: 0.5,
+      borderStyle: 'solid',
+      fontSize: 15,
+      borderRadius: 25,
+      color: 'white',  
+      overflow: "hidden",}}>
       <TextInput
         label="Email"
-        mode="outlined"
-        style={{ width: '100%', marginVertical: 10 }}
+        
+        style={{
+          color: 'white',
+          backgroundColor: 'white',
+          height:61,
+        
+         }}
         keyboardType="email-address"
         autoCapitalize="none"
         value={emailFor}
         onChangeText={setEmailFor}
       />
+      </View>
 
-      <Button mode="contained" onPress={handleResetLink} style={{ width: '100%', marginVertical: 10 }}>
+      <Text style={{ marginVertical: 10, color: '#31A062' }}>Or</Text>
+
+
+      
+<View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+
+
+
+<View style={{ borderColor: 'black',
+      backgroundColor: 'white',
+      width: '20%',
+      borderWidth: 0.5,
+            borderStyle: 'solid',
+      fontSize: 15,
+      borderRadius: 25,
+      marginRight:15,
+      color: 'white',  // Text color
+      overflow: "hidden",}}>
+<TouchableOpacity onPress={() => setModalVisible(true)}>
+        <Text style={styles.selectedCountryText}>
+          {selectedCountry || 'Select'}
+        </Text>
+      </TouchableOpacity>
+      <CustomPicker
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onSelect={(value) => setSelectedCountry(value)}
+        data={countries}
+      />
+</View>
+
+
+
+<View style={{ borderColor: 'black',
+      backgroundColor: 'white',
+      width: '75%',
+      borderWidth: 1,
+      height:60,
+      borderWidth: 0.5,
+      borderStyle: 'solid',
+      fontSize: 15,
+      borderRadius: 25,
+      color: 'white',  // Text color
+      overflow: "hidden",}}>
+<TextInput
+      label="Mobile Number"
+      
+      style={{
+        color: 'white',
+        backgroundColor: 'white',
+        height:60,
+       
+       }}
+      keyboardType="phone-pad" // Use 'phone-pad' keyboard type for mobile numbers
+      value={mobileNumberLogin}
+      onChangeText={setMobileNumberLogin}
+      onSubmitEditing={() => Keyboard.dismiss()}
+    />
+ </View>
+
+ 
+</View>
+
+
+
+      <Button mode="contained" onPress={handleResetLink} 
+      
+      contentStyle={{
+        height: 60,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+      style={{
+        backgroundColor: '#31A062',
+        width: '100%',
+        marginVertical: 10,
+        marginTop: 15,
+      }}>
         Reset Link
       </Button>
 
       <Text style={{ marginVertical: 30, fontSize: 18,}}>ENTER OTP</Text>
 
       {/* OTP Input Box */}
+
+      
+
       <View style={styles.otpContainer}>
+
+   
   {[1, 2, 3, 4, 5, 6].map((digit, index) => (
     <TextInput
       key={digit}
@@ -307,11 +449,23 @@ const ForgotPassword = () => {
       ref={(input) => (otpInputsRef[index] = input)}
     />
   ))}
+
 </View>
 
+
       {/* Verify Button */}
-      <Button mode="contained" onPress={handleVerifyOtp} style={{ width: '100%', marginVertical: 10 }}>
-        Verify
+      <Button mode="contained" onPress={handleVerifyOtp} contentStyle={{
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }}
+  style={{
+    backgroundColor: '#31A062',
+    width: '100%',
+    marginVertical: 10,
+    marginTop: 15,
+  }}>
+        Reset Password
       </Button>
     </View>
   );
@@ -331,10 +485,50 @@ const styles = StyleSheet.create({
   otpContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    borderRadius: 20,
+  },
+  forgotpasswordText: {
+    
+   
+    // Add this line to align text to the left
+    width: 354,
+    height: 41,
+    top: 103,
+    left: 30,
+
+    fontSize: 34, // Adjust the font size as needed
+    fontWeight: 'bold',
+    marginBottom:100
+  },
+  forgotPasswordTwo: {
+    
+    fontSize: 17,
+    width: 354,
+    height: 22,
+    top: 10,
+    left: 38,
+  
+    fontSize: 13,
+    marginBottom: 80,
+    textAlign: 'left', // Add this line to align text to the left
   },
   otpInput: {
     width: '12%',
     margin: 5,
+    borderRadius: 20
+  },
+  selectedCountryText: {
+    fontSize: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    
+    borderColor: 'gray',
+    
+    backgroundColor: 'white',
+    height: 51,
+    marginTop: 7,
+    marginRight: 10,
+   
   },
 });
 

@@ -40,6 +40,11 @@ import BuyCredits from './screens/BuyCredits';
 import ChooseLevel from './screens/ChooseLevel';
 import FaqPage from './screens/FaqPage';
 import PlayedGame from './screens/PlayedGame';
+import HomeScreen from './screens/HomeScreen';
+import ContactinfoScreen from './screens/ContactinfoScreen';
+import PurchaseScreen from './screens/PurchaseScreen';
+import RedeemPage from './screens/RedeemPage';
+import HelpDetailScreen from './screens/HelpDetailScreen';
 
 
 
@@ -93,7 +98,7 @@ const Splash = ({ navigation }) => {
       setTimeout(() => {
 
         console.log("token",token)
-        token?navigation.navigate('ProfileLanding'):navigation.navigate('Login')
+        token?navigation.navigate('ProfileLanding'):navigation.navigate('ProfileLanding')
       }, 3000);
     }
   }, [appIsReady, navigation]);
@@ -232,8 +237,9 @@ const MainScreen = () => (
       tabBarIcon: ({ focused, color, size }) => {
         let iconName;
 
-        if (route.name === 'Play') {
-          iconName = focused ? 'ios-play-circle' : 'ios-play-circle-outline';
+        if (route.name === 'Home') {
+          iconName = focused ? 'ios-home' : 'ios-home-outline';
+
         }else if (route.name === 'Game') {
           iconName = focused ? 'ios-game-controller-outline' : 'ios-game-controller-outline';
         }
@@ -252,10 +258,10 @@ const MainScreen = () => (
       inactiveTintColor: 'gray',
     }}
   >
-    <Tab.Screen name="Play" component={PlayScreen} />
-    <Tab.Screen name="Game" component={GameScreen} />
-    <Tab.Screen name="Help" component={HelpScreen} />
-    <Tab.Screen name="Profile" component={ProfileScreen} />
+    <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
+    <Tab.Screen name="Game" component={GameScreen} options={{ headerShown: false }}/>
+    <Tab.Screen name="Help" component={HelpScreen}   options={{ headerShown: false }}/>
+    <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }}/>
   
       {/* Add other tabs if needed */}
    
@@ -280,7 +286,7 @@ const App = () => {
         <Stack.Screen name="Login" component={LoginScreen} options={{ gestureEnabled: false }}/>
         <Stack.Screen name="Register" component={RegisterScreen}options={{ gestureEnabled: false }} />
         <Stack.Screen name="ProfileLanding" component={ProfileLandingScreen}options={{ gestureEnabled: false }} />
-      
+        <Stack.Screen name="Play" component={PlayScreen} />
         <Stack.Screen name="OTP" component={OTPVerificationScreen} />
         <Stack.Screen name="MainScreen" component={MainScreen} />
         <Stack.Screen name="GameDetails" component={GameDetailsPage} />
@@ -299,6 +305,10 @@ const App = () => {
         <Stack.Screen name='BuyCredits' component={BuyCredits} />
         <Stack.Screen name='ChooseLevel' component={ChooseLevel} />
         <Stack.Screen name='PlayedGame' component={PlayedGame} />
+        <Stack.Screen name='ContactInfo' component={ContactinfoScreen} />
+        <Stack.Screen name='PurchaseScreen' component={PurchaseScreen} />
+        <Stack.Screen name='Redeem' component={RedeemPage} />
+        <Stack.Screen name='HelpDetail' component={HelpDetailScreen} />
 
       </Stack.Navigator>
       

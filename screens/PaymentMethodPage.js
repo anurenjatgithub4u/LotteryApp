@@ -97,7 +97,8 @@ const PaymentMethodPage = () => {
         const responseData = response.json();
         if (response.ok) {
           // Credits added successfully
-          console.log(responseData.message);
+          console.log(responseData);
+          console.log(res)
           navigation.navigate('MainScreen')
         } else {
           // Handle error

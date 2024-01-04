@@ -96,8 +96,10 @@
 
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet,TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-paper';
+import { MaterialIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const NumberRow = ({ numbers }) => {
   return (
@@ -121,36 +123,116 @@ const GameDetailsPage = ({ route }) => {
   };
   return (
     <View>
-      <Text  style={styles.Heading}>Week</Text>
+ <MaterialIcons name="keyboard-arrow-left" size={35} color="black" style={{
+     
+     marginLeft: 10, marginTop:50// Add marginLeft to push the icon to the left
+   }}/>
+
+      <Text  style={styles.yourGameText}>Your Game</Text>
+
+      <Text  style={styles.dateText}> {new Date(game.createdAt).toLocaleDateString()}</Text>
       
       {/* Display the game data in your UI */}
       
 
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-        <Text style={styles.headerTextYourNumber}>Your Numbers:</Text>
-        <NumberRow numbers={game.selectedNumbers} />
-      </View>
 
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Text style={styles.headerTextWinNumber}>Winning Numbers:</Text>
-        <NumberRow numbers={game.selectedNumbers} />
-      </View>
-      <Text style={styles.headerTextYourNumber}>Matching Numbers:</Text>
-      <Text style={styles.YouWon}>You Have Won:</Text>
 
-      <Button
-  mode="contained"
-  onPress={navigateToPlayScreen}
-  style={{ width: '80%', marginVertical: 10, marginTop:50,alignSelf: 'center' }}
->
-  Redeem
-</Button>
-      {/* Add more details as needed */}
+      <LinearGradient
+        colors={['#BA8DF3', '#615EE2']} // Example colors, replace with your desired gradient colors
+        style={styles.mainCard}
+      >
+      
+        <Text style={styles.YourNumber}>Your Numbers:</Text>
+        <NumberRow numbers={game.selectedNumbers} />
+      
+
+     
+        <Text style={styles.WinNumber}>Winning Numbers:</Text>
+        <NumberRow numbers={game.selectedNumbers} />
+     
+
+   </LinearGradient>
+
+
+
+   <Text    style={styles.matchedNumberText}>  You have matched 2 Numbers </Text>
+
+   <Text    style={styles.matchedNumberText}>  You have Won  </Text>
+
+
+   <View style={{ flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between' }}>
+
+   <Text    style={styles.priceText}>  200$  </Text>
+    
+   <LinearGradient  colors={['#F0C735', '#D98F39']}  style={styles.doneButton}>
+        <TouchableOpacity  onPress={""} >
+          <Text style={styles.doneButtonText}>Done</Text>
+        </TouchableOpacity>
+        </LinearGradient>
+
+        </View>
+
+        <Text  style={{padding:10,fontWeight:'700',fontSize:22}}>  Winners of this game </Text>
+      
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+
+  yourGameText: {
+    marginLeft: 70,       // Add marginLeft
+    fontSize: 34,
+    fontWeight: '700',
+    lineHeight: 44,
+    letterSpacing: 0,
+    textAlign: 'left',
+    // Add any other styles for yourGameText if needed
+  },
+
+  matchedNumberText: {
+   fontWeight:'400',
+   fontSize:16,
+   marginLeft:10,
+   marginTop:10
+  },
+  doneButton: {
+    backgroundColor: '#F0C735',
+   marginRight:10,
+    alignSelf:'flex-end',
+   marginBottom:2,
+    width:'20%',
+    height:36,
+    borderRadius:10
+  },
+  doneButtonText: {
+    color: '#fff',
+    marginTop:5,
+    alignSelf:'center'
+  },
+  priceText: {
+    fontWeight:'400',
+    fontSize:32,
+    marginLeft:5,
+    marginTop:10
+   },
+  mainCard: {
+    margin: 10,
+    padding: 15,
+    borderRadius: 15,
+    height:235,
+    elevation: 3,
+    backgroundColor: '#F0C735'
+  },
+  dateText: {
+    marginLeft: 70,       // Add marginLeft
+    fontSize: 30,
+    fontWeight: '400',
+    lineHeight: 44,
+    letterSpacing: 0,
+    textAlign: 'left',
+    // Add any other styles for yourGameText if needed
+  },
   container: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -158,11 +240,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   numberBox: {
-    width: 30,
-    height: 30,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#333',
+    width: 45,
+    height: 35,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: 'white',
     margin: 5,
     alignItems: 'center',
     justifyContent: 'center',
@@ -170,32 +252,34 @@ const styles = StyleSheet.create({
   numberText: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: '#333',
+    color: 'white',
   },
   Heading: {
     fontSize: 25,
     fontWeight: 'bold',
     color: '#333',
-    marginTop:150,
+    
     marginStart:10
   },
-  headerTextYourNumber: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    marginStart: 10,
+  YourNumber: {
+    fontSize: 16,
+    fontWeight: '500',
+    marginStart: 20,
     marginTop:10,
     marginRight:33,
+    color:'white',
 
     marginEnd: 32,
   },
-  headerTextWinNumber: {
-    fontSize: 15,
-    fontWeight: 'bold',
+  WinNumber: {
+    fontSize: 16,
+    fontWeight: '500',
     marginStart: 10,
-    marginStart: 10,
+    marginStart: 20,
     marginRight:10,
-
+    color:'white',
     marginEnd: 23,
+    marginTop:30
   },
 
   NumberMatching: {

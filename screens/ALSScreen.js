@@ -1,15 +1,20 @@
 import { useNavigation } from '@react-navigation/native';
 import   React  , {useEffect,useState} from 'react';
-import { View } from 'react-native';
+import { View ,StyleSheet,TouchableHighlight} from 'react-native';
 import { Card, Title, Text, Button } from 'react-native-paper';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { MaterialIcons } from '@expo/vector-icons';
+import {  TouchableOpacity } from 'react-native';
 
 const MyCardComponent = () => {
   const navigation = useNavigation();
   const [userCredits, setUserCredits] = useState(0);
-
+  const [pressed, setPressed] = useState(false);
+  const [pressedNational, setPressedNational] = useState(false);
+  const [pressedlevelone, setPressedlevelone] = useState(false);
+  const [pressedleveltwo, setPressedleveltwo] = useState(false);
+  const [pressedlevelthree, setPressedlevelthree] = useState(false);
   const handleButtonPress = () => {
     navigation.navigate('ChooseLevel');
   };
@@ -127,7 +132,27 @@ const MyCardComponent = () => {
   // For example, you can call it after the user logs in or when the component mounts
   // check();
   
-
+  const handlePress = () => {
+    navigation.navigate('MainScreen')
+    
+    setPressed(!pressed);
+  };
+  const handlePressNational = () => {
+    navigation.navigate('Play')
+    setPressedNational(!pressedNational);
+  };
+  const handlePressLevelOne = () => {
+    console.log('Button pressed');
+    setPressedlevelone(!pressedlevelone);
+  };
+  const handlePressLevelTwo = () => {
+    console.log('Button pressed');
+    setPressedleveltwo(!pressedleveltwo);
+  };
+  const handlePressLevelThree = () => {
+    console.log('Button pressed');
+    setPressedlevelthree(!pressedlevelthree);
+  };
 
   const checkUserIdAndReference = async () => {
     try {
@@ -171,49 +196,151 @@ const MyCardComponent = () => {
 
   return (
 
-    <View>
+    <View  style={{  alignItems: 'center' }}  >
 
-      <View   style={{marginLeft:10, marginRight:10, marginTop:150}} >
+<View style={{ flexDirection: 'row', alignItems: 'center' ,marginTop:50}}>
+<MaterialIcons name="keyboard-arrow-left" size={35} color="black" style={{
+     
+     marginLeft: 10, // Add marginLeft to push the icon to the left
+   }}/>
+     <Text  style={styles.welcomeText}>Choose game </Text>
+
+     </View>
+
+     
+
+     <TouchableHighlight
+        style={[
+          styles.buttonContainer,
+          { backgroundColor: pressed ? '#31A062' : 'rgba(49, 160, 98, 0.33)' },
+        ]}
+        onPress={ handlePress}
+        underlayColor="#31A062" // This sets the color when the button is pressed
+      >
+        <Text style={[styles.buttonText,{color:pressed ? 'white' : 'black'}]}>
+          Continental
+          {'\n'}
+          Win up to 1 million
+        </Text>
+      </TouchableHighlight>
 
 
-      <Card style={{marginBottom:20}}>
-      <Title style={{ fontWeight: 'bold',marginBottom:10,marginStart:10 }}>Games</Title>
-      </Card>
+     
+      <TouchableHighlight
+        style={[
+          styles.buttonContainer,
+          { backgroundColor: pressedNational ? '#31A062' : 'rgba(49, 160, 98, 0.33)' },
+        ]}
+        onPress={handlePressNational}
+        underlayColor="#31A062" // This sets the color when the button is pressed
+      >
+        <Text style={[styles.buttonText, {color:pressedNational ? 'white' : 'black'}]}>
+          National
+          {'\n'}
+          Win up to 1 million
+        </Text>
+      </TouchableHighlight>
+
+      <Text  style={styles.chooseLevel}>Choose Level </Text>
 
 
-        <Text style={{marginTop:5,marginBottom:5}}> ALS is a six-digit lucky draw game</Text>
+      <TouchableHighlight
+        style={[
+          styles.buttonContainer,
+          { backgroundColor: pressedlevelone ? '#31A062' : 'rgba(49, 160, 98, 0.33)' },
+        ]}
+        onPress={handlePressLevelOne}
+        underlayColor="#31A062" // This sets the color when the button is pressed
+      >
+        <Text style={styles.buttonText}>
+          Level 1
+          {'\n'}
+          Win up to 1 million
+        </Text>
+      </TouchableHighlight>
+      
+     
 
-        <Text style={{marginTop:5,marginBottom:5}}> You are asked to select 6 random digits from 1 - 60 </Text>
 
-        <Text style={{marginTop:5,marginBottom:5}}> During the lucky draw if the 6 digits you choose  
-          </Text>
-
-          <Text style={{marginTop:5,marginBottom:5}}> come you win the whole price</Text>
-          <Text style={{marginTop:5,marginBottom:5}}> There are prizes for 5,4,3 consecutive digits too</Text>
-          <Text style={{marginTop:5,marginBottom:5}}> Als is available as National Level or Continental Level</Text>
-
-          <Text style={{marginTop:5,marginBottom:5}}> You can choose to play how many times you want</Text>
-
-          <Text style={{marginTop:5,marginBottom:5}}> but you will need to pay for each game </Text>
-   
-          </View>
-
-          <Button
-  mode="contained"
-  onPress={handleButtonPress}
-  style={{ width: '80%', marginVertical: 10, alignSelf: 'center' }}
->
-  ALS Continental
-</Button>
-
+      <TouchableHighlight
+        style={[
+          styles.buttonContainer,
+          { backgroundColor: pressedleveltwo ? '#31A062' : 'rgba(49, 160, 98, 0.33)' },
+        ]}
+        onPress={handlePressLevelTwo}
+        underlayColor="#31A062" // This sets the color when the button is pressed
+      >
+        <Text style={styles.buttonText}>
+          Level 2
+          {'\n'}
+          Win up to 1 million
+        </Text>
+      </TouchableHighlight>
+      
   
-      <Button mode="contained" onPress={fetchAndConsoleStoredCredits} style={{ width: '80%', marginVertical: 10, alignSelf: 'center' }}>
-          ALS National
-      </Button>
+ 
+      <TouchableHighlight
+        style={[
+          styles.buttonContainer,
+          { backgroundColor: pressedlevelthree ? '#31A062' : 'rgba(49, 160, 98, 0.33)' },
+        ]}
+        onPress={handlePressLevelThree}
+        underlayColor="#31A062" // This sets the color when the button is pressed
+      >
+        <Text style={styles.buttonText}>
+          Level 3
+          {'\n'}
+          Win up to 1 million
+        </Text>
+      </TouchableHighlight>
+
     </View>
    
   );
 };
+
+const styles = StyleSheet.create({
+  welcomeText: {
+    width: 354,
+    height: 41,
+    top: 33,
+    left: 10,
+  
+    fontSize: 30, // Adjust the font size as needed
+    fontWeight: 'bold',
+    marginBottom:50
+   
+  },
+
+  buttonContainer: {
+    backgroundColor: '#31A062',
+    width: '90%',
+    marginVertical: 10,
+    marginTop: 15,
+    padding: 10,
+    alignItems: 'center',
+    borderRadius:20
+  },
+  buttonText: {
+    color: 'black',
+    textAlign: 'center',
+    fontSize: 16,
+  },
+
+  chooseLevel: {
+    width: 354,
+    height: 41,
+    top: 33,
+    left: 20,
+  
+    fontSize: 30, // Adjust the font size as needed
+    fontWeight: 'bold',
+    alignSelf:'center',
+    marginBottom:60,
+    marginTop:50
+   
+  },
+})
 
 export default MyCardComponent;
 
