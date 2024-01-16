@@ -314,8 +314,8 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
       backgroundColor: 'white',
       marginTop:15,
       width: '100%',
-      height:60,
-      borderWidth: 0.5,
+      height:58.5,
+      borderWidth: 0,
       borderStyle: 'solid',
       fontSize: 15,
       borderRadius: 25,
@@ -327,7 +327,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
         style={{
           color: 'white',
           backgroundColor: 'white',
-          height:61,
+          height:60.5,
         
          }}
         keyboardType="email-address"
@@ -348,7 +348,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
 <View style={{ borderColor: 'black',
       backgroundColor: 'white',
       width: '20%',
-      borderWidth: 0.5,
+      borderWidth: 0,
             borderStyle: 'solid',
       fontSize: 15,
       borderRadius: 25,
@@ -374,8 +374,8 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
       backgroundColor: 'white',
       width: '75%',
       borderWidth: 1,
-      height:60,
-      borderWidth: 0.5,
+      height:58.5,
+      borderWidth: 0,
       borderStyle: 'solid',
       fontSize: 15,
       borderRadius: 25,
@@ -387,7 +387,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
       style={{
         color: 'white',
         backgroundColor: 'white',
-        height:60,
+        height:60.5,
        
        }}
       keyboardType="phone-pad" // Use 'phone-pad' keyboard type for mobile numbers
@@ -428,10 +428,22 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
 
    
   {[1, 2, 3, 4, 5, 6].map((digit, index) => (
+    <View style={{ borderColor: 'black',
+    backgroundColor: 'white',
+    width: 50,
+    borderWidth: 0,
+    borderStyle: 'solid',
+    fontSize: 15,
+    height:58.5,
+    borderRadius: 15,
+   margin:5,
+    marginTop:15,
+    color: 'white',  // Text color
+    overflow: "hidden",}}>
     <TextInput
       key={digit}
       style={styles.otpInput}
-      mode="outlined"
+      
       keyboardType="numeric"
       maxLength={1}
       value={otp[index]}
@@ -448,6 +460,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
       }}
       ref={(input) => (otpInputsRef[index] = input)}
     />
+    </View>
   ))}
 
 </View>
@@ -485,7 +498,7 @@ const styles = StyleSheet.create({
   otpContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    borderRadius: 20,
+    borderRadius: 25,
   },
   forgotpasswordText: {
     
@@ -513,9 +526,9 @@ const styles = StyleSheet.create({
     textAlign: 'left', // Add this line to align text to the left
   },
   otpInput: {
-    width: '12%',
-    margin: 5,
-    borderRadius: 20
+    textAlign: 'center',
+              backgroundColor:'white',
+              height:60.5,
   },
   selectedCountryText: {
     fontSize: 16,

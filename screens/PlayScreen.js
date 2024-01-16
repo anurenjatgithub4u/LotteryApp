@@ -1,6 +1,4 @@
 
-
-
 // import React, { useState ,useEffect} from 'react';
 // import { View, Text, TouchableOpacity, StyleSheet ,Dimensions } from 'react-native';
 // import { useAuth } from './auth/AuthContext';
@@ -13,75 +11,71 @@
 // import { LinearGradient } from 'expo-linear-gradient';
 // import { EvilIcons } from '@expo/vector-icons';
 // import { AntDesign } from '@expo/vector-icons';
-
+// import { BackHandler } from 'react-native';
 
 // const PlayScreen = () => {
-
-//   const navigation = useNavigation();
-//   const { accessToken, setAccessToken } = useAuth();
 //   const [selectedNumbers, setSelectedNumbers] = useState([]);
-//   const [selectedNumberIndex, setSelectedNumberIndex] = useState(null);
-//   const refreshToken = accessToken;
-//   useEffect(() => {
-//     console.log('Selected Numbers three', selectedNumbers);
-//   }, [selectedNumbers]);
- 
+//   const [highlightedIndex, setHighlightedIndex] = useState(0);
+  
+//   const navigation = useNavigation();
+//   const [areaText, setAreaText] = useState('');
+//   const [levelText, setLevelText] = useState('');
+  
 
-//   const handleNumberSelect =  (number) => {
-//     // Convert the number into an array
-//     const numbersArray = Array.isArray(number) ? number : [number];
-  
-//     // Parse the stored JSON string to get the user details object
-   
-//     // Check if the number is already selected
-//     const isSelected = selectedNumbers.includes(number);
-  
-//     // If the number is selected, update the selected number index to the current number
-//     if (isSelected) {
-//       setSelectedNumberIndex(number);
-//       console.log("Selected Number:", number);
-//     } else if (selectedNumbers.length < 6) {
-//       // If the number is not selected and there are less than 6 selected numbers, add all numbers to the array
-//       setSelectedNumbers((prevSelectedNumbers) => prevSelectedNumbers.concat(numbersArray));
-//       setSelectedNumberIndex(number); // Set selected number index for border color change
-//       console.log("Selected Numbers:", selectedNumbers.concat(numbersArray));
+
+//   const handleBoxClick = (number, index) => {
+//     // If the number is already selected, remove it
+//     if (selectedNumbers.includes(number)) {
+//       setSelectedNumbers(selectedNumbers.filter((n) => n !== number));
 //     } else {
-//       // If there are already 6 selected numbers, replace the first selected number with the new one
-//       const indexOfSelectedNumber = selectedNumbers.indexOf(selectedNumberIndex);
-//       const newSelectedNumbers = [...selectedNumbers];
-//       newSelectedNumbers[indexOfSelectedNumber] = number;
-//       setSelectedNumbers(newSelectedNumbers);
-//       setSelectedNumberIndex(number); // Set selected number index for border color change
-//       console.log("Selected Numbers Two:", newSelectedNumbers);
+//       // If less than 6 numbers are selected, add the number
+//       if (selectedNumbers.length < 6) {
+//         setSelectedNumbers([...selectedNumbers, number]);
+//       } else {
+//         // If the selected numbers are full, change the number in the highlighted box
+//         setSelectedNumbers((prevNumbers) => {
+//           const newNumbers = [...prevNumbers];
+//           newNumbers[highlightedIndex] = number;
+//           return newNumbers;
+//         });
+//       }
 //     }
+
+//     // Highlight the clicked box
+//     setHighlightedIndex(index);
 //   };
 
+//   const handleSelectBoxClick = (index) => {
+//     // Set the highlighted index for the initial selection of empty boxes
+//     setHighlightedIndex(index);
+//   };
 
-//   const renderNumberButtons = () => {
-//     const numberButtons = [];
-//     for (let i = 1; i <= 60; i++) {
-//       const isSelected = selectedNumbers.includes(i);
-//       const isCurrentSelected = selectedNumberIndex !== null && selectedNumberIndex === i;
-
-//       numberButtons.push(
-//         <TouchableOpacity
-//           key={i}
-//           style={[
-//             styles.numberButton,
-//             isSelected && styles.selectedNumberBoxSelected,
-//             isCurrentSelected && styles.selectedNumberBoxSelected,
-//           ]}
-//           onPress={() => handleNumberSelect(i)}
-//         >
-//           <Text  style={{color:'white'}}>{i}</Text>
-//         </TouchableOpacity>
+//   const handleNumberClick = (number) => {
+//     // Set the selected number to the highlighted box
+//     if (highlightedIndex !== null && selectedNumbers.length < 6) {
+//       setSelectedNumbers((prevNumbers) => {
+//         const newNumbers = [...prevNumbers];
+//         newNumbers[highlightedIndex] = number;
+//         return newNumbers;
+//       });
+  
+//       // Move highlight to the next box
+//       setHighlightedIndex((prevIndex) =>
+//         prevIndex < 5 ? prevIndex + 1 : prevIndex
 //       );
+  
+//       // Check if all six boxes are full
+    
+//     }else{
+//       setSelectedNumbers((prevNumbers) => {
+//         const newNumbers = [...prevNumbers];
+//         newNumbers[highlightedIndex] = number;
+//         return newNumbers;
+//       });
 //     }
-//     return numberButtons;
 //   };
-
-
-
+  
+  
 //   const createGame = async () => {
 //     const storedUserDetails = await AsyncStorage.getItem('userDetails');
 //     const userId = await AsyncStorage.getItem('userId');
@@ -120,8 +114,10 @@
 //       if (response.ok) {
 //         console.log('Game added successfully:', responseData);
 //         console.log("checking selected numbers" , selectedNumbers)
+//         const currentDate = new Date();
+//         console.log("current date" , currentDate)
 //         // Do something with the success response if needed
-//         navigation.navigate('PlayedGame', { gameNumber });
+//         navigation.navigate('PlayedGame', { gameNumber, currentDate: currentDate.toISOString()  });
 //         return responseData;
 //       } else {
 //         console.error('Error while creating game:', responseData.error || 'Something went wrong');
@@ -134,9 +130,67 @@
 //       throw error;
 //     }
 //   };
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         // Retrieve areaValue and levelValue from AsyncStorage
+//         const areaValue = await AsyncStorage.getItem('area');
+//         const levelValue = await AsyncStorage.getItem('level');
+
+//         // Set the areaText based on the areaValue
+//         let newAreaText = '';
+
+//         if (areaValue === '1') {
+//           newAreaText = 'Continental';
+//         } else if (areaValue === '2') {
+//           newAreaText = 'National';
+//         } else {
+//           // Handle other area values if needed
+//         }
+
+//         // Update state variables
+//         setAreaText(newAreaText);
+       
+//       } catch (error) {
+//         console.error('Error fetching data from AsyncStorage:', error.message);
+//       }
+//     };
+
+//     // Call the fetchData function when the component mounts
+//     fetchData();
+//   }, []); 
 
 
-  
+//   useEffect(() => {
+//     const fetchLevel = async () => {
+//       try {
+//         // Retrieve areaValue and levelValue from AsyncStorage
+//         const areaValue = await AsyncStorage.getItem('area');
+//         const levelValue = await AsyncStorage.getItem('level');
+
+//         // Set the areaText based on the areaValue
+//         let newLevelText = '';
+
+//         if (levelValue === '1') {
+//           newLevelText = ' 1';
+//         } else if (levelValue === '2') {
+//           newLevelText = ' 2';
+//         } else if(levelValue === '3'){
+//           newLevelText = ' 3';
+//         }
+
+//         // Update state variables
+//         setLevelText(newLevelText);
+       
+//       } catch (error) {
+//         console.error('Error fetching data from AsyncStorage:', error.message);
+//       }
+//     };
+
+//     // Call the fetchData function when the component mounts
+//     fetchLevel();
+//   }, []); 
+
 //   const validateAndCreateGame = async () => {
 //     // Replace this line with the logic to get selectedNumbers from user input or elsewhere
    
@@ -157,81 +211,103 @@
  
 
 
-//   const renderSelectedNumbers = () => {
-//     const selectedNumberViews = [];
-//     for (let i = 1; i <= 6; i++) {
-//       const selectedNumber = selectedNumbers[i - 1];
+//   return (
+//     <View style={styles.container}>
+//             <View style={{ flexDirection: 'row', alignItems: 'flex-start',  justifyContent:'flex-start' ,marginRight: 190, }}>
 
-//       selectedNumberViews.push(
-//         <TouchableOpacity
-//           key={i}
-//           style={[
-//             styles.selectedNumberBox,
-//             selectedNumberIndex === selectedNumber && styles.selectedNumberBoxSelected,
-//           ]}
-//           onPress={() => handleNumberSelect(selectedNumber)}
-//         >
-//           {/* Display selected number or an empty box */}
-//           <Text style={styles.selectedNumber}>{selectedNumber}</Text>
-//         </TouchableOpacity>
-//       );
-//     }
-//     return selectedNumberViews;
-//   };
-  
-  
-  
-//     return (
-//       <View style={styles.container}>
-//          <View style={{ flexDirection: 'row', alignItems: 'flex-start',  justifyContent:'flex-start' ,marginRight: 190, }}>
+// <MaterialIcons name="keyboard-arrow-left" size={35} color="white" style={{
 
-//          <MaterialIcons name="keyboard-arrow-left" size={35} color="white" style={{
-     
-//       marginLeft: 10, // Add marginLeft to push the icon to the left
-//     }}
-    
-//     />
+// marginLeft: 10, // Add marginLeft to push the icon to the left
+// }}
+
+// />
 
 
 // <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
 
 
-//     <Text style={styles.title}>Play Game</Text>
+// <Text style={styles.title}>Play Game</Text>
 
 
 
 
-//    <EvilIcons name="bell" size={30}  style={styles.bell}  color="white" />
-//     <AntDesign name="logout" size={19} style={styles.logout}color="white" />
+// <EvilIcons name="bell" size={30}  style={styles.bell}  color="white" />
+// <AntDesign name="logout" size={19} style={styles.logout}color="white" />
 
 
 
-//     </View>
-//         </View>
+// </View>
+
+
+// </View>
 
 
 
 
-//         <Text style={styles.subtitle}>Select 6 lucky numbers:</Text>
-  
-//         <View style={styles.selectedNumbersContainer}>
-//           {renderSelectedNumbers()}
-//         </View>
-  
-//         <View style={styles.numberButtonsContainer}>{renderNumberButtons()}</View>
+// <Text style={styles.subtitle}> {areaText}   Level{levelText} $ {levelText} million</Text>
+// <View style={{ flexDirection: 'row', marginTop: 20,marginBottom:5 ,alignItems:'center'}}>
+//         {[...Array(6).keys()].map((index) => (
+//           <TouchableOpacity
+//             key={index}
+//             onPress={() => handleSelectBoxClick(index)}
+//             style={{
+//               width: SCREEN_WIDTH * 0.11,
+//               height:SCREEN_WIDTH * 0.11,
+//               borderRadius: SCREEN_WIDTH * 0.02,
+//               margin:SCREEN_WIDTH * 0.015,
+//               justifyContent: 'center',
+//               alignItems: 'center',
+//               borderWidth: 1,
+//               borderColor: highlightedIndex === index ? 'white' : 'white',
+//               backgroundColor:
+//               highlightedIndex === index ? '#31A062' : '#BA8DF3',
+//               alignSelf:'center',
+             
+//             }}
+//           >
+//             <Text  style={{color:'white'}}>
+//               {selectedNumbers.length > index ? selectedNumbers[index] : ''}
+//             </Text>
+//           </TouchableOpacity>
+//         ))}
+//       </View>
 
+//       <View style={{ flexDirection: 'row', flexWrap: 'wrap' , marginLeft:25}}>
+//         {[...Array(60).keys()].map((number, index) => (
+//           <TouchableOpacity
+//             key={number + 1}
+//             onPress={() => handleNumberClick(number + 1)}
+//             style={{
+//               width: SCREEN_WIDTH * 0.1,
+//               height: SCREEN_WIDTH * 0.1,
+//               borderRadius: SCREEN_WIDTH * 0.02,
+//               margin:SCREEN_WIDTH * 0.015,
+//               justifyContent: 'center',
+//               alignItems: 'center',
+//               borderWidth: 1,
+//               borderColor: highlightedIndex === index ? 'white' : 'white',
+//               backgroundColor: selectedNumbers.includes(number + 1)
+//                 ? '#31A062'
+//                 : '#BA8DF3',
+//             }}
+//           >
+//             <Text  style={{color:'white'}}>{number + 1}</Text>
+//           </TouchableOpacity>
+//         ))}
+//       </View>
+
+//       {/* Console log the selected numbers */}
         
-//          <LinearGradient  colors={['#F0C735', '#D98F39']}  style={styles.doneButton}>
+//       <LinearGradient  colors={['#F0C735', '#D98F39']}  style={styles.doneButton}>
 //         <TouchableOpacity  onPress={validateAndCreateGame} >
 //           <Text style={styles.doneButtonText}>Done</Text>
 //         </TouchableOpacity>
 //         </LinearGradient>
 
+//     </View>
+//   );
+// };
 
-//       </View>
-//     );
-  
-// }
 
 // const styles = StyleSheet.create({
 //   container: {
@@ -268,7 +344,8 @@
 //     fontSize: SCREEN_WIDTH * 0.04,
 //     marginBottom: SCREEN_WIDTH * 0.05,
 //     color:'white',
-//     marginRight:90
+//     marginRight:90,
+//     marginTop:10
 //   },
 //   selectedNumbersContainer: {
 //     flexDirection: 'row',
@@ -286,6 +363,7 @@
 //   },
 //   selectedNumber: {
 //     fontSize: SCREEN_WIDTH * 0.04,
+//     color:'white'
 //   },
 //   numberButtonsContainer: {
 //     flexDirection: 'row',
@@ -312,7 +390,8 @@
 //     paddingHorizontal: SCREEN_WIDTH * 0.05,
 //     borderRadius: SCREEN_WIDTH * 0.01,
 //     marginBottom:2,
-//     width:'75%'
+//     width:'85%',
+//     marginTop:20
 //   },
 //   doneButtonText: {
 //     color: '#fff',
@@ -320,11 +399,14 @@
 //     alignSelf:'center'
 //   },
 //   selectedNumberBoxSelected: {
-//     borderColor: 'blue',
+//     borderColor: 'white',
 //     borderWidth: 2,
+//     backgroundColor:'#31A078'
 //   },
 // });
-// export default PlayScreen
+
+// export default PlayScreen;
+
 
 
 
@@ -341,75 +423,71 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { EvilIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
-
+import { BackHandler } from 'react-native';
 
 const PlayScreen = () => {
-
-  const navigation = useNavigation();
-  const { accessToken, setAccessToken } = useAuth();
   const [selectedNumbers, setSelectedNumbers] = useState([]);
-  const [selectedNumberIndex, setSelectedNumberIndex] = useState(null);
-  const refreshToken = accessToken;
-  useEffect(() => {
-    console.log('Selected Numbers three', selectedNumbers);
-  }, [selectedNumbers]);
- 
+  const [highlightedIndex, setHighlightedIndex] = useState(0);
+  
+  const navigation = useNavigation();
+  const [areaText, setAreaText] = useState('');
+  const [levelText, setLevelText] = useState('');
+  
 
-  const handleNumberSelect =  (number) => {
-    // Convert the number into an array
-    const numbersArray = Array.isArray(number) ? number : [number];
-  
-    // Parse the stored JSON string to get the user details object
-   
-    // Check if the number is already selected
-    const isSelected = selectedNumbers.includes(number);
-  
-    // If the number is selected, update the selected number index to the current number
-    if (isSelected) {
-      setSelectedNumberIndex(number);
-      console.log("Selected Number:", number);
-    } else if (selectedNumbers.length < 6) {
-      // If the number is not selected and there are less than 6 selected numbers, add all numbers to the array
-      setSelectedNumbers((prevSelectedNumbers) => prevSelectedNumbers.concat(numbersArray));
-      setSelectedNumberIndex(number); // Set selected number index for border color change
-      console.log("Selected Numbers:", selectedNumbers.concat(numbersArray));
+
+  const handleBoxClick = (number, index) => {
+    // If the number is already selected, remove it
+    if (selectedNumbers.includes(number)) {
+      setSelectedNumbers(selectedNumbers.filter((n) => n !== number));
     } else {
-      // If there are already 6 selected numbers, replace the first selected number with the new one
-      const indexOfSelectedNumber = selectedNumbers.indexOf(selectedNumberIndex);
-      const newSelectedNumbers = [...selectedNumbers];
-      newSelectedNumbers[indexOfSelectedNumber] = number;
-      setSelectedNumbers(newSelectedNumbers);
-      setSelectedNumberIndex(number); // Set selected number index for border color change
-      console.log("Selected Numbers Two:", newSelectedNumbers);
+      // If less than 6 numbers are selected, add the number
+      if (selectedNumbers.length < 6) {
+        setSelectedNumbers([...selectedNumbers, number]);
+      } else {
+        // If the selected numbers are full, change the number in the highlighted box
+        setSelectedNumbers((prevNumbers) => {
+          const newNumbers = [...prevNumbers];
+          newNumbers[highlightedIndex] = number;
+          return newNumbers;
+        });
+      }
     }
+
+    // Highlight the clicked box
+    setHighlightedIndex(index);
   };
 
+  const handleSelectBoxClick = (index) => {
+    // Set the highlighted index for the initial selection of empty boxes
+    setHighlightedIndex(index);
+  };
 
-  const renderNumberButtons = () => {
-    const numberButtons = [];
-    for (let i = 1; i <= 60; i++) {
-      const isSelected = selectedNumbers.includes(i);
-      const isCurrentSelected = selectedNumberIndex !== null && selectedNumberIndex === i;
-
-      numberButtons.push(
-        <TouchableOpacity
-          key={i}
-          style={[
-            styles.numberButton,
-            isSelected && styles.selectedNumberBoxSelected,
-            isCurrentSelected && styles.selectedNumberBoxSelected,
-          ]}
-          onPress={() => handleNumberSelect(i)}
-        >
-          <Text  style={{color:'white'}}>{i}</Text>
-        </TouchableOpacity>
+  const handleNumberClick = (number) => {
+    // Set the selected number to the highlighted box
+    if (highlightedIndex !== null && selectedNumbers.length < 6) {
+      setSelectedNumbers((prevNumbers) => {
+        const newNumbers = [...prevNumbers];
+        newNumbers[highlightedIndex] = number;
+        return newNumbers;
+      });
+  
+      // Move highlight to the next box
+      setHighlightedIndex((prevIndex) =>
+        prevIndex < 5 ? prevIndex + 1 : prevIndex
       );
+  
+      // Check if all six boxes are full
+    
+    }else{
+      setSelectedNumbers((prevNumbers) => {
+        const newNumbers = [...prevNumbers];
+        newNumbers[highlightedIndex] = number;
+        return newNumbers;
+      });
     }
-    return numberButtons;
   };
-
-
-
+  
+  
   const createGame = async () => {
     const storedUserDetails = await AsyncStorage.getItem('userDetails');
     const userId = await AsyncStorage.getItem('userId');
@@ -451,7 +529,7 @@ const PlayScreen = () => {
         const currentDate = new Date();
         console.log("current date" , currentDate)
         // Do something with the success response if needed
-        navigation.navigate('PlayedGame', { gameNumber,  currentDate  });
+        navigation.navigate('PlayedGame', { gameNumber, currentDate: currentDate.toISOString()  });
         return responseData;
       } else {
         console.error('Error while creating game:', responseData.error || 'Something went wrong');
@@ -464,9 +542,67 @@ const PlayScreen = () => {
       throw error;
     }
   };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Retrieve areaValue and levelValue from AsyncStorage
+        const areaValue = await AsyncStorage.getItem('area');
+        const levelValue = await AsyncStorage.getItem('level');
+
+        // Set the areaText based on the areaValue
+        let newAreaText = '';
+
+        if (areaValue === '1') {
+          newAreaText = 'Continental';
+        } else if (areaValue === '2') {
+          newAreaText = 'National';
+        } else {
+          // Handle other area values if needed
+        }
+
+        // Update state variables
+        setAreaText(newAreaText);
+       
+      } catch (error) {
+        console.error('Error fetching data from AsyncStorage:', error.message);
+      }
+    };
+
+    // Call the fetchData function when the component mounts
+    fetchData();
+  }, []); 
 
 
-  
+  useEffect(() => {
+    const fetchLevel = async () => {
+      try {
+        // Retrieve areaValue and levelValue from AsyncStorage
+        const areaValue = await AsyncStorage.getItem('area');
+        const levelValue = await AsyncStorage.getItem('level');
+
+        // Set the areaText based on the areaValue
+        let newLevelText = '';
+
+        if (levelValue === '1') {
+          newLevelText = ' 1';
+        } else if (levelValue === '2') {
+          newLevelText = ' 2';
+        } else if(levelValue === '3'){
+          newLevelText = ' 3';
+        }
+
+        // Update state variables
+        setLevelText(newLevelText);
+       
+      } catch (error) {
+        console.error('Error fetching data from AsyncStorage:', error.message);
+      }
+    };
+
+    // Call the fetchData function when the component mounts
+    fetchLevel();
+  }, []); 
+
   const validateAndCreateGame = async () => {
     // Replace this line with the logic to get selectedNumbers from user input or elsewhere
    
@@ -487,83 +623,106 @@ const PlayScreen = () => {
  
 
 
-  const renderSelectedNumbers = () => {
-    const selectedNumberViews = [];
-    for (let i = 1; i <= 6; i++) {
-      const selectedNumber = selectedNumbers[i - 1];
+  return (
+    <View style={styles.container}>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start',  justifyContent:'flex-start' ,marginRight: 190, }}>
 
-      selectedNumberViews.push(
-        <TouchableOpacity
-          key={i}
-          style={[
-            styles.selectedNumberBox,
-            selectedNumberIndex === selectedNumber && styles.selectedNumberBoxSelected,
-          ]}
-          onPress={() => handleNumberSelect(selectedNumber)}
-        >
-          {/* Display selected number or an empty box */}
-          <Text style={styles.selectedNumber}>{selectedNumber}</Text>
-        </TouchableOpacity>
-      );
-    }
-    return selectedNumberViews;
-  };
+
+            <TouchableOpacity  onPress={()=> navigation.navigate('ALScreen')}>
   
-  
-  
-    return (
-      <View style={styles.container}>
-         <View style={{ flexDirection: 'row', alignItems: 'flex-start',  justifyContent:'flex-start' ,marginRight: 190, }}>
+<MaterialIcons name="keyboard-arrow-left" size={35} color="white" style={{
 
-         <MaterialIcons name="keyboard-arrow-left" size={35} color="white" style={{
-     
-      marginLeft: 10, // Add marginLeft to push the icon to the left
-    }}
-    
-    />
+marginLeft: 10, // Add marginLeft to push the icon to the left
+}}
 
+/>
 
+</TouchableOpacity>
 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
 
 
-    <Text style={styles.title}>Play Game</Text>
+<Text style={styles.title}>Play Game</Text>
 
 
 
 
-    <EvilIcons name="bell" size={30}  style={styles.bell}  color="white" />
-    <AntDesign name="logout" size={19} style={styles.logout}color="white" />
+<EvilIcons name="bell" size={30}  style={styles.bell}  color="white" />
+<AntDesign name="logout" size={19} style={styles.logout}color="white" />
 
 
 
-    </View>
+</View>
 
 
-        </View>
+</View>
 
 
 
 
-        <Text style={styles.subtitle}>Continental Level 1 $ 1 million</Text>
-  
-        <View style={styles.selectedNumbersContainer}>
-          {renderSelectedNumbers()}
-        </View>
-  
-        <View style={styles.numberButtonsContainer}>{renderNumberButtons()}</View>
+<Text style={styles.subtitle}> {areaText}   Level{levelText} $ {levelText} million</Text>
+<View style={{ flexDirection: 'row', marginTop: 20,marginBottom:5 ,alignItems:'center'}}>
+        {[...Array(6).keys()].map((index) => (
+          <TouchableOpacity
+            key={index}
+            onPress={() => handleSelectBoxClick(index)}
+            style={{
+              width: SCREEN_WIDTH * 0.11,
+              height:SCREEN_WIDTH * 0.11,
+              borderRadius: SCREEN_WIDTH * 0.02,
+              margin:SCREEN_WIDTH * 0.015,
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderWidth: 1,
+              borderColor: highlightedIndex === index ? 'white' : 'white',
+              backgroundColor:
+              highlightedIndex === index ? '#31A062' : '#BA8DF3',
+              alignSelf:'center',
+             
+            }}
+          >
+            <Text  style={{color:'white'}}>
+              {selectedNumbers.length > index ? selectedNumbers[index] : ''}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
 
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap' , marginLeft:25}}>
+        {[...Array(60).keys()].map((number, index) => (
+          <TouchableOpacity
+            key={number + 1}
+            onPress={() => handleNumberClick(number + 1)}
+            style={{
+              width: SCREEN_WIDTH * 0.1,
+              height: SCREEN_WIDTH * 0.1,
+              borderRadius: SCREEN_WIDTH * 0.02,
+              margin:SCREEN_WIDTH * 0.015,
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderWidth: 1,
+              borderColor: highlightedIndex === index ? 'white' : 'white',
+              backgroundColor: selectedNumbers.includes(number + 1)
+                ? '#31A062'
+                : '#BA8DF3',
+            }}
+          >
+            <Text  style={{color:'white'}}>{number + 1}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {/* Console log the selected numbers */}
         
-         <LinearGradient  colors={['#F0C735', '#D98F39']}  style={styles.doneButton}>
+      <LinearGradient  colors={['#F0C735', '#D98F39']}  style={styles.doneButton}>
         <TouchableOpacity  onPress={validateAndCreateGame} >
           <Text style={styles.doneButtonText}>Done</Text>
         </TouchableOpacity>
         </LinearGradient>
 
+    </View>
+  );
+};
 
-      </View>
-    );
-  
-}
 
 const styles = StyleSheet.create({
   container: {
@@ -600,7 +759,8 @@ const styles = StyleSheet.create({
     fontSize: SCREEN_WIDTH * 0.04,
     marginBottom: SCREEN_WIDTH * 0.05,
     color:'white',
-    marginRight:90
+    marginRight:SCREEN_WIDTH * 0.2,
+    marginTop:10
   },
   selectedNumbersContainer: {
     flexDirection: 'row',
@@ -618,6 +778,7 @@ const styles = StyleSheet.create({
   },
   selectedNumber: {
     fontSize: SCREEN_WIDTH * 0.04,
+    color:'white'
   },
   numberButtonsContainer: {
     flexDirection: 'row',
@@ -644,7 +805,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: SCREEN_WIDTH * 0.05,
     borderRadius: SCREEN_WIDTH * 0.01,
     marginBottom:2,
-    width:'75%'
+    width:'85%',
+    marginTop:SCREEN_WIDTH * 0.05
   },
   doneButtonText: {
     color: '#fff',
@@ -652,8 +814,10 @@ const styles = StyleSheet.create({
     alignSelf:'center'
   },
   selectedNumberBoxSelected: {
-    borderColor: 'blue',
+    borderColor: 'white',
     borderWidth: 2,
+    backgroundColor:'#31A078'
   },
 });
-export default PlayScreen
+
+export default PlayScreen;

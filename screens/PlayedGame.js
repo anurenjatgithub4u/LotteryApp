@@ -195,10 +195,17 @@
 
 
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, {useEffect,useState} from 'react';
+import { View, Text, StyleSheet ,TouchableOpacity,Dimensions} from 'react-native';
 import { Button } from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
+import { BackHandler } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MaterialIcons } from '@expo/vector-icons';
+
+const { width, height } = Dimensions.get('window');
+
+const SCREEN_WIDTH = width < height ? width : height;
 
 const NumberRow = ({ numbers }) => {
 
@@ -218,6 +225,9 @@ const NumberRow = ({ numbers }) => {
 const PlayedGame = ({ route }) => {
   const { gameNumber,currentDate } = route.params;
   const navigation = useNavigation();
+  const parsedDate = new Date(currentDate);
+  const [areaText, setAreaText] = useState('');
+  const [levelText, setLevelText] = useState('');
 
   const navigateToPlayScreen = () => {
     navigation.navigate('Play'); // 'Play' is the name of your 'PlayScreen' route
@@ -227,15 +237,102 @@ const PlayedGame = ({ route }) => {
     navigation.navigate('Game'); // 'Play' is the name of your 'PlayScreen' route
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Retrieve areaValue and levelValue from AsyncStorage
+        const areaValue = await AsyncStorage.getItem('area');
+        const levelValue = await AsyncStorage.getItem('level');
 
+        // Set the areaText based on the areaValue
+        let newAreaText = '';
+
+        if (areaValue === '1') {
+          newAreaText = 'Continental';
+        } else if (areaValue === '2') {
+          newAreaText = 'National';
+        } else {
+          // Handle other area values if needed
+        }
+
+        // Update state variables
+        setAreaText(newAreaText);
+       
+      } catch (error) {
+        console.error('Error fetching data from AsyncStorage:', error.message);
+      }
+    };
+
+    // Call the fetchData function when the component mounts
+    fetchData();
+  }, []); 
+
+
+  useEffect(() => {
+    const fetchLevel = async () => {
+      try {
+        // Retrieve areaValue and levelValue from AsyncStorage
+        const areaValue = await AsyncStorage.getItem('area');
+        const levelValue = await AsyncStorage.getItem('level');
+
+        // Set the areaText based on the areaValue
+        let newLevelText = '';
+
+        if (levelValue === '1') {
+          newLevelText = ' 1';
+        } else if (levelValue === '2') {
+          newLevelText = ' 2';
+        } else if(levelValue === '3'){
+          newLevelText = ' 3';
+        }
+
+        // Update state variables
+        setLevelText(newLevelText);
+       
+      } catch (error) {
+        console.error('Error fetching data from AsyncStorage:', error.message);
+      }
+    };
+
+    // Call the fetchData function when the component mounts
+    fetchLevel();
+  }, []); 
+
+
+  useEffect(() => {
+    // Add event listener for hardware back button press
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      // Handle back button press
+      // Here, you can add your logic to close the app
+      // For example, you might want to show an exit confirmation dialog
+      // If the screen is the Login screen, you can close the app
+      if (navigation.isFocused()) {
+        // Close the app (exit)
+        navigation.navigate('ALScreen')
+        return true; // Prevent default behavior (exit the app)
+      }
+
+      // If it's not the Login screen, let the default back button behavior occur
+      return false;
+    });
+
+    // Clean up the event listener on component unmount
+    return () => backHandler.remove();
+  }, [navigation]);
   return (
     <View>
+      <TouchableOpacity  onPress={()=> navigation.navigate('ALScreen')}>
+ <MaterialIcons name="keyboard-arrow-left" size={35} color="black" style={{
+     
+     marginLeft: 10, marginTop:50// Add marginLeft to push the icon to the left
+   }}/>
+</TouchableOpacity>
       <Text style={styles.Heading}>Your  Previous Game</Text>
       
-      <Text style={styles.dateText}>{currentDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</Text>
+      <Text style={styles.dateText}>{parsedDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</Text>
 
-      <Text style={styles.winText}>Your  Previous Game</Text>
-
+    
+<Text style={styles.subtitle}> {areaText} Level {levelText} $ {levelText} million</Text>
 
       
       <LinearGradient
@@ -250,11 +347,14 @@ const PlayedGame = ({ route }) => {
 <Text  style={{fontSize:16 , fontWeight:400,marginStart:25,marginTop:20}}>  Winners will be announced on </Text>
 
 
-<Text style={styles.dateText}>{currentDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</Text>
+<Text style={styles.dateText}>{parsedDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</Text>
 
 <LinearGradient  colors={['#F0C735', '#D98F39']}  style={styles.doneButton}>
 
+   <TouchableOpacity  onPress={()=>navigation.navigate('ALScreen')}>
+
    <Text  style={{alignSelf:'center', marginTop:12, color:'white'}}>Play again</Text>
+   </TouchableOpacity>
 </LinearGradient>
 
 
@@ -280,6 +380,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  subtitle: {
+    fontSize: SCREEN_WIDTH * 0.04,
+   
+    color:'black',
+    marginLeft: SCREEN_WIDTH * 0.07,
+    marginTop:10
+  },
   numberText: {
     fontSize: 12,
     fontWeight: 'bold',
@@ -291,7 +398,7 @@ const styles = StyleSheet.create({
     color: '#333',
     lineHeight:44.2,
     marginStart: commonPaddingStart,
-    marginTop:90,
+    marginTop:10,
     
    
   },
@@ -360,7 +467,7 @@ const styles = StyleSheet.create({
     width:354,
     elevation: 3,
     backgroundColor: '#F0C735',
-    marginTop:50,
+    marginTop:30,
     alignSelf:'center'
   },
   dateText: {

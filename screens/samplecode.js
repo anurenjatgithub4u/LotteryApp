@@ -751,3 +751,106 @@ const ContactinfoScreen = () => {
     </View>
   );
 };
+
+
+
+
+const checkUserCredits = async (navigateToPayment, navigateToMainScreen) => {
+  try {
+    // Retrieve userId from AsyncStorage
+    const storedUserDetails = await AsyncStorage.getItem('userDetails');
+    const accessToken = await AsyncStorage.getItem('accessToken');
+    // Parse the stored JSON string to get the user details object
+    const userDetails = JSON.parse(storedUserDetails);
+
+    // Check if userDetails exists and has _id property
+    if (!userDetails || !userDetails._id) {
+      console.log('User details not found in AsyncStorage');
+      return;
+    }
+
+    // Extract userId
+    const userId = userDetails._id;
+
+    // Make API request to check user credits
+    const response = await fetch(`https://lottery-backend-tau.vercel.app/api/v1/user/get-credits/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+        // Include any additional headers or tokens if needed
+      },
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      console.log('User credits:', result.credits);
+      const userCredits = result.credits;
+
+      // Store the user credits in AsyncStorage
+      await AsyncStorage.setItem('userCredits', userCredits.toString());
+
+      console.log('new credits:', userCredits);
+      
+      // If credits are zero, navigate to the payment gateway
+      if (result.credits === 0) {
+        navigation.navigate('PaymentMethodPage');
+      } else {
+        navigation.navigate('MainScreen');
+      }
+    } else {
+      console.error('Failed to fetch user credits');
+    }
+  } catch (error) {
+    console.error('Error checking user credits:', error.message);
+  }
+};
+
+
+const checkCreditsAndNavigate = async () => {
+  try {
+    // Retrieve userCredits from AsyncStorage
+    const storedUserCredits = await AsyncStorage.getItem('userCredits');
+
+    // Parse the string back to a number
+    const userCredits = storedUserCredits 
+
+    // Check if userCredits is equal to 0
+    if (storedUserCredits === 0) {
+      // If credits are 0, navigate to the PaymentMethodPage
+      navigation.navigate('PaymentMethodPage');
+    } else {
+      // If credits are greater than 0, navigate to the MainScreen
+      navigation.navigate('MainScreen');
+    }
+  } catch (error) {
+    console.error('Error checking credits:', error);
+    // Handle errors, e.g., show an error message or redirect to an error screen
+  }
+};
+
+const fetchAndConsoleStoredCredits = async () => {
+  try {
+    // Retrieve userCredits from AsyncStorage
+    const storedCredits = await AsyncStorage.getItem('credits');
+
+
+    // Log the stored user credits
+    console.log('Stored User credits checked succefull:', storedCredits);
+
+    // If needed, you can parse it back to a number
+    const userCredits = storedCredits ? parseInt(storedCredits) : 0;
+    console.log('Parsed User credits (as number):', userCredits);
+
+    // Conditionally navigate based on userCredits
+    if (userCredits === 0) {
+      // If userCredits is 0, navigate to MainScreen
+      navigation.navigate('PaymentMethodPage');
+    } else {
+      // If userCredits is not 0, navigate to PaymentMethodPage
+      navigation.navigate('MainScreen');
+    }
+  } catch (error) {
+    console.error('Error fetching stored user credits:', error.message);
+  }
+};

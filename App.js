@@ -33,7 +33,7 @@ import PaymentPageGateWay from './screens/PaymentGateWay';
 import ALSScreen from './screens/ALSScreen';
 import PaymentMethodPage from './screens/PaymentMethodPage';
 
-import * as Sentry from "@sentry/react-native";
+//import * as Sentry from "@sentry/react-native";
 import { ToastProvider } from 'react-native-toast-message';
 import PayStack from './screens/PayStack';
 import BuyCredits from './screens/BuyCredits';
@@ -46,8 +46,12 @@ import PurchaseScreen from './screens/PurchaseScreen';
 import RedeemPage from './screens/RedeemPage';
 import HelpDetailScreen from './screens/HelpDetailScreen';
 
-
-
+import splashScreenTesting from './screens/SplashScreenTesting';
+import SplashScreenTesting from './screens/SplashScreenTesting';
+import ALSNaviagator from './screens/navigators/AlsNavigator';
+import HelpNavigator from './screens/navigators/HelpNavigator';
+import GameNavigator from './screens/navigators/GameNavigator';
+import LottieView from 'lottie-react-native';
 // Sentry.init({
 //   dsn: "https://a63ad10720920c86a1b3ed3f59f53861@o4506372185784320.ingest.sentry.io/4506372188667904",
 //   // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
@@ -65,7 +69,7 @@ const Tab = createBottomTabNavigator();
 
 const Splash = ({ navigation }) => {
   const [appIsReady, setAppIsReady] = useState(false);
-
+  const Lottie = useRef(null)
   useEffect(() => {
     async function prepare() {
       try {
@@ -109,12 +113,14 @@ const Splash = ({ navigation }) => {
 
   return (
     <View
-      style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+      style={{ flex: 1, alignItems: 'center', justifyContent: 'center',backgroundColor:'white' }}
       onLayout={onLayoutRootView}>
-     <Text style={styles.circleText}>LOGO</Text>
-      <Text style={styles.boldText}>Afro</Text>
-      <Text style={styles.boldText}>Lottery</Text>
-      <Text style={styles.boldText}>System</Text>
+    <LottieView
+      ref={Lottie}
+        source={require('../lottery_app/assets/sec.json')}
+        autoPlay
+        loop
+      />
 
       
     </View>
@@ -132,6 +138,11 @@ const styles = StyleSheet.create({
     lineHeight: 100,
     fontSize: 20,
     marginTop: -20, // Adjust the negative margin top to move the circle upward
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   boldText: {
     fontWeight: 'bold',
@@ -194,22 +205,41 @@ const OTPVerificationScreen = ({ route,navigation }) => {
   
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-     <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
+    <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-start' }}>
+
+<MaterialIcons name="keyboard-arrow-left" size={35} color="black" style={{
+     
+     marginLeft: 10, marginTop:71// Add marginLeft to push the icon to the left
+   }}
+   
+   />
+     <Text style={{ fontSize: 34, fontWeight: '700' ,marginLeft:20}}>
   OTP Verification 
 </Text>
 
-      <View style={{ flexDirection: 'row', marginTop: 20 }}>
+      <View    style={{ flexDirection: 'row', marginTop: 40 }}>
         {/* Create six TextInput components for each digit */}
         {otpDigits.map((digit, index) => (
+
+
+<View key={index} style={{ borderColor: 'black',
+      backgroundColor: 'white',
+      width: 50,
+      borderWidth: 0.5,
+      borderStyle: 'solid',
+      fontSize: 15,
+      height:55,
+      borderRadius: 10,
+     margin:5,
+      marginTop:15,
+      color: 'white',  // Text color
+      overflow: "hidden",}}>
           <TextInput
             key={index}
             style={{
-              width: 50,
-              height: 50,
-              borderWidth: 1,
-              margin: 5,
+             
               textAlign: 'center',
+              backgroundColor:'white'
             }}
             keyboardType="numeric"
             maxLength={1}
@@ -217,9 +247,21 @@ const OTPVerificationScreen = ({ route,navigation }) => {
             onChangeText={(value) => handleDigitChange(index, value)}
           ref={digitRefs[index]}
           />
+          </View>
         ))}
       </View>
-      <Button mode="contained" onPress={handleVerification} style={{ width: '100%', marginVertical: 20 }}>
+      <Button mode="contained" onPress={handleVerification}  contentStyle={{
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }}
+  style={{
+    backgroundColor: '#31A062',
+    width: '90%',
+    marginVertical: 10,
+    marginTop: 15,
+    alignSelf:'center'
+  }}>
         Verify OTP
       </Button>
     </View>
@@ -230,37 +272,38 @@ const OTPVerificationScreen = ({ route,navigation }) => {
 
 
 
-
 const MainScreen = () => (
-  <Tab.Navigator
-    screenOptions={({ route }) => ({
-      tabBarIcon: ({ focused, color, size }) => {
-        let iconName;
+<Tab.Navigator
+  screenOptions={({ route }) => ({
+    tabBarIcon: ({ focused, color, size }) => {
+      let iconName;
 
-        if (route.name === 'Home') {
-          iconName = focused ? 'ios-home' : 'ios-home-outline';
+      if (route.name === 'Home') {
+        iconName = focused ? 'ios-home' : 'ios-home-outline';
+      } else if (route.name === 'Game') {
+        iconName = focused ? 'ios-game-controller-outline' : 'ios-game-controller-outline';
+      } else if (route.name === 'Help') {
+        iconName = focused ? 'ios-help-circle' : 'ios-help-circle-outline';
+      } else if (route.name === 'Profile') {
+        iconName = focused ? 'ios-person' : 'ios-person-outline';
+      }
 
-        }else if (route.name === 'Game') {
-          iconName = focused ? 'ios-game-controller-outline' : 'ios-game-controller-outline';
-        }
-         else if (route.name === 'Help') {
-          iconName = focused ? 'ios-help-circle' : 'ios-help-circle-outline';
-        } else if (route.name === 'Profile') {
-          iconName = focused ? 'ios-person' : 'ios-person-outline';
-        }
-
-        // You can return any component that you like here!
-        return <Ionicons name={iconName} size={size} color={color} />;
+      // You can return any component that you like here!
+      return <Ionicons name={iconName} size={size} color={color} />;
+    },
+    tabBarActiveTintColor: 'tomato',
+    tabBarInactiveTintColor: 'gray',
+    tabBarStyle: [
+      {
+        display: 'flex',
       },
-    })}
-    tabBarOptions={{
-      activeTintColor: 'tomato',
-      inactiveTintColor: 'gray',
-    }}
-  >
-    <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
-    <Tab.Screen name="Game" component={GameScreen} options={{ headerShown: false }}/>
-    <Tab.Screen name="Help" component={HelpScreen}   options={{ headerShown: false }}/>
+      null,
+    ],
+  })}
+>
+    <Tab.Screen name="Home" component={ALSNaviagator} options={{ headerShown: false }}/>
+    <Tab.Screen name="Game" component={GameNavigator} options={{ headerShown: false }}/>
+    <Tab.Screen name="Help" component={HelpNavigator}   options={{ headerShown: false }}/>
     <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }}/>
   
       {/* Add other tabs if needed */}
@@ -274,23 +317,38 @@ const GameStack = createStackNavigator();
 console.disableYellowBox = true;
 
 
+const MainStack = createStackNavigator();
+
+const MainStackNavigator = () => (
+ 
+  <MainStack.Navigator initialRouteName="MainScreen" headerMode="none">
+    <MainStack.Screen name="MainScreen" component={MainScreen} />
+    <MainStack.Screen name="GameDetails" component={GameDetailsPage} />
+  </MainStack.Navigator>
+ 
+);
+
 const App = () => {
   return (
 
 
     <AuthProvider>
     <NavigationContainer>
-
-      <Stack.Navigator initialRouteName="Splash" headerMode="none">
+   
+      <Stack.Navigator initialRouteName="Splash"  screenOptions={{
+    headerShown: false
+  }}>
         <Stack.Screen name="Splash" component={Splash} />
         <Stack.Screen name="Login" component={LoginScreen} options={{ gestureEnabled: false }}/>
         <Stack.Screen name="Register" component={RegisterScreen}options={{ gestureEnabled: false }} />
         <Stack.Screen name="ProfileLanding" component={ProfileLandingScreen}options={{ gestureEnabled: false }} />
         <Stack.Screen name="Play" component={PlayScreen} />
         <Stack.Screen name="OTP" component={OTPVerificationScreen} />
+       
+      
+
         <Stack.Screen name="MainScreen" component={MainScreen} />
-        <Stack.Screen name="GameDetails" component={GameDetailsPage} />
-        
+     
         <Stack.Screen name="DateRange" component={DateRangePicker} />
         <Stack.Screen name="ChooseAccount" component={ChooseAccount} />
         <Stack.Screen name="ForgotPassword" component={ForgotPassword}options={{ gestureEnabled: false }} />
@@ -298,20 +356,22 @@ const App = () => {
         <Stack.Screen name='PaymentPageGateWay' component={PaymentPageGateWay}></Stack.Screen>
        
         <Stack.Screen name="AddAccount" component={AddAccount} />
-        <Stack.Screen name="ALScreen" component={ALSScreen} />
+        
         <Stack.Screen name='PaymentMethodPage' component={PaymentMethodPage} />
         <Stack.Screen name='PayStack' component={PayStack} />
         <Stack.Screen name='Faq' component={FaqPage}/>
         <Stack.Screen name='BuyCredits' component={BuyCredits} />
         <Stack.Screen name='ChooseLevel' component={ChooseLevel} />
-        <Stack.Screen name='PlayedGame' component={PlayedGame} />
+
         <Stack.Screen name='ContactInfo' component={ContactinfoScreen} />
         <Stack.Screen name='PurchaseScreen' component={PurchaseScreen} />
         <Stack.Screen name='Redeem' component={RedeemPage} />
-        <Stack.Screen name='HelpDetail' component={HelpDetailScreen} />
+       
+        <Stack.Screen name='SplashScreenTesting' component={SplashScreenTesting} />
+
 
       </Stack.Navigator>
-      
+    
     </NavigationContainer>
     </AuthProvider>
   );
@@ -319,4 +379,4 @@ const App = () => {
 
 
 
-export default Sentry.wrap(App);
+export default App;

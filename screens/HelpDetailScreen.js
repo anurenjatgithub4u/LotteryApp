@@ -2,18 +2,20 @@ import React from 'react';
 import { View, Text, TextInput,StyleSheet ,TouchableOpacity } from 'react-native';
 import { Card, Title, Paragraph } from 'react-native-paper'; 
 import { FontAwesome5 } from '@expo/vector-icons'; // Make sure to import FontAwesome5 from the correct package
-import { useNavigation } from '@react-navigation/native';
+
 import { AntDesign } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Foundation } from '@expo/vector-icons';
 import { EvilIcons } from '@expo/vector-icons';
-
+import { useNavigation, useRoute } from '@react-navigation/native';
  // Make sure to import FontAwesome5 from the correct package
 
  const HelpDetailScreen = () => {
 
 
   const navigation = useNavigation();
+  const route = useRoute();
+  const faqDetails = route.params?.faqDetails || {};
   const handleCardPress = () => {
     // Navigate to the FAQ screen
     navigation.navigate('Faq');
@@ -25,6 +27,8 @@ import { EvilIcons } from '@expo/vector-icons';
 <View style={{ justifyContent: 'flex-start', paddingHorizontal: 16, paddingTop: 50 }}>
 
 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+
+<TouchableOpacity  onPress={()=> navigation.navigate('Hel')}>
   <MaterialIcons
     name="keyboard-arrow-left"
     size={35}
@@ -35,14 +39,15 @@ import { EvilIcons } from '@expo/vector-icons';
       
     }}
   />
-   
+   </TouchableOpacity>
   <EvilIcons name="bell" size={30} style={styles.bell} color="black" />
   <AntDesign name="logout" size={19} style={styles.logout} color="black" />
 </View>
 
 <Text style={{ fontSize: 31, fontWeight: '700', marginLeft: '5%' }}>Help & FAQs</Text>
 
-
+<Text style={styles.textStyle}>{faqDetails.heading}</Text>
+      <Text style={styles.textStyleTwo}>{faqDetails.paragraph}</Text>
 
 </View>
 

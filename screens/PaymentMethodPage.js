@@ -12,8 +12,7 @@ import { View, TouchableOpacity,Text } from 'react-native';
 
 const PaymentMethodPage = () => {
 
-  // const refreshToken = await AsyncStorage.getItem('refreshToken');
-  // const accessToken = await AsyncStorage.getItem('accessToken');
+  
 
   const addCredits = async (userId, accessToken, transactionReference) => {
     try {
@@ -152,7 +151,17 @@ const PaymentMethodPage = () => {
  
 
       <Button
-        style={{ marginBottom: 10, marginTop: 15, width: '100%' }}
+        contentStyle={{
+          height: 60,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        style={{
+          backgroundColor: '#31A062',
+          width: '100%',
+          marginVertical: 10,
+          marginTop: 15,
+        }}
         mode="contained"
         onPress={()=> paystackWebViewRef.current.startTransaction()}
       >
@@ -160,7 +169,17 @@ const PaymentMethodPage = () => {
       </Button>
 
       <Button
-        style={{ marginBottom: 10, marginTop: 15, width: '100%' }}
+      contentStyle={{
+        height: 60,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+      style={{
+        backgroundColor: '#31A062',
+        width: '100%',
+        marginVertical: 10,
+        marginTop: 15,
+      }}
         mode="contained"
         onPress={handleCardButtonPressBank}
       >
@@ -168,7 +187,17 @@ const PaymentMethodPage = () => {
       </Button>
 
       <Button
-        style={{ marginBottom: 10, marginTop: 15, width: '100%' }}
+        contentStyle={{
+          height: 60,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        style={{
+          backgroundColor: '#31A062',
+          width: '100%',
+          marginVertical: 10,
+          marginTop: 15,
+        }}
         mode="contained"
         onPress={handleCardButtonPress}
       >
@@ -176,7 +205,17 @@ const PaymentMethodPage = () => {
       </Button>
 
       <Button
-        style={{ marginBottom: 10, marginTop: 15, width: '100%' }}
+       contentStyle={{
+        height: 60,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+      style={{
+        backgroundColor: '#31A062',
+        width: '100%',
+        marginVertical: 10,
+        marginTop: 15,
+      }}
         mode="contained"
         onPress={handleCardButtonPress}
       >

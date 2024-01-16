@@ -1,25 +1,29 @@
-import { StyleSheet, Text, View , Image,ScrollView } from 'react-native'
+import { StyleSheet, Text, View , Image,ScrollView ,TouchableOpacity,ActivityIndicator} from 'react-native'
 import React, {useState,useEffect} from 'react'
 import { MaterialIcons } from '@expo/vector-icons';
 import axios from 'axios';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const PurchaseScreen = () => {
 
+  const [loading, setLoading] = useState(true);
+ 
 
   const [purchases, setPurchases] = useState([]);
 
   useEffect(() => {
     const fetchPurchases = async () => {
-      const userId = "65939884a0aa91a1529e275c";
+      const storedAccessToken = await AsyncStorage.getItem('accessToken');
+      const userId = await AsyncStorage.getItem('userId');
+      // const userId = "65939884a0aa91a1529e275c";
       const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/get-purchases/${userId}`;
 
       try {
-        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTkzOTg4NGEwYWE5MWExNTI5ZTI3NWMiLCJlbWFpbCI6ImZhY3RzODk5OEBnbWFpbC5jb20iLCJpYXQiOjE3MDQyOTk1NzgsImV4cCI6MTcwNDM4NTk3OH0.M3VXrhltySs_wNBZoSHyisWxnHmQ1U-KObwx6DDkzcI"; // Replace with your actual authorization token
+        const token = storedAccessToken; // Replace with your actual authorization token
 
         const response = await fetch(apiUrl, {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${storedAccessToken}`,
             "Content-Type": "application/json",
           },
         });
@@ -31,13 +35,18 @@ const PurchaseScreen = () => {
         const data = await response.json();
         console.log("Purchases:", data);
         setPurchases(data.message); // Set the purchases data in the state
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching purchases:", error.message);
+        setLoading(false);
       }
     };
 
     fetchPurchases();
-  }, []); // Empty dependency array to ensure the effect runs only once on mount
+  }, []);
+
+
+
   const getTimeAgoText = (purchaseDate) => {
     const purchaseDateObj = new Date(purchaseDate);
     const currentDate = new Date();
@@ -55,46 +64,50 @@ const PurchaseScreen = () => {
     } else if (minutesAgo < 1440) {
       return `${Math.floor(minutesAgo / 60)} hr's ago`;
     } else {
-      return 'More than a day ago';
+      return 'a day ago';
     }
   };
 
 
   return (
     <View>
+    <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
       <MaterialIcons
         name="keyboard-arrow-left"
         size={35}
         color="black"
         style={{ marginLeft: 10, paddingTop: 69 }}
       />
-      <Text style={styles.myPurchase}>My Purchases</Text>
-      <ScrollView  style={{marginBottom:150}}>
-      {purchases.map((purchase) => (
-      
-        <View>
-        <View key={purchase._id} style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Image
-            source={{
-              uri: 'https://www.europeanbusinessreview.com/wp-content/uploads/2020/01/ThinkstockPhotos-172587244-1.jpg',
-            }}
-            style={styles.profilePicture}
-          />
+    </TouchableOpacity>
+    <Text style={styles.myPurchase}>My Purchases</Text>
 
-          <View style={{ flexDirection: 'column', alignItems: 'center', marginTop: 10 }}>
-            <Text style={styles.detailsText}>You Purchased {purchase.creditsPurchased}</Text>
-            <Text style={styles.detailsText}>Via {purchase.modeOfTransaction}</Text>
+    {loading ? (
+      <ActivityIndicator size="large" color="#0000ff" style={{ marginTop: 20 }} />
+    ) : (
+      <ScrollView style={{ marginBottom: 150 }}>
+        {purchases.map((purchase) => (
+          <View key={purchase._id}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Image
+                source={{
+                  uri: 'https://www.europeanbusinessreview.com/wp-content/uploads/2020/01/ThinkstockPhotos-172587244-1.jpg',
+                }}
+                style={styles.profilePicture}
+              />
+
+              <View style={{ flexDirection: 'column', alignItems: 'center', marginTop: 10 }}>
+                <Text style={styles.detailsText}>You Purchased {purchase.creditsPurchased}</Text>
+                <Text style={styles.detailsText}>Via {purchase.modeOfTransaction}</Text>
+              </View>
+              <Text style={styles.timeText}>{getTimeAgoText(purchase.date)}</Text>
+            </View>
+            <View style={styles.underline} />
           </View>
-         <Text style={styles.timeText}>{getTimeAgoText(purchase.date)}</Text>
-          
-        </View>
-        <View style={styles.underline} />
-        </View>
-      
-      ))}
-  </ScrollView>
-     
-    </View>
+        ))}
+      </ScrollView>
+    )}
+  </View>
+  
   );
 }
 

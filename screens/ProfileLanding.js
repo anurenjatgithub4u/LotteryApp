@@ -1,8 +1,12 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet,Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet,Image, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {  Button } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+
+const {height, width }  = Dimensions.get('window');
+
 const ProfileLandingScreen = () => {
     const navigation = useNavigation();
   
@@ -37,7 +41,7 @@ const ProfileLandingScreen = () => {
       <View style={styles.container}>
         {/* Welcome Text */}
 
-        <Image source={{ uri: imageUrl }} style={{ width: '50%', height: 300,marginTop:80 }} />
+        <Image source={{ uri: imageUrl }} style={{ width: '50%', height: hp(40),marginTop:hp(10) }} />
         <Text style={styles.welcomeText}>Win Big With</Text>
         <Text style={styles.welcomeTextTwo}>Afro Lottery System</Text>
   
@@ -78,6 +82,7 @@ const ProfileLandingScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
+    height:hp(100),
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',

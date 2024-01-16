@@ -96,10 +96,16 @@
 
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { View, Text, StyleSheet,TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet,TouchableOpacity,Dimensions } from 'react-native';
 import { Button } from 'react-native-paper';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+
+const { width, height } = Dimensions.get("window");
 
 const NumberRow = ({ numbers }) => {
   return (
@@ -121,16 +127,23 @@ const GameDetailsPage = ({ route }) => {
   const navigateToPlayScreen = () => {
     navigation.navigate('Play'); // 'Play' is the name of your 'PlayScreen' route
   };
+  const formattedDate = new Date(game.createdAt).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
   return (
     <View>
+
+<TouchableOpacity  onPress={()=> navigation.navigate('Gam')}>
  <MaterialIcons name="keyboard-arrow-left" size={35} color="black" style={{
      
      marginLeft: 10, marginTop:50// Add marginLeft to push the icon to the left
    }}/>
-
+</TouchableOpacity>
       <Text  style={styles.yourGameText}>Your Game</Text>
 
-      <Text  style={styles.dateText}> {new Date(game.createdAt).toLocaleDateString()}</Text>
+      <Text  style={styles.dateText}> {formattedDate}</Text>
       
       {/* Display the game data in your UI */}
       
@@ -160,7 +173,7 @@ const GameDetailsPage = ({ route }) => {
    <Text    style={styles.matchedNumberText}>  You have Won  </Text>
 
 
-   <View style={{ flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between' }}>
+   <View style={{ flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between',marginLeft:8 }}>
 
    <Text    style={styles.priceText}>  200$  </Text>
     
@@ -172,7 +185,7 @@ const GameDetailsPage = ({ route }) => {
 
         </View>
 
-        <Text  style={{padding:10,fontWeight:'700',fontSize:22}}>  Winners of this game </Text>
+        <Text  style={{padding:10,fontWeight:'700',fontSize:22,marginLeft:10}}>  Winners of this game </Text>
       
     </View>
   );
@@ -181,7 +194,7 @@ const GameDetailsPage = ({ route }) => {
 const styles = StyleSheet.create({
 
   yourGameText: {
-    marginLeft: 70,       // Add marginLeft
+    marginLeft: hp("3%"),       // Add marginLeft
     fontSize: 34,
     fontWeight: '700',
     lineHeight: 44,
@@ -193,12 +206,13 @@ const styles = StyleSheet.create({
   matchedNumberText: {
    fontWeight:'400',
    fontSize:16,
-   marginLeft:10,
-   marginTop:10
+   marginLeft:20,
+   marginTop:10,
+   marginLeft: hp("2.5%"), 
   },
   doneButton: {
     backgroundColor: '#F0C735',
-   marginRight:10,
+   marginRight:30,
     alignSelf:'flex-end',
    marginBottom:2,
     width:'20%',
@@ -208,7 +222,8 @@ const styles = StyleSheet.create({
   doneButtonText: {
     color: '#fff',
     marginTop:5,
-    alignSelf:'center'
+    alignSelf:'center',
+    
   },
   priceText: {
     fontWeight:'400',
@@ -222,10 +237,13 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     height:235,
     elevation: 3,
-    backgroundColor: '#F0C735'
+    backgroundColor: '#F0C735',
+    width:354,
+    alignSelf:'center',
+    marginTop: hp("3%")
   },
   dateText: {
-    marginLeft: 70,       // Add marginLeft
+    marginLeft: hp("2.5%"),      // Add marginLeft
     fontSize: 30,
     fontWeight: '400',
     lineHeight: 44,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect,useState} from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Card, Title, Paragraph } from 'react-native-paper'; 
@@ -13,11 +13,14 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Foundation } from '@expo/vector-icons';
 import { EvilIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
+import { logout } from './auth/logout';
 
 const ProfileScreen = () => {
 
   const { accessToken, setAccessToken } = useAuth();
   const navigation = useNavigation();
+  const [userName, setUserName] = useState(null);
+
   const logout = async () => {
     try {
       // Replace 'YOUR_BACKEND_URL' with the actual URL of your backend server.
@@ -42,7 +45,7 @@ const ProfileScreen = () => {
       // Check if the logout was successful.
       if (response.status === 200) {
         console.log('Logged out successfully');
-        navigation.navigate('Login');
+        navigation.navigate('ProfileLanding');
         // Redirect or perform any other action after successful logout.
       } else {
         console.error('Logout failed');
@@ -53,24 +56,34 @@ const ProfileScreen = () => {
       // Handle the error, e.g., display an error message.
     }
   };
-  
-
-  const handleLogout = async () => {
-    // Your logout logic
-
-    // Print the access token to the console
-    console.log('User Token on Logout:', accessToken);
-
-    // Now you can use the accessToken globally for any further operations if needed
-
-    setAccessToken(null);
-    navigation.navigate('Login');
+  const handleLogout = () => {
+    logout(navigation);
   };
+  useEffect(() => {
+    // Function to retrieve userName from AsyncStorage
+    const getUserNameFromStorage = async () => {
+      try {
+        const storedUserName = await AsyncStorage.getItem('userName');
+        if (storedUserName !== null) {
+          setUserName(storedUserName);
+        }
+      } catch (error) {
+        console.error('Error retrieving userName from AsyncStorage:', error);
+      }
+    };
+
+    // Call the function to get userName when the component mounts
+    getUserNameFromStorage();
+  }, []);
+
+ 
 return(
   
   <View style={styles.container}>
 
 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+
+<TouchableOpacity  onPress={()=> navigation.navigate('Home')}>
   <MaterialIcons
     name="keyboard-arrow-left"
     size={35}
@@ -81,9 +94,12 @@ return(
       
     }}
   />
-   
+   </TouchableOpacity>
   <EvilIcons name="bell" size={30} style={styles.bell} color="black" />
+
+  <TouchableOpacity  onPress={handleLogout}>
   <AntDesign name="logout" size={19} style={styles.logout} color="black" />
+  </TouchableOpacity>
 </View>
 <Text  style={{fontSize:31,fontWeight:'700',marginLeft:30}}>Profile</Text>
 
@@ -95,15 +111,12 @@ return(
     </View>
 
     {/* User Name */}
-    <Text style={styles.userName}>John Doe</Text>
+    <Text style={styles.userName}> {userName || 'Guest'}</Text>
 
     {/* Member Since */}
     <Text style={styles.memberSince}>Member since January 2022</Text>
 
 
-    <TouchableOpacity onPress={logout}>
-        <Text style={styles.logOut}>Logout</Text>
-      </TouchableOpacity>
     
 
     <Card style={styles.card}>
@@ -138,7 +151,7 @@ return(
     <FontAwesome name="bank" size={24} color="black" />
   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
     <Paragraph style={{...styles.personalInfoText,flex:.9}}  >Bank Account </Paragraph>
-    <TouchableOpacity  onPress={() => navigation.navigate('AddAccount')}>
+    <TouchableOpacity  onPress={() => navigation.navigate('Redeem')}>
     <MaterialIcons name="arrow-forward-ios" size={24} color="black" />
     </TouchableOpacity>
   </View>
@@ -238,7 +251,8 @@ const styles = StyleSheet.create({
   memberSince: {
     fontSize: 16,
     color: '#555',
-    alignSelf:'center'
+    alignSelf:'center',
+    marginBottom:20
   },
   logOut: {
     fontSize: 16,

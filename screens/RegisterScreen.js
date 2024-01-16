@@ -175,7 +175,8 @@ const RegisterScreen = () => {
         console.log('Please fill in all fields');
         return;
       }
-      const mobileWithCountry = `${selectedCountry}${mobileNumber}`;
+      const mobileWithCountry = `${selectedCountry}-${mobileNumber}`;
+
       // Make API request to register user using Axios
       const response = await axios.post('https://lottery-backend-tau.vercel.app/api/v1/user/register', { email, password ,name});
   
@@ -184,7 +185,7 @@ const RegisterScreen = () => {
         navigation.navigate('OTP',{
           email,
           name,
-          mobile: mobileWithCountry
+          mobileNumber: mobileWithCountry
         });
         // You may want to navigate to another screen or perform authentication logic here
   
@@ -226,10 +227,10 @@ const RegisterScreen = () => {
     <View style={{ borderColor: 'black',
       backgroundColor: 'white',
       width: '100%',
-      borderWidth: 0.5,
+      borderWidth: 0,
       borderStyle: 'solid',
       fontSize: 15,
-      height:60,
+      height:58.5,
       borderRadius: 25,
       color: 'white',  // Text color
       overflow: "hidden",}}>
@@ -242,7 +243,7 @@ const RegisterScreen = () => {
       color: 'white',
      
       backgroundColor: 'white',
-      height:60,
+      height:60.5,
      }}
   />
 </View>
@@ -253,11 +254,11 @@ const RegisterScreen = () => {
 marginTop:15,
       backgroundColor: 'white',
       width: '100%',
-      borderWidth: 0.5,
+      borderWidth: 0,
       borderStyle: 'solid',
       fontSize: 15,
       borderRadius: 25,
-      height:60,
+      height:58.5,
       color: 'white',  // Text color
       overflow: "hidden",}}>
     <TextInput
@@ -267,8 +268,8 @@ marginTop:15,
       style={{
         color: 'white',
         backgroundColor: 'white',
-        height:60,
-        borderWidth: 0.5,
+        height:60.5,
+       
        }}
       keyboardType="email-address"
       autoCapitalize="none"
@@ -282,7 +283,7 @@ marginTop:15,
 <View style={{ borderColor: 'black',
       backgroundColor: 'white',
       width: '20%',
-      borderWidth: 0.5,
+      borderWidth: 0,
             borderStyle: 'solid',
       fontSize: 15,
       borderRadius: 25,
@@ -307,8 +308,8 @@ marginTop:15,
       backgroundColor: 'white',
       width: '75%',
       borderWidth: 1,
-      height:60,
-      borderWidth: 0.5,
+      height:58.5,
+      borderWidth: 0,
       borderStyle: 'solid',
       fontSize: 15,
       borderRadius: 25,
@@ -330,7 +331,7 @@ marginTop:15,
       style={{
         color: 'white',
         backgroundColor: 'white',
-        height:60,
+        height:60.5,
        
        }}
     />
@@ -346,8 +347,8 @@ marginTop:15,
       backgroundColor: 'white',
       marginTop:15,
       width: '100%',
-      height:60,
-      borderWidth: 0.5,
+      height:58.5,
+      borderWidth: 0,
       borderStyle: 'solid',
       fontSize: 15,
       borderRadius: 25,
@@ -371,7 +372,7 @@ marginTop:15,
   mode="contained"
   onPress={handleRegister}
   contentStyle={{
-    height: 60,
+    height: 60.5,
     justifyContent: 'center',
     alignItems: 'center',
   }}
