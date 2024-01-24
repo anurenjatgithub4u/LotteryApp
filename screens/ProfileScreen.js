@@ -95,8 +95,11 @@ return(
     }}
   />
    </TouchableOpacity>
-  <EvilIcons name="bell" size={30} style={styles.bell} color="black" />
 
+   
+   <TouchableOpacity onPress={()=> navigation.navigate('Notification')}>
+  <EvilIcons name="bell" size={30} style={styles.bell} color="black" />
+  </TouchableOpacity>
   <TouchableOpacity  onPress={handleLogout}>
   <AntDesign name="logout" size={19} style={styles.logout} color="black" />
   </TouchableOpacity>
@@ -191,7 +194,9 @@ return(
     <Ionicons name="settings" size={24} color="black" />
   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
     <Paragraph style={{...styles.personalInfoText,flex:.9}}  >Password</Paragraph>
+    <TouchableOpacity  onPress={() => navigation.navigate('ForgotPassword')}>
     <MaterialIcons name="arrow-forward-ios" size={24} color="black" />
+    </TouchableOpacity>
   </View>
 </View>
 
@@ -276,9 +281,11 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     top: 1,
-    left: 130,
+    left: 0,
+    alignSelf:'flex-end',
     marginTop:5,
-    padding: '2px 3.5px 2px 3.5px',
+    marginLeft:275
+    
    
   },
   logout: {

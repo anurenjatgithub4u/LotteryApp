@@ -493,14 +493,21 @@
 
 import { useNavigation } from '@react-navigation/native';
 import   React  , {useEffect,useState} from 'react';
-import { View ,StyleSheet,TouchableHighlight} from 'react-native';
+import { View ,StyleSheet,TouchableHighlight,Dimensions} from 'react-native';
 import { Card, Title, Text, Button } from 'react-native-paper';
 import axios from 'axios';
 import { MaterialIcons } from '@expo/vector-icons';
 import {  TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BackHandler } from 'react-native';
+import { LinearGradient } from "expo-linear-gradient";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 
+const { width, height } = Dimensions.get("window");
+const SCREEN_WIDTH = width < height ? width : height;
 
 const MyCardComponent = () => {
   const navigation = useNavigation();
@@ -511,7 +518,8 @@ const MyCardComponent = () => {
   const [selectedLevel, setSelectedLevel] = useState(null);
   const [pressedleveltwo, setPressedleveltwo] = useState(false);
   const [pressedlevelthree, setPressedlevelthree] = useState(false);
-
+  const [areaValue, setAreaValue] = useState(0);
+  const [levelValue, setLevelValue] = useState(0);
   const [commonLevel,setCommonLevel] = useState(0);
   const [commonArea,setCommonArea] = useState(0);
 
@@ -521,6 +529,9 @@ const MyCardComponent = () => {
   const handleMainScreen = () => {
     navigation.navigate('ChooseLevel');
   };
+
+
+
 
 
   useEffect(() => {
@@ -688,10 +699,13 @@ const MyCardComponent = () => {
     <View  style={{  alignItems: 'center' }}  >
 
 <View style={{ flexDirection: 'row', alignItems: 'center' ,marginTop:50}}>
+
+  <TouchableOpacity onPress={()=> navigation.navigate('Hom')}>
 <MaterialIcons name="keyboard-arrow-left" size={35} color="black" style={{
      
      marginLeft: 10, // Add marginLeft to push the icon to the left
    }}/>
+   </TouchableOpacity>
      <Text  style={styles.welcomeText}>Choose game </Text>
 
      </View>
@@ -795,21 +809,24 @@ const MyCardComponent = () => {
       </TouchableHighlight>
 
 
-
-       
       <TouchableHighlight
         style={[
-          styles.PlayGamebuttonContainer,
-          { backgroundColor: pressedlevelthree ? '#31A062' : 'rgba(49, 160, 98, 0.33)' },
+          styles.buttonContainer,
+          { backgroundColor: commonLevel>0 && commonArea>0? '#F0C735' : 'rgba(240, 199, 53, 0.8)' },
         ]}
         onPress={checkCondition}
         underlayColor="#31A062" // This sets the color when the button is pressed
       >
-        <Text style={[styles.buttonText, { color: pressedlevelthree ? 'white' : 'black' }]}>
-          Play Game
-     
+        <Text style={[styles.buttonText, { color: commonLevel==3 ? 'white' : 'black' }]}>
+         Play Game
+        
         </Text>
       </TouchableHighlight>
+
+
+
+
+
 
     </View>
    
@@ -827,6 +844,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom:50
    
+  },
+  buycreditscard: {
+    width: wp("83%"), // Adjust the percentage as needed
+    margin: wp("0.5%"), // Responsive margin
+    padding: wp("4%"), // Responsive padding
+    borderRadius: wp("4%"), // Responsive borderRadius
+    backgroundColor: "#F0C735",
+    elevation: 3,
+    height: hp("6%"), // Responsive height using heightPercentageToDP
+    paddingLeft: wp("4%"), // Responsive paddingLeft
+    marginRight: wp("1%"), // Responsive marginRight
+    marginLeft: wp("10%"), // Responsive marginLeft
+    alignSelf: "center",
+    marginTop:10,
+    marginRight:'10%'
   },
 
   buttonContainer: {

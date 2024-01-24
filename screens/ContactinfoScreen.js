@@ -281,9 +281,11 @@ const ContactinfoScreen = () => {
       // Perform any actions needed when clicking "Done"
       // For example, you might want to save the updated value
       // You can add your logic here
+    
       setMode('edit');
     } else {
       setMode('done');
+      updateEmail();
     }
   };
 
@@ -295,6 +297,7 @@ const ContactinfoScreen = () => {
       // For example, you might want to save the updated value
       // You can add your logic here
       setModeEmail('done');
+      updateDetails();
     }
   };
 
@@ -306,6 +309,7 @@ const ContactinfoScreen = () => {
       // For example, you might want to save the updated value
       // You can add your logic here
       setModePhone('done');
+      updateDetails();
     }
   };
 
@@ -336,6 +340,81 @@ const ContactinfoScreen = () => {
 //     }
 // };
 // fetchPersonalDetails();
+
+
+
+const updateDetails = async () => {
+  try {
+    const userId = await AsyncStorage.getItem('userId');
+    const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`; // Replace with your actual API endpoint
+    const storedAccessToken = await AsyncStorage.getItem('accessToken');
+
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${storedAccessToken}`,
+      },
+      body: JSON.stringify({ email:accountHolderEmail, mobileNumber:accountHolderPhone, name:accountHolderName }),
+    });
+
+    const responseData = await response.json();
+    const countryCode = "+91"
+    if (response.ok) {
+      // Check the response data to determine success or OTP sent
+      if (responseData.message === 'Name updated') {
+        console.log('Success', 'Name updated successfully');
+      } else {
+        console.log('Success', 'OTP sent to new email and/or mobile number');
+        console.log("updated", responseData.message)
+       
+        navigation.navigate('PersonalInfoOtp', {
+          email : accountHolderEmail,
+          name : accountHolderName,
+          
+          mobileNumber: {countryCode} + accountHolderPhone
+        });
+      }
+    } else {
+      console.log('Error', `Error: ${responseData.message}`);
+    }
+  } catch (error) {
+    console.error('Error updating details:', error);
+    console.log('Error', 'An error occurred while updating details');
+  }
+};
+const updateEmail = async () => {
+  try {
+    const userId = await AsyncStorage.getItem('userId');
+    const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`; // Replace with your actual API endpoint
+    const storedAccessToken = await AsyncStorage.getItem('accessToken');
+
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${storedAccessToken}`,
+      },
+      body: JSON.stringify({ email:accountHolderEmail, mobileNumber:accountHolderPhone, name:accountHolderName }),
+    });
+
+    const responseData = await response.json();
+
+    if (response.ok) {
+      // Check the response data to determine success or OTP sent
+      if (responseData.data.message === 'Name updated') {
+        console.log('Success', 'Name updated successfully');
+      } else {
+        console.log('Success', 'OTP sent to new email and/or mobile number');
+      }
+    } else {
+      console.log('Error', `Error: ${responseData.message}`);
+    }
+  } catch (error) {
+    console.error('Error updating details:', error);
+    console.log('Error', 'An error occurred while updating details');
+  }
+};
 
 useEffect(() => {
   const fetchPersonalDetails = async () => {

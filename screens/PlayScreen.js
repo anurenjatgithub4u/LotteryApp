@@ -672,7 +672,7 @@ marginLeft: 10, // Add marginLeft to push the icon to the left
               margin:SCREEN_WIDTH * 0.015,
               justifyContent: 'center',
               alignItems: 'center',
-              borderWidth: 1,
+              borderWidth: 2,
               borderColor: highlightedIndex === index ? 'white' : 'white',
               backgroundColor:
               highlightedIndex === index ? '#31A062' : '#BA8DF3',

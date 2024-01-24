@@ -171,6 +171,8 @@ import React, { useRef, useState } from 'react';
 import { View, Text, StyleSheet  ,TouchableOpacity,Modal } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import axios from 'axios';
+import { KeyboardAwareScrollView } from '@codler/react-native-keyboard-aware-scroll-view';
+
 const ForgotPassword = () => {
   const [emailFor, setEmailFor] = useState('');
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
@@ -306,6 +308,9 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
  
 
   return (
+
+
+    <KeyboardAwareScrollView>
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', padding: 16 }}>
       <Text style={styles.forgotpasswordText}>Forgot Password</Text>
       <Text style={styles.forgotPasswordTwo}>Reset using your email and phone </Text>
@@ -428,7 +433,9 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
 
    
   {[1, 2, 3, 4, 5, 6].map((digit, index) => (
-    <View style={{ borderColor: 'black',
+    <View  key={index}
+    style={{ borderColor: 'black',
+   
     backgroundColor: 'white',
     width: 50,
     borderWidth: 0,
@@ -481,6 +488,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
         Reset Password
       </Button>
     </View>
+    </KeyboardAwareScrollView>
   );
 };
 

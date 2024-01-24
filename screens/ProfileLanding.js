@@ -71,6 +71,8 @@ const ProfileLandingScreen = () => {
       <TouchableOpacity  onPress={()=> navigation.navigate('Login')}>
       <Text style={styles.login}>Login</Text>
       </TouchableOpacity>
+
+      <Button title='Try!' onPress={ () => { Sentry.captureException(new Error('First error')) }}/>
   
         {/* View Previous Button */}
         

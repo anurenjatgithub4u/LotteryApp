@@ -1,9 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { View,Text,StyleSheet,Image } from 'react-native';
+import { View,Text,StyleSheet,Image,TouchableOpacity,KeyboardAvoidingView } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { Appbar, Button } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MaterialIcons } from '@expo/vector-icons';
+import { KeyboardAwareScrollView } from '@codler/react-native-keyboard-aware-scroll-view';
+
+
 const AddAccount = () => {
   const [accountHolderName, setAccountHolderName] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
@@ -69,20 +73,26 @@ const AddAccount = () => {
   };
   
   return (
-    <View  style={{backgroundColor: 'white',height:900}}>
-      <Appbar.Header>
-        <Appbar.BackAction />
-        <Appbar.Content title="Add Account" />
-      </Appbar.Header>
+    <KeyboardAwareScrollView  style={{backgroundColor:'white'}}>
+   <View>
+   <TouchableOpacity onPress={()=> navigation.navigate('Redeem')} >
 
-
-      
-
-      <View style={{ padding: 16 }}>
+<MaterialIcons name="keyboard-arrow-left" size={35} color="black" style={{
+     
+     marginLeft: 10, marginTop:51// Add marginLeft to push the icon to the left
+   }}
+   
+   />
+   </TouchableOpacity>
       <Image
         source={{ uri: 'https://th.bing.com/th/id/OIP.DCKkGl_css_ZFeb-8wvb4gHaHa?rs=1&pid=ImgDetMain' }}
         style={styles.profilePicture}
       />   
+
+
+
+      <View style={{ padding: 16 }}>
+     
 
         <View style={{ flexDirection: 'row', alignItems: 'center',  justifyContent:'space-between',marginTop:20 }}>
 
@@ -102,7 +112,7 @@ const AddAccount = () => {
             backgroundColor: 'white',
           }}
         />
-        <Text  style={{color:'#31A062'}}>Change</Text>
+       
         </View>
          <View style={styles.underline} />
 
@@ -120,7 +130,7 @@ const AddAccount = () => {
                   paddingLeft: 8,
                 }}
               />
-              <Text  style={{color:'#31A062'}}>Change</Text>
+             
               </View>
                <View style={styles.underline} />
 
@@ -139,7 +149,7 @@ const AddAccount = () => {
                   paddingLeft: 8,
                 }}
               />
-              <Text  style={{color:'#31A062'}}>Change</Text>
+            
               </View>
                <View style={styles.underline} />
 
@@ -158,7 +168,7 @@ const AddAccount = () => {
                   paddingLeft: 8,
                 }}
               />
-              <Text  style={{color:'#31A062'}}>Change</Text>
+              
               </View>
                <View style={styles.underline} />
 
@@ -177,14 +187,12 @@ const AddAccount = () => {
                   paddingLeft: 8,
                 }}
               />
-              <Text  style={{color:'#31A062'}}>Change</Text>
+              
               </View>
                <View style={styles.underline} />
 
 
       </View>
-
-
 
       <Button mode="contained" onPress={handleAddBankAccount}  contentStyle={{
     height: 60,
@@ -200,7 +208,9 @@ const AddAccount = () => {
   }}>
         Submit
       </Button>
-    </View>
+
+      </View>
+      </KeyboardAwareScrollView>
   );
 };
 
@@ -221,7 +231,8 @@ const styles =  StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    alignSelf:'center'
+    alignSelf:'center',
+    marginTop:100
   },
 });
 

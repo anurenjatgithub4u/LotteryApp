@@ -3,11 +3,12 @@ import React, {useState,useEffect} from 'react'
 import { MaterialIcons } from '@expo/vector-icons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 const PurchaseScreen = () => {
 
   const [loading, setLoading] = useState(true);
  
-
+  const navigation = useNavigation();
   const [purchases, setPurchases] = useState([]);
 
   useEffect(() => {

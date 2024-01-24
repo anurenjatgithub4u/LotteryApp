@@ -175,7 +175,7 @@ const GameDetailsPage = ({ route }) => {
 
    <View style={{ flexDirection: 'row', alignItems: 'center',justifyContent: 'space-between',marginLeft:8 }}>
 
-   <Text    style={styles.priceText}>  200$  </Text>
+   <Text    style={styles.priceText}>  $200  </Text>
     
    <LinearGradient  colors={['#F0C735', '#D98F39']}  style={styles.doneButton}>
         <TouchableOpacity  onPress={""} >

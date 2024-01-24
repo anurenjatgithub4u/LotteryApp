@@ -1,7 +1,7 @@
 
 import 'react-native-gesture-handler';
 import React, { useState, useEffect, useCallback,createRef, useRef } from 'react';
-import { View, Text,StyleSheet } from 'react-native';
+import { View, Text,StyleSheet, TouchableOpacity } from 'react-native';
 import * as Font from 'expo-font';
 import { Entypo } from '@expo/vector-icons';
 import * as SplashScreen from 'expo-splash-screen';
@@ -29,7 +29,7 @@ import ResetPassword from './screens/ResetPassword';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AddAccount from './screens/AddAccount';
 import PaymentPageGateWay from './screens/PaymentGateWay';
-
+import * as Sentry from "@sentry/react-native";
 import ALSScreen from './screens/ALSScreen';
 import PaymentMethodPage from './screens/PaymentMethodPage';
 
@@ -52,13 +52,24 @@ import ALSNaviagator from './screens/navigators/AlsNavigator';
 import HelpNavigator from './screens/navigators/HelpNavigator';
 import GameNavigator from './screens/navigators/GameNavigator';
 import LottieView from 'lottie-react-native';
+import Notification from './screens/Notification';
+import PersonalInfoOtp from './screens/PersonalInfoOtp';
 // Sentry.init({
 //   dsn: "https://a63ad10720920c86a1b3ed3f59f53861@o4506372185784320.ingest.sentry.io/4506372188667904",
 //   // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
 //   // We recommend adjusting this value in production.
 //   tracesSampleRate: 1.0,
 // });
+// AppRegistry.registerComponent(appName, () => App);
 
+
+Sentry.init({
+  environment: "production",
+  dsn: "https://6dd8bc74dbcf67daf8a46d58d5f34b60@o4506372185784320.ingest.sentry.io/4506619905900544",
+  // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+  // We recommend adjusting this value in production.
+  tracesSampleRate: 1.0,
+});
 const serverIpAddress = '192.168.29.12'; // Replace with your machine's IP address
 const serverPort = 8000;
 const apiUrl = `http://${serverIpAddress}:${serverPort}/register`;
@@ -117,13 +128,14 @@ const Splash = ({ navigation }) => {
       onLayout={onLayoutRootView}>
     <LottieView
       ref={Lottie}
-        source={require('../lottery_app/assets/sec.json')}
+        source={require('./assets/sec.json')}
         autoPlay
         loop
       />
 
-      
+
     </View>
+ 
   );
 };
 
@@ -156,7 +168,7 @@ const styles = StyleSheet.create({
 
 const OTPVerificationScreen = ({ route,navigation }) => {
   const [otpDigits, setOtpDigits] = useState(['', '', '', '', '', '']);
-  const { email, name,mobileNumber } = route.params;
+  const { email, name,mobileNumber,password } = route.params;
   const digitRefs = Array(6).fill(0).map((_, index) => useRef(null));
   const handleDigitChange = (index, value) => {
     // Update the corresponding OTP digit in the state
@@ -187,7 +199,8 @@ const OTPVerificationScreen = ({ route,navigation }) => {
           email, // Replace with the actual email
           otp: enteredOTP,
           name, // Replace with the actual name
-          mobileNumber
+          mobileNumber,
+          password
         }),
       });
     
@@ -206,6 +219,7 @@ const OTPVerificationScreen = ({ route,navigation }) => {
 
   return (
     <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-start' }}>
+<TouchableOpacity onPress={()=> navigation.navigate('Register')} >
 
 <MaterialIcons name="keyboard-arrow-left" size={35} color="black" style={{
      
@@ -213,11 +227,13 @@ const OTPVerificationScreen = ({ route,navigation }) => {
    }}
    
    />
-     <Text style={{ fontSize: 34, fontWeight: '700' ,marginLeft:20}}>
+   </TouchableOpacity>
+
+     <Text style={{ fontSize: 34, fontWeight: '700' ,marginLeft:'6%'}}>
   OTP Verification 
 </Text>
 
-      <View    style={{ flexDirection: 'row', marginTop: 40 }}>
+      <View    style={{ flexDirection: 'row', marginTop: 40 ,marginLeft:'6%'}}>
         {/* Create six TextInput components for each digit */}
         {otpDigits.map((digit, index) => (
 
@@ -250,6 +266,8 @@ const OTPVerificationScreen = ({ route,navigation }) => {
           </View>
         ))}
       </View>
+
+
       <Button mode="contained" onPress={handleVerification}  contentStyle={{
     height: 60,
     justifyContent: 'center',
@@ -260,9 +278,10 @@ const OTPVerificationScreen = ({ route,navigation }) => {
     width: '90%',
     marginVertical: 10,
     marginTop: 15,
-    alignSelf:'center'
+    alignSelf:'center',
+    borderRadius:20
   }}>
-        Verify OTP
+       <Text  style={{alignSelf:'center'}}> Verify OTP</Text>
       </Button>
     </View>
   );
@@ -329,6 +348,7 @@ const MainStackNavigator = () => (
 );
 
 const App = () => {
+  
   return (
 
 
@@ -369,6 +389,9 @@ const App = () => {
        
         <Stack.Screen name='SplashScreenTesting' component={SplashScreenTesting} />
 
+        <Stack.Screen name='Notification' component={Notification} />
+
+        <Stack.Screen name='PersonalInfoOtp' component={PersonalInfoOtp} />
 
       </Stack.Navigator>
     
@@ -379,4 +402,4 @@ const App = () => {
 
 
 
-export default App;
+export default Sentry.wrap(App);

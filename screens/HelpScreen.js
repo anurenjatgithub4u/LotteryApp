@@ -245,8 +245,8 @@
 // export default HelpScreen;
 
 
-import React  ,{useEffect,useState} from 'react';
-import { View, Text, TextInput,StyleSheet ,TouchableOpacity ,ScrollView,ActivityIndicator} from 'react-native';
+import React  ,{useEffect,useState,useCallback } from 'react';
+import { View, Text, TextInput,StyleSheet ,TouchableOpacity ,ScrollView,ActivityIndicator,FlatList} from 'react-native';
 import { Card, Title, Paragraph } from 'react-native-paper'; 
 import { FontAwesome5 } from '@expo/vector-icons'; // Make sure to import FontAwesome5 from the correct package
 import { useNavigation } from '@react-navigation/native';
@@ -263,6 +263,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
  const HelpScreen = () => {
 
+
+  
+
+
+  const [searchQuery, setSearchQuery] = useState('');
   const [faqs, setFaqs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -340,12 +345,48 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
     }, [])
   );
 
+
+  const fetchFaqs = async () => {
+    try {
+      const response = await fetch('https://lottery-backend-tau.vercel.app/api/v1/admin/get-faqs');
+      const data = await response.json();
+
+      console.log('API Response:', data);
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch FAQs: ${data.message}`);
+      }
+
+      setFaqs(data.message || []);
+      setLoading(false);
+    } catch (error) {
+      setError(error.message);
+      setLoading(false);
+    }
+  };
+
+  const handleSearch = useCallback(() => {
+    // Filter faqs based on the searchQuery
+    const filteredFaqs = faqs.filter(faq =>
+      faq.heading.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      faq.paragraph.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    // Update UI with filtered results
+    setFaqs(filteredFaqs);
+  }, [faqs, searchQuery]);
+
+  useEffect(() => {
+    fetchFaqs();
+  }, []);
+
+
   return (
     <View style={{ justifyContent: 'flex-start', paddingHorizontal: 16, paddingTop: 50 }}>
   
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-
-      <TouchableOpacity  onPress={()=> navigation.navigate('Home')}>
+<TouchableOpacity  onPress={()=> navigation.navigate('Home')}>
+      
         <MaterialIcons
           name="keyboard-arrow-left"
           size={35}
@@ -366,9 +407,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
       <Text style={{ fontSize: 31, fontWeight: '700', marginLeft: '5%' }}>Help & FAQs</Text>
   
       <View style={styles.searchContainer}>
-        <TextInput
+      <TextInput
           style={styles.searchInput}
           placeholder="Search..."
+          value={searchQuery}
+          onChangeText={text => setSearchQuery(text)}
+          onSubmitEditing={handleSearch}
         />
       </View>
   
@@ -381,7 +425,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
           <TouchableOpacity key={faq._id} onPress={() => navigation.navigate('HelpDetail', { faqDetails: faq })}>
             <View style={{ flexDirection: 'column' }}>
               <Text style={styles.textStyle}>{faq.heading}</Text>
-              <Text style={styles.textStyleTwo}>{faq.paragraph}</Text>
+              <Text style={styles.textStyleTwo} numberOfLines={1}>{faq.paragraph}</Text>
               <View style={styles.underline} />
             </View>
           </TouchableOpacity>
@@ -523,7 +567,8 @@ const styles = StyleSheet.create({
     lineHeight: 28,
     letterSpacing: 0.8,
     textAlign: 'left',
-    marginLeft:'5%'
+    marginLeft:'5%',
+    numberOfLines: 1,
    
   },
   
