@@ -4,6 +4,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { StatusBar } from "expo-status-bar";
+
 const PurchaseScreen = () => {
 
   const [loading, setLoading] = useState(true);
@@ -77,9 +79,11 @@ const PurchaseScreen = () => {
         name="keyboard-arrow-left"
         size={35}
         color="black"
-        style={{ marginLeft: 10, paddingTop: 69 }}
+        style={{ marginLeft: 10, paddingTop: '12%' }}
       />
     </TouchableOpacity>
+
+
     <Text style={styles.myPurchase}>My Purchases</Text>
 
     {loading ? (

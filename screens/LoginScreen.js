@@ -681,6 +681,7 @@ const LoginScreen = ({ navigation }) => {
         body: JSON.stringify({
           email,
           password,
+          pushNotificationToken:'NR8AdCA0x-RmA1L7JSb_LL'
         }),
       });
   

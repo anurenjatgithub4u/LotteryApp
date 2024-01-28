@@ -588,12 +588,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { EvilIcons } from "@expo/vector-icons";
 import { BackHandler } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { logout } from './auth/logout';
+import { logout } from "./auth/logout";
 import axios from "axios";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { StatusBar } from "expo-status-bar";
 
 const { width, height } = Dimensions.get("window");
 const SCREEN_WIDTH = width < height ? width : height;
@@ -617,16 +618,22 @@ const HomeScreen = () => {
   const [fetchCount, setFetchCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [loadingCredits, setLoadingCredits] = useState(true);
+  const [previousWinningNumbers, setPreviousWinningNumbers] = useState([]);
+  const [countryName, setcountryName] = useState([]);
+  const [ContinentWinningAmount, setContinentWinningAmount] = useState([]);
+  const [CountryWinningAmount, setCountryWinningAmount] = useState([]);
+
+  const [previousWinningContinentNumbers, setPreviousWinningContinentNumbers] = useState([]);
 
   const logout = async () => {
     try {
       // Replace 'YOUR_BACKEND_URL' with the actual URL of your backend server.
-      const backendURL = 'https://lottery-backend-tau.vercel.app/api/v1/auth';
-      
-      const refreshToken = await AsyncStorage.getItem('refreshToken');
-      const accessToken = await AsyncStorage.getItem('accessToken');
+      const backendURL = "https://lottery-backend-tau.vercel.app/api/v1/auth";
+
+      const refreshToken = await AsyncStorage.getItem("refreshToken");
+      const accessToken = await AsyncStorage.getItem("accessToken");
       // Assuming you have the refreshToken stored in a variable.
-  
+
       // Make a POST request to the logout endpoint with the refreshToken in the request body.
       const response = await axios.post(
         `${backendURL}/logout`,
@@ -634,22 +641,22 @@ const HomeScreen = () => {
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         }
       );
-  
+
       // Check if the logout was successful.
       if (response.status === 200) {
-        console.log('Logged out successfully');
-        navigation.navigate('ProfileLanding');
+        console.log("Logged out successfully");
+        navigation.navigate("ProfileLanding");
         // Redirect or perform any other action after successful logout.
       } else {
-        console.error('Logout failed');
+        console.error("Logout failed");
         // Handle logout failure, e.g., display an error message.
       }
     } catch (error) {
-      console.error('Error during logout', error);
+      console.error("Error during logout", error);
       // Handle the error, e.g., display an error message.
     }
   };
@@ -657,9 +664,19 @@ const HomeScreen = () => {
     logout(navigation);
   };
 
-  const goToGameDetails = (game) => {
-    navigation.navigate('GameDetailsPage', { game });
+  const navigateToNotificationScreen = () => {
+   
+  
+    // Use navigation.navigate to navigate to the Notification screen
+    navigation.navigate('Notification'); // Replace 'Notification' with the name of your Notification screen
   };
+
+  const goToGameDetails = (game) => {
+    navigation.navigate("GameDetailsPage", { game });
+  };
+
+
+
   const getUserGames = async () => {
     const storedAccessToken = await AsyncStorage.getItem("accessToken");
     const userId = await AsyncStorage.getItem("userId");
@@ -787,6 +804,59 @@ const HomeScreen = () => {
     }, [])
   );
 
+
+  
+  const fetchPreviousGameWinningNumbers = async () => {
+    const storedAccessToken = await AsyncStorage.getItem("accessToken");
+    const userId = await AsyncStorage.getItem("userId");
+
+    const url = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${storedAccessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(
+        "Error fetching previous game winning numbers:",
+        error.message
+      );
+      throw new Error(
+        "Something went wrong while fetching previous game winning numbers"
+      );
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchPreviousGameWinningNumbers();
+        setPreviousWinningNumbers(data.message.country || []); 
+        setPreviousWinningContinentNumbers(data.message.continent || [])
+        setcountryName(data.message.countryName);
+        setContinentWinningAmount(data.message.ContinentWinningAmount);
+        setCountryWinningAmount(data.message.CountryWinningAmount)
+        console.log("country winning numbers country winning numbers  country winning numbers country winning numbers",data.message )// Assuming "country" is an array
+      } catch (error) {
+        console.error(error.message);
+        // Handle the error
+      }
+    };
+
+    fetchData(); // Invoke the fetchData function when the component mounts
+  }, []);
+
   useEffect(() => {
     // Add event listener for hardware back button press
     const backHandler = BackHandler.addEventListener(
@@ -811,32 +881,71 @@ const HomeScreen = () => {
     return () => backHandler.remove();
   }, [navigation]);
 
+
+
+
   return (
     <View
       style={{
         flex: 1,
         alignItems: "center",
-        justifyContent: "flex-start",
-        marginTop: hp(8),
+        justifyContent: "center",
+        paddingTop: "12%",
       }}
     >
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
-
-        <EvilIcons name="bell" size={30} style={styles.bell} color="black" />
-        <TouchableOpacity  onPress={handleLogout}>
-
-        <AntDesign
-          name="logout"
-          size={19}
-          style={styles.logout}
-          color="black"
-        />
-        </TouchableOpacity>
+      <StatusBar backgroundColor={"transparent"} translucent />
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "flex-start",
+          justifyContent: "flex-start",
+         
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            
+          }}
+        >
+          <EvilIcons name="bell" size={30} style={styles.bell} color="black" onPress={navigateToNotificationScreen}/>
+          <AntDesign
+            name="logout"
+            size={19}
+            style={styles.logout}
+            color="black"
+            onPress={logout}
+          />
+        </View>
       </View>
 
       <Text style={styles.welcomeText}>{`Welcome , ${
         userName || "Guest"
       }`}</Text>
+
+
+      
+<LinearGradient
+        colors={["#31A078", "#31A05F"]} // Example colors, replace with your desired gradient colors
+        style={styles.card}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            
+          }}
+        >
+          <Text style={styles.createdAtText}>Africa winning numbers</Text>
+
+          <Text style={styles.viewGame}>View Game</Text>
+        </View>
+        <Text  style={{color:'white',paddingStart:10,marginBottom:5}}>Winning Amount : {ContinentWinningAmount}</Text>
+        <NumberRow numbers={previousWinningContinentNumbers} />
+      </LinearGradient>
 
       <LinearGradient
         colors={["#31A078", "#31A05F"]} // Example colors, replace with your desired gradient colors
@@ -847,15 +956,20 @@ const HomeScreen = () => {
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
-            marginBottom: 8,
+           
           }}
         >
-          <Text style={styles.createdAtText}>Last week's numbers</Text>
+          <Text style={styles.createdAtText}>{countryName} winning numbers</Text>
 
           <Text style={styles.viewGame}>View Game</Text>
         </View>
-        <NumberRow numbers={[1, 2, 3, 4, 5, 6]} />
+
+        <Text  style={{color:'white',paddingStart:10,marginBottom:5}}>Winning Amount : {CountryWinningAmount}</Text>
+        <NumberRow numbers={previousWinningNumbers} />
       </LinearGradient>
+
+
+      
 
       <View>
         <Text style={styles.yohaveText}> You have</Text>
@@ -913,10 +1027,10 @@ const HomeScreen = () => {
       <View
         style={{
           flexDirection: "row",
-          marginBottom: hp('1%'),
+          marginBottom: hp("1%"),
           justifyContent: "space-between",
           alignItems: "center",
-          marginTop: hp('3%'),
+          marginTop: hp("3%"),
         }}
       >
         <Text style={styles.previousgames}>Previous Games</Text>
@@ -926,7 +1040,7 @@ const HomeScreen = () => {
         <TouchableOpacity onPress={() => navigation.navigate("Game")}>
           <AntDesign
             name="arrowright"
-            style={{ marginRight: hp("1%")  , marginLeft:hp("1%") }}
+            style={{ marginRight: hp("1%"), marginLeft: hp("1%") }}
             size={24}
             color="#FE555D"
           />
@@ -936,14 +1050,17 @@ const HomeScreen = () => {
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
-        <ScrollView style={{ marginBottom: 10, marginTop: hp(.01) }}>
+        <ScrollView style={{ marginBottom: 10, marginTop: hp(0.01) }}>
           {userGames.map((game, index) => (
             <LinearGradient
               key={index}
               colors={["#F0C735", "#D98F39"]} // Example colors, replace with your desired gradient colors
               style={styles.mainCard}
             >
-              <TouchableOpacity key={index} onPress={() => goToGameDetails(game)}>
+              <TouchableOpacity
+                key={index}
+                onPress={() => goToGameDetails(game)}
+              >
                 <View
                   style={{
                     flexDirection: "row",
@@ -967,6 +1084,7 @@ const HomeScreen = () => {
                     flexDirection: "row",
                     alignItems: "center",
                     marginTop: 10,
+                    paddingStart:10
                   }}
                 >
                   <View style={styles.container}>
@@ -997,6 +1115,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: hp("3%"),
   },
+  containerMain: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: SCREEN_WIDTH * 0.05, // Use a percentage of the screen width
+    backgroundColor: "#BA8DF3",
+  },
   numberBox: {
     width: 43,
     height: 37,
@@ -1016,7 +1141,7 @@ const styles = StyleSheet.create({
   createdAtText: {
     fontSize: 15,
     marginLeft: 10,
-    marginBottom: 10,
+    marginBottom: 5,
     color: "white",
     flex: 1, // Use flex to allow the text to take available space
   },
@@ -1058,18 +1183,18 @@ const styles = StyleSheet.create({
     justifyContent: "center", // Center items horizontally
   },
   previousgames: {
-    fontSize: hp('2.8%'), // Adjust the percentage as needed
+    fontSize: hp("2.8%"), // Adjust the percentage as needed
     fontWeight: "bold",
     textAlign: "left",
-     marginRight:wp('20%'),
-    marginLeft: wp('1%'),
+    marginRight: wp("20%"),
+    marginLeft: wp("1%"),
   },
   seeAll: {
-    fontSize: hp('2.0%'), // Adjust the percentage as needed
+    fontSize: hp("2.0%"), // Adjust the percentage as needed
     fontWeight: "bold",
     textAlign: "left",
-    marginRight: wp('1%'),
-    marginLeft: wp('2%'),
+    marginRight: wp("1%"),
+    marginLeft: wp("2%"),
     color: "#FE555D", // Add this line to explicitly set text alignment to left
   },
   creditsText: {
@@ -1084,7 +1209,7 @@ const styles = StyleSheet.create({
   viewGame: {
     fontSize: 15,
     marginLeft: 10, // Adjust this margin based on your design
-    marginBottom: 10,
+    marginBottom: 5,
 
     color: "white",
     // No need for marginLeft here, as we're using justifyContent: 'space-between'
@@ -1125,6 +1250,12 @@ const styles = StyleSheet.create({
     marginRight: wp("1%"), // Responsive marginRight
     marginLeft: wp("10%"), // Responsive marginLeft
     alignSelf: "flex-start",
+  },
+  containerSecond: {
+    flex: 1,
+    justifyContent: "flex-start", // Align items at the top
+
+    paddingTop: "12%",
   },
 
   createaccountText: {
@@ -1232,7 +1363,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     top: 1,
-    left: wp("38%"),
+    left: 150,
     padding: "2px 3.5px 2px 3.5px",
   },
   logout: {
@@ -1240,7 +1371,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     top: 1,
-    left: wp("40%"),
+    left: 165,
     padding: "2px 3.5px 2px 3.5px",
   },
 });

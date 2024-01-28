@@ -505,6 +505,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { StatusBar } from "expo-status-bar";
 
 const { width, height } = Dimensions.get("window");
 const SCREEN_WIDTH = width < height ? width : height;
@@ -522,6 +523,15 @@ const MyCardComponent = () => {
   const [levelValue, setLevelValue] = useState(0);
   const [commonLevel,setCommonLevel] = useState(0);
   const [commonArea,setCommonArea] = useState(0);
+  const [areaText, setAreaText] = useState('');
+
+
+  const [previousWinningNumbers, setPreviousWinningNumbers] = useState([]);
+  const [countryName, setcountryName] = useState([]);
+  const [ContinentWinningAmount, setContinentWinningAmount] = useState([]);
+  const [CountryWinningAmount, setCountryWinningAmount] = useState([]);
+  
+  const [previousWinningContinentNumbers, setPreviousWinningContinentNumbers] = useState([]);
 
   const handleButtonPress = () => {
     navigation.navigate('ChooseLevel');
@@ -530,8 +540,59 @@ const MyCardComponent = () => {
     navigation.navigate('ChooseLevel');
   };
 
+  const fetchPreviousGameWinningNumbers = async () => {
+    const storedAccessToken = await AsyncStorage.getItem("accessToken");
+    const userId = await AsyncStorage.getItem("userId");
+
+    const url = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${storedAccessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(
+        "Error fetching previous game winning numbers:",
+        error.message
+      );
+      throw new Error(
+        "Something went wrong while fetching previous game winning numbers"
+      );
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchPreviousGameWinningNumbers();
+        setPreviousWinningNumbers(data.message.country || []); 
+        setPreviousWinningContinentNumbers(data.message.continent || [])
+        setcountryName(data.message.countryName);
+        setContinentWinningAmount(data.message.ContinentWinningAmount);
+        setCountryWinningAmount(data.message.CountryWinningAmount)
+        console.log("country winning numbers country winning numbers  country winning numbers country winning numbers",data.message )// Assuming "country" is an array
+      } catch (error) {
+        console.error(error.message);
+        // Handle the error
+      }
+    };
+
+    fetchData(); // Invoke the fetchData function when the component mounts
+  }, []);
 
 
+ 
 
 
   useEffect(() => {
@@ -684,21 +745,17 @@ const MyCardComponent = () => {
   
   // Example usage:
   // Call the checkUserIdAndReference function when needed, for example, on a button press
-  <Button
-    mode="contained"
-    onPress={checkUserIdAndReference}
-    style={{ width: '80%', marginVertical: 10, alignSelf: 'center' }}
-  >
-    Check User ID and Reference
-  </Button>
+  
   
 
 
   return (
 
-    <View  style={{  alignItems: 'center' }}  >
+    <View  style={{  flex: 1, alignItems: 'center',paddingTop: "12%", }}  >
 
-<View style={{ flexDirection: 'row', alignItems: 'center' ,marginTop:50}}>
+<StatusBar backgroundColor={"transparent"} translucent />
+
+<View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
   <TouchableOpacity onPress={()=> navigation.navigate('Hom')}>
 <MaterialIcons name="keyboard-arrow-left" size={35} color="black" style={{
@@ -724,7 +781,7 @@ const MyCardComponent = () => {
           Continental
           {'\n'}
           <Text style={[ styles.buttonTextSmallTwo,{color:commonArea==1 ? 'white' : 'black'} ] }>
-     Win up to 1 million
+          Play for your continent : {ContinentWinningAmount}
     </Text>
         </Text>
       </TouchableHighlight>
@@ -743,7 +800,7 @@ const MyCardComponent = () => {
           National
           {'\n'}
           <Text style={[styles.buttonTextSmallTwo, {color:commonArea==2 ? 'white' : 'black'}]}>
-      100$ , Win up to 1 million
+      Play for your country : {CountryWinningAmount}
     </Text>
         </Text>
       </TouchableHighlight>
@@ -763,7 +820,7 @@ const MyCardComponent = () => {
     Level 1
     {'\n'}
     <Text style={[styles.buttonTextSmallTwo, { color: commonLevel==1 ? 'white' : 'black' }]}>
-      100$ , Win up to 1 million
+      Play for 25% of JackPot
     </Text>
   </Text>
 </TouchableHighlight>
@@ -784,7 +841,7 @@ const MyCardComponent = () => {
           Level 2
           {'\n'}
           <Text style={[styles.buttonTextSmallTwo, { color: commonLevel==2 ? 'white' : 'black' }]}>
-      200$ , Win up to 2 million
+          Play for 50% of JackPot
     </Text>
         </Text>
       </TouchableHighlight>
@@ -803,7 +860,7 @@ const MyCardComponent = () => {
           Level 3
           {'\n'}
           <Text style={[styles.buttonTextLevelThree, { color: commonLevel==3 ? 'white' : 'black' }]}>
-      300$ , Win up to 3 million
+          Play for the JackPot
     </Text>
         </Text>
       </TouchableHighlight>

@@ -359,7 +359,7 @@ const updateDetails = async () => {
     });
 
     const responseData = await response.json();
-    const countryCode = "+91"
+    const countryCode = "+917356380659"
     if (response.ok) {
       // Check the response data to determine success or OTP sent
       if (responseData.message === 'Name updated') {
@@ -372,7 +372,7 @@ const updateDetails = async () => {
           email : accountHolderEmail,
           name : accountHolderName,
           
-          mobileNumber: {countryCode} + accountHolderPhone
+          mobileNumber: countryCode
         });
       }
     } else {
@@ -383,6 +383,17 @@ const updateDetails = async () => {
     console.log('Error', 'An error occurred while updating details');
   }
 };
+
+const updateTestDetail = async () => {
+  const countryCode = "+91"
+  navigation.navigate('PersonalInfoOtp', {
+    email : accountHolderEmail,
+    name : accountHolderName,
+    
+    mobileNumber: {countryCode} + accountHolderPhone
+  });
+
+}
 const updateEmail = async () => {
   try {
     const userId = await AsyncStorage.getItem('userId');

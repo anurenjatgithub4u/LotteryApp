@@ -19,7 +19,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/lottery-android-icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.neurosphere.lottery_app"
@@ -29,7 +29,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "e99bab02-f105-4664-955b-1a5a2f711d54"
+        "projectId": "d08cd3bc-ae26-4286-8e70-50acfef35d38"
       }
     }
   }

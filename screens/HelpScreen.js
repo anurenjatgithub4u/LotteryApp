@@ -257,6 +257,8 @@ import { EvilIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { StatusBar } from "expo-status-bar";
 
 
  // Make sure to import FontAwesome5 from the correct package
@@ -344,7 +346,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
       };
     }, [])
   );
-
+  const navigateToNotificationScreen = () => {
+   
+  
+    // Use navigation.navigate to navigate to the Notification screen
+    navigation.navigate('Notification'); // Replace 'Notification' with the name of your Notification screen
+  };
 
   const fetchFaqs = async () => {
     try {
@@ -382,27 +389,58 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
   return (
-    <View style={{ justifyContent: 'flex-start', paddingHorizontal: 16, paddingTop: 50 }}>
-  
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-<TouchableOpacity  onPress={()=> navigation.navigate('Home')}>
-      
-        <MaterialIcons
-          name="keyboard-arrow-left"
-          size={35}
-          color="black"
+    <View style={styles.container}>
+  <StatusBar backgroundColor={"transparent"} translucent />
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "flex-start",
+          justifyContent: "flex-start",
+         
+        }}
+      >
+        <View
           style={{
-            marginLeft: 5,
-            alignSelf: 'flex-start',
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            
           }}
-        />
-  </TouchableOpacity>
-        <EvilIcons name="bell" size={30} style={styles.bell} color="black" />
-
-        <TouchableOpacity  onPress={handleLogout}>
-        <AntDesign name="logout" size={19} style={styles.logout} color="black" />
+        >
+          <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+          <MaterialIcons
+            name="keyboard-arrow-left"
+            size={35}
+            color="black"
+            style={{
+              alignSelf: "flex-start", // Add this line,
+            }}
+          />
         </TouchableOpacity>
+
+
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginLeft:'35%'
+            
+          }}
+        >
+          <EvilIcons name="bell" size={30} style={styles.bell} color="black" onPress={navigateToNotificationScreen} />
+          <AntDesign
+            name="logout"
+            size={19}
+            style={styles.logout}
+            color="black"
+          />
+          </View>
+        </View>
       </View>
+
+
+
   
       <Text style={{ fontSize: 31, fontWeight: '700', marginLeft: '5%' }}>Help & FAQs</Text>
   
@@ -420,7 +458,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
 
-        <ScrollView  style={{marginBottom:200,marginLeft:10}}>
+        <ScrollView  style={{marginBottom:'15%',marginLeft:10}}>
         {faqs.map((faq) => (
           <TouchableOpacity key={faq._id} onPress={() => navigation.navigate('HelpDetail', { faqDetails: faq })}>
             <View style={{ flexDirection: 'column' }}>
@@ -439,6 +477,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
  };
 
 const styles = StyleSheet.create({
+
+ container: {
+    flex: 1,
+    justifyContent: 'flex-start', // Align items at the top
+   
+    paddingTop: '12%', 
+  },
  
   cardContainer: {
     height: 150,
@@ -501,29 +546,30 @@ const styles = StyleSheet.create({
     height:150,
     marginTop: 50
   },
+
+
   heading: {
     fontSize: 18,
     fontWeight: 'bold',
     marginStart:10
   },
+
+
+
   bell: {
     width: 24,
     height: 24,
     top: 1,
-    left: 130,
-    marginTop:5,
-    padding: '2px 3.5px 2px 3.5px',
-   
+    left: 150,
+    padding: "2px 3.5px 2px 3.5px",
   },
   logout: {
-    marginTop:6,
+    marginTop: 5,
     width: 24,
     height: 24,
     top: 1,
-    marginRight:20,
-    marginLeft:20
-   
-   
+    left: 165,
+    padding: "2px 3.5px 2px 3.5px",
   },
 
   searchContainer: {
@@ -568,7 +614,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.8,
     textAlign: 'left',
     marginLeft:'5%',
-    numberOfLines: 1,
+    
    
   },
   

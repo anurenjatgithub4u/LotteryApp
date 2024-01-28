@@ -4,6 +4,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import MyCardComponent from '../ALSScreen';
 import GameScreen from '../GameScreen';
 import GameDetailsPage from '../GameDetailsPage';
+import HomeScreen from '../HomeScreen';
 
 const Stack = createStackNavigator();
 
@@ -15,7 +16,9 @@ function GameNavigator() {
         headerShown: false,
       }}
       initialRouteName="Login">
+        
       <Stack.Screen name="Gam" component={GameScreen} />
+     
       <Stack.Screen name="GameDetailsPage" component={GameDetailsPage} />
     </Stack.Navigator>
   );

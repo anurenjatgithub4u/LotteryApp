@@ -3,7 +3,8 @@ import {createStackNavigator} from '@react-navigation/stack';
 import HomeScreen from '../HomeScreen';
 import MyCardComponent from '../ALSScreen';
 import PlayedGame from '../PlayedGame';
-
+import GameDetailsPage from '../GameDetailsPage';
+import GameScreen from '../GameScreen';
 
 const Stack = createStackNavigator();
 
@@ -16,8 +17,12 @@ function ALSNaviagator() {
       }}
       initialRouteName="Login">
       <Stack.Screen name="Hom" component={HomeScreen} />
+
+      
+
       <Stack.Screen name="ALScreen" component={MyCardComponent} />
-      <Stack.Screen name="PlayedGame" component={PlayedGame} />
+      <Stack.Screen name="PlayedGame" component={PlayedGame}  options={{ headerShown: false }} />
+      
     </Stack.Navigator>
   );
 }

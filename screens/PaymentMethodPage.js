@@ -2,7 +2,6 @@ import { useNavigation } from '@react-navigation/native';
 import React ,{useState,useRef}from 'react';
 import axios from 'axios';
 import { Button } from 'react-native-paper';
-import { PayWithFlutterwaveV2 } from 'flutterwave-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -14,57 +13,8 @@ const PaymentMethodPage = () => {
 
   
 
-  const addCredits = async (userId, accessToken, transactionReference) => {
-    try {
-      const response = await axios.post(
-        'https://lottery-backend-tau.vercel.app/api/v1/user/add-credits', // Replace with your API endpoint
-        {
-          userId,
-          transactionReference,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-  
-      if (response.status === 200) {
-        console.log('Credits added successfully', response.data);
-        // You can handle the success response here
-      } else {
-        console.error('Failed to add credits', response.data);
-        // Handle error response
-      }
-    } catch (error) {
-      console.error('Error adding credits', error);
-      // Handle network errors or other exceptions
-    }
-  };
 
-
-  const [showPayWithFlutterwave, setShowPayWithFlutterwave] = useState(false);
-    const navigation = useNavigation();
-    const handleOnRedirect = async (data) => {
-      console.log(data);
-  
-      // Check if the status is successful
-      if (data.status === 'successful') {
-        // Navigate to PlayScreen
-        navigation.navigate('MainScreen');
-      }
-    };
-   
-   const generateRef = (length) => {
-      var a = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".split("");
-      var b = [];  
-      for (var i = 0; i < length; i++) {
-          var j = (Math.random() * (a.length - 1)).toFixed(0);
-          b[i] = a[j];
-      }
-      return b.join("");
-  }
+const navigation = useNavigation();
 
 
   const handlePaystackSuccess = async (res) => {
@@ -121,14 +71,9 @@ const PaymentMethodPage = () => {
   
 
 
-
-  const handleCardButtonPress = () => {
-    // Show the PayWithFlutterwave component when the button is pressed
-    setShowPayWithFlutterwave(true);
-  };
     const handleCardButtonPressBank = () => {
       // Navigate to the "Home" screen or any other screen you want
-      navigation.navigate('FlutterWave');
+      
     };
     const paystackWebViewRef = useRef(paystackProps.PayStackRef); 
   return (
@@ -199,7 +144,7 @@ const PaymentMethodPage = () => {
           marginTop: 15,
         }}
         mode="contained"
-        onPress={handleCardButtonPress}
+        onPress={""}
       >
         Ussd
       </Button>
@@ -217,7 +162,7 @@ const PaymentMethodPage = () => {
         marginTop: 15,
       }}
         mode="contained"
-        onPress={handleCardButtonPress}
+        onPress={""}
       >
         Kiosk Code
       </Button>

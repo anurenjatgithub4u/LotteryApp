@@ -32,6 +32,7 @@ import PaymentPageGateWay from './screens/PaymentGateWay';
 import * as Sentry from "@sentry/react-native";
 import ALSScreen from './screens/ALSScreen';
 import PaymentMethodPage from './screens/PaymentMethodPage';
+import LottieView from 'lottie-react-native';
 
 //import * as Sentry from "@sentry/react-native";
 import { ToastProvider } from 'react-native-toast-message';
@@ -51,9 +52,9 @@ import SplashScreenTesting from './screens/SplashScreenTesting';
 import ALSNaviagator from './screens/navigators/AlsNavigator';
 import HelpNavigator from './screens/navigators/HelpNavigator';
 import GameNavigator from './screens/navigators/GameNavigator';
-import LottieView from 'lottie-react-native';
 import Notification from './screens/Notification';
 import PersonalInfoOtp from './screens/PersonalInfoOtp';
+import * as Notifications from 'expo-notifications';
 // Sentry.init({
 //   dsn: "https://a63ad10720920c86a1b3ed3f59f53861@o4506372185784320.ingest.sentry.io/4506372188667904",
 //   // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
@@ -126,13 +127,13 @@ const Splash = ({ navigation }) => {
     <View
       style={{ flex: 1, alignItems: 'center', justifyContent: 'center',backgroundColor:'white' }}
       onLayout={onLayoutRootView}>
-    <LottieView
+  
+  <LottieView
       ref={Lottie}
         source={require('./assets/sec.json')}
         autoPlay
         loop
       />
-
 
     </View>
  
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
 
 const OTPVerificationScreen = ({ route,navigation }) => {
   const [otpDigits, setOtpDigits] = useState(['', '', '', '', '', '']);
-  const { email, name,mobileNumber,password } = route.params;
+  const { email, name,mobileNumber,password,selectedCountry} = route.params;
   const digitRefs = Array(6).fill(0).map((_, index) => useRef(null));
   const handleDigitChange = (index, value) => {
     // Update the corresponding OTP digit in the state
@@ -187,7 +188,7 @@ const OTPVerificationScreen = ({ route,navigation }) => {
     try {
       // Combine the OTP digits
       const enteredOTP = otpDigits.join('');
-      console.log('Entered OTP:', enteredOTP);
+      console.log('Entered OTP:', selectedCountry);
   
       // Make a request to your server to verify the OTP
       const response = await fetch('https://lottery-backend-tau.vercel.app/api/v1/user/verify-otp', {
@@ -200,7 +201,8 @@ const OTPVerificationScreen = ({ route,navigation }) => {
           otp: enteredOTP,
           name, // Replace with the actual name
           mobileNumber,
-          password
+          password,
+          countryCode:selectedCountry
         }),
       });
     
@@ -320,7 +322,7 @@ const MainScreen = () => (
     ],
   })}
 >
-    <Tab.Screen name="Home" component={ALSNaviagator} options={{ headerShown: false }}/>
+    <Tab.Screen name="Home" component={ALSNaviagator}  options={{ headerShown: false }} />
     <Tab.Screen name="Game" component={GameNavigator} options={{ headerShown: false }}/>
     <Tab.Screen name="Help" component={HelpNavigator}   options={{ headerShown: false }}/>
     <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }}/>
@@ -346,8 +348,64 @@ const MainStackNavigator = () => (
   </MainStack.Navigator>
  
 );
+async function registerForPushNotificationsAsync() {
+  let token;
 
+  const { status: existingStatus } = await Notifications.getPermissionsAsync();
+  let finalStatus = existingStatus;
+
+  if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+  }
+  if (finalStatus !== 'granted') {
+      alert('Failed to get push token for push notification!');
+      return;
+  }
+  token = (await Notifications.getExpoPushTokenAsync()).data;
+  console.log(token);
+
+  return token;
+}
 const App = () => {
+
+  useEffect(() => {
+    const registerForPushNotifications = async () => {
+      try {
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+
+        if (existingStatus !== 'granted') {
+          const { status } = await Notifications.requestPermissionsAsync();
+          finalStatus = status;
+        }
+
+        if (finalStatus !== 'granted') {
+          console.error('Notification permission not granted');
+          return;
+        }
+
+        // Get the push token with projectId
+        const { data: pushToken } = await Notifications.getExpoPushTokenAsync({
+          projectId: 'd08cd3bc-ae26-4286-8e70-50acfef35d38', // Replace with your Firebase project ID
+        });
+        console.log('Expo Push Token:', pushToken);
+      } catch (error) {
+        console.error('Error getting Expo Push Token:', error);
+      }
+    };
+
+    registerForPushNotifications();
+  }, []);
+
+
+
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true
+      }),
+    });
+
   
   return (
 
@@ -358,40 +416,40 @@ const App = () => {
       <Stack.Navigator initialRouteName="Splash"  screenOptions={{
     headerShown: false
   }}>
-        <Stack.Screen name="Splash" component={Splash} />
-        <Stack.Screen name="Login" component={LoginScreen} options={{ gestureEnabled: false }}/>
-        <Stack.Screen name="Register" component={RegisterScreen}options={{ gestureEnabled: false }} />
+        <Stack.Screen name="Splash" component={Splash} options={{ headerShown: false }}/>
+        <Stack.Screen name="Login" component={LoginScreen} options={{ gestureEnabled: false  }}/>
+        <Stack.Screen name="Register" component={RegisterScreen}options={{ gestureEnabled: false ,headerShown: false }} />
         <Stack.Screen name="ProfileLanding" component={ProfileLandingScreen}options={{ gestureEnabled: false }} />
-        <Stack.Screen name="Play" component={PlayScreen} />
-        <Stack.Screen name="OTP" component={OTPVerificationScreen} />
+        <Stack.Screen name="Play" component={PlayScreen} options={{ headerShown: false ,header:null}} />
+        <Stack.Screen name="OTP" component={OTPVerificationScreen} options={{ headerShown: false }}/>
        
       
 
-        <Stack.Screen name="MainScreen" component={MainScreen} />
+        <Stack.Screen name="MainScreen" component={MainScreen} options={{ headerShown: false }} />
      
-        <Stack.Screen name="DateRange" component={DateRangePicker} />
+        <Stack.Screen name="DateRange" component={DateRangePicker} options={{ headerShown: false }}/>
         <Stack.Screen name="ChooseAccount" component={ChooseAccount} />
-        <Stack.Screen name="ForgotPassword" component={ForgotPassword}options={{ gestureEnabled: false }} />
-        <Stack.Screen name="ResetPassword" component={ResetPassword}options={{ gestureEnabled: false }} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPassword}options={{ gestureEnabled: false , headerShown: false }}  />
+        <Stack.Screen name="ResetPassword" component={ResetPassword}options={{ gestureEnabled: false ,headerShown: false}} />
         <Stack.Screen name='PaymentPageGateWay' component={PaymentPageGateWay}></Stack.Screen>
        
-        <Stack.Screen name="AddAccount" component={AddAccount} />
+        <Stack.Screen name="AddAccount" component={AddAccount} options={{ headerShown: false }}/>
         
-        <Stack.Screen name='PaymentMethodPage' component={PaymentMethodPage} />
-        <Stack.Screen name='PayStack' component={PayStack} />
-        <Stack.Screen name='Faq' component={FaqPage}/>
-        <Stack.Screen name='BuyCredits' component={BuyCredits} />
-        <Stack.Screen name='ChooseLevel' component={ChooseLevel} />
+        <Stack.Screen name='PaymentMethodPage' component={PaymentMethodPage} options={{ headerShown: false }} />
+        <Stack.Screen name='PayStack' component={PayStack} options={{ headerShown: false }}/>
+        <Stack.Screen name='Faq' component={FaqPage}  options={{ headerShown: false }}/>
+        <Stack.Screen name='BuyCredits' component={BuyCredits}  options={{ headerShown: false }} />
+        <Stack.Screen name='ChooseLevel' component={ChooseLevel}  options={{ headerShown: false }} />
 
-        <Stack.Screen name='ContactInfo' component={ContactinfoScreen} />
-        <Stack.Screen name='PurchaseScreen' component={PurchaseScreen} />
-        <Stack.Screen name='Redeem' component={RedeemPage} />
+        <Stack.Screen name='ContactInfo' component={ContactinfoScreen}  options={{ headerShown: false }} />
+        <Stack.Screen name='PurchaseScreen' component={PurchaseScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name='Redeem' component={RedeemPage} options={{ headerShown: false }}/>
        
-        <Stack.Screen name='SplashScreenTesting' component={SplashScreenTesting} />
+        <Stack.Screen name='SplashScreenTesting' component={SplashScreenTesting} options={{ headerShown: false }}/>
 
-        <Stack.Screen name='Notification' component={Notification} />
+        <Stack.Screen name='Notification' component={Notification} options={{ headerShown: false }} />
 
-        <Stack.Screen name='PersonalInfoOtp' component={PersonalInfoOtp} />
+        <Stack.Screen name='PersonalInfoOtp' component={PersonalInfoOtp} options={{ headerShown: false }}/>
 
       </Stack.Navigator>
     

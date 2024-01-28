@@ -168,6 +168,50 @@ const RegisterScreen = () => {
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
  
+
+  const handleRegister = async () => {
+    try {
+      // Validate input fields
+      if (!name || !email || !password || !mobileNumber || !selectedCountry) {
+        console.log('Please fill in all fields');
+        return;
+      }
+  
+      const mobileWithCountry = `${selectedCountry}${mobileNumber}`;
+  
+      console.log('Selected Country:', mobileWithCountry);
+  
+      // Make API request to register user using Axios
+      const response = await axios.post('https://lottery-backend-tau.vercel.app/api/v1/user/register', {
+        email,
+        mobileNumber: mobileWithCountry,
+      });
+  
+      if (response.data.statusCode === 200) {
+        console.log('Registration successful:', response.data.message);
+  
+        // Navigate to OTP screen with additional information
+        navigation.navigate('OTP', {
+          email,
+          name,
+          password,
+          mobileNumber: mobileWithCountry,
+          selectedCountry
+        });
+  
+        // Additional logic if needed
+      } else {
+        console.log('Registration failed:', response.data.message);
+        console.log('Registration:', response);
+        // Handle registration error (e.g., display an error message to the user)
+      }
+    } catch (error) {
+      console.error('Error during registration:', error.message);
+      // Handle unexpected errors during registration
+    }
+  };
+  
+
   // const handleRegister = async () => {
   //   try {
   //     // Validate input fields (you may want to add more validation)
@@ -175,20 +219,28 @@ const RegisterScreen = () => {
   //       console.log('Please fill in all fields');
   //       return;
   //     }
-  //     const mobileWithCountry = `${selectedCountry}-${mobileNumber}`;
-
+  //     const mobileWithCountry = `${selectedCountry}${mobileNumber}`;
+  //     console.log('Selected Country :', mobileWithCountry);
   //     // Make API request to register user using Axios
-  //     const response = await axios.post('https://lottery-backend-tau.vercel.app/api/v1/user/register', { email, password ,name});
-  
+  //     const response = await axios.post('https://lottery-backend-tau.vercel.app/api/v1/user/register', {  email,
+  //     mobileNumber: mobileWithCountry });
+  //     console.log('Registration successful:', response.data.message);
   //     if (response.status === 200) {
   //       console.log('Registration successful:', response.data.message);
-  //       navigation.navigate('OTP',{
+  
+  //       // Additional data for navigation
+        
+  
+  //       // Navigate to OTP screen with additional information
+  //       navigation.navigate('OTP', {
   //         email,
   //         name,
-  //         mobileNumber: mobileWithCountry
+  //         password,
+  //         mobileNumber: mobileWithCountry,
+  //         selectedCountry
   //       });
-  //       // You may want to navigate to another screen or perform authentication logic here
-  
+  //       console.log('checking :', selectedCountry,mobileNumber);
+  //       // You may want to perform additional logic here
   //     } else {
   //       console.log('Registration failed:', response.data.message);
   //       // Handle registration error (e.g., display an error message to the user)
@@ -198,45 +250,6 @@ const RegisterScreen = () => {
   //     // Handle unexpected errors during registration
   //   }
   // };
-  
-
-  const handleRegister = async () => {
-    try {
-      // Validate input fields (you may want to add more validation)
-      if (!name || !email || !password || !mobileNumber || !selectedCountry) {
-        console.log('Please fill in all fields');
-        return;
-      }
-      const mobileWithCountry = `+91${mobileNumber}`;
-      console.log('Selected Country :', mobileWithCountry);
-      // Make API request to register user using Axios
-      const response = await axios.post('https://lottery-backend-tau.vercel.app/api/v1/user/register', {  email,
-      mobileNumber: mobileWithCountry });
-  
-      if (response.status === 200) {
-        console.log('Registration successful:', response.data.message);
-  
-        // Additional data for navigation
-        
-  
-        // Navigate to OTP screen with additional information
-        navigation.navigate('OTP', {
-          email,
-          name,
-          password,
-          mobileNumber: mobileWithCountry
-        });
-  
-        // You may want to perform additional logic here
-      } else {
-        console.log('Registration failed:', response.data.message);
-        // Handle registration error (e.g., display an error message to the user)
-      }
-    } catch (error) {
-      console.error('Error during registration:', error.message);
-      // Handle unexpected errors during registration
-    }
-  };
   
   const navigation = useNavigation();
   useEffect(() => {

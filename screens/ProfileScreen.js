@@ -14,6 +14,7 @@ import { Foundation } from '@expo/vector-icons';
 import { EvilIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { logout } from './auth/logout';
+import { StatusBar } from "expo-status-bar";
 
 const ProfileScreen = () => {
 
@@ -56,8 +57,11 @@ const ProfileScreen = () => {
       // Handle the error, e.g., display an error message.
     }
   };
-  const handleLogout = () => {
-    logout(navigation);
+  const navigateToNotificationScreen = () => {
+   
+  
+    // Use navigation.navigate to navigate to the Notification screen
+    navigation.navigate('Notification'); // Replace 'Notification' with the name of your Notification screen
   };
   useEffect(() => {
     // Function to retrieve userName from AsyncStorage
@@ -80,30 +84,61 @@ const ProfileScreen = () => {
 return(
   
   <View style={styles.container}>
+  
 
-<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+  <StatusBar backgroundColor={"transparent"} translucent />
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "flex-start",
+          justifyContent: "flex-start",
+         
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            
+          }}
+        >
+          <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+          <MaterialIcons
+            name="keyboard-arrow-left"
+            size={35}
+            color="black"
+            style={{
+              alignSelf: "flex-start", // Add this line,
+            }}
+          />
+        </TouchableOpacity>
 
-<TouchableOpacity  onPress={()=> navigation.navigate('Home')}>
-  <MaterialIcons
-    name="keyboard-arrow-left"
-    size={35}
-    color="black"
-    style={{
-      marginLeft: 10,
-      alignSelf: 'flex-start', // Add this line,
-      
-    }}
-  />
-   </TouchableOpacity>
 
-   
-   <TouchableOpacity onPress={()=> navigation.navigate('Notification')}>
-  <EvilIcons name="bell" size={30} style={styles.bell} color="black" />
-  </TouchableOpacity>
-  <TouchableOpacity  onPress={handleLogout}>
-  <AntDesign name="logout" size={19} style={styles.logout} color="black" />
-  </TouchableOpacity>
-</View>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginLeft:'35%'
+            
+          }}
+        >
+          <TouchableOpacity>
+            
+          </TouchableOpacity>
+          <EvilIcons name="bell" size={30} style={styles.bell} color="black"  onPress={navigateToNotificationScreen} />
+          <AntDesign
+            name="logout"
+            size={19}
+            style={styles.logout}
+            color="black"
+            onPress={logout}
+          />
+          </View>
+        </View>
+      </View>
+
 <Text  style={{fontSize:31,fontWeight:'700',marginLeft:30}}>Profile</Text>
 
     <View style={styles.profilePictureContainer}>
@@ -236,7 +271,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start', // Align items at the top
    
-    paddingTop: 50, // Adjust as needed to create space from the top
+    paddingTop: '12%', 
   },
   profilePictureContainer: {
     marginBottom: 10,
@@ -259,11 +294,21 @@ const styles = StyleSheet.create({
     alignSelf:'center',
     marginBottom:20
   },
-  logOut: {
-    fontSize: 16,
-    color: '#555',
-    marginTop: 7,
-    alignSelf:'center'
+
+  bell: {
+    width: 24,
+    height: 24,
+    top: 1,
+    left: 150,
+    padding: "2px 3.5px 2px 3.5px",
+  },
+  logout: {
+    marginTop: 5,
+    width: 24,
+    height: 24,
+    top: 1,
+    left: 165,
+    padding: "2px 3.5px 2px 3.5px",
   },
   personalInfoContainer: {
     flexDirection: 'row',
@@ -277,26 +322,8 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     alignSelf:'flex-end'
   },
-  bell: {
-    width: 24,
-    height: 24,
-    top: 1,
-    left: 0,
-    alignSelf:'flex-end',
-    marginTop:5,
-    marginLeft:275
-    
-   
-  },
-  logout: {
-    marginTop:6,
-    width: 24,
-    height: 24,
-    top: 1,
-    marginRight:20
-   
-   
-  },
+ 
+  
 });
 
 

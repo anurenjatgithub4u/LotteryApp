@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import {  Button } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { StatusBar } from "expo-status-bar";
 
 const {height, width }  = Dimensions.get('window');
 
@@ -40,6 +41,7 @@ const ProfileLandingScreen = () => {
     return (
       <View style={styles.container}>
         {/* Welcome Text */}
+        <StatusBar backgroundColor={"transparent"} translucent />
 
         <Image source={{ uri: imageUrl }} style={{ width: '50%', height: hp(40),marginTop:hp(10) }} />
         <Text style={styles.welcomeText}>Win Big With</Text>

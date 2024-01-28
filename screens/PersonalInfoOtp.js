@@ -7,36 +7,40 @@ import { MaterialIcons } from '@expo/vector-icons';
 const PersonalInfoOtp = ({ route, navigation }) => {
   const { email, name, mobileNumber } = route.params;
   const [otp, setOtp] = useState('');
-
+   console.log("mob num", mobileNumber)
 
   const handleVerifyOtp = async () => {
     try {
+      const enteredOTP = otpDigits.join('');
       const userId = await AsyncStorage.getItem('userId');
       const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`; // Replace with your actual API endpoint
       const storedAccessToken = await AsyncStorage.getItem('accessToken');
-     
+      const countryCode = "+917356380659"
       const response = await fetch(apiUrl, {
         method: 'PATCH', // Use PATCH method for updating
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${storedAccessToken}`,
         },
-        body: JSON.stringify({ email, otp, name, mobileNumber }),
+        body: JSON.stringify({ email, otp:enteredOTP, name, mobileNumber }),
       });
       const responseData = await response.json();
      
   
       if (responseData.message==='Success') {
         // Check the response data to determine success
-        console.log('Success', 'Personal details updated successfully');
-        console.log("msssg", responseData.message)
-        navigation.navigate('ContactInfo');
-      } else {
+        
+
         Alert.alert('Error', `Error: ${responseData.message}`);
         console.log("msssg", responseData.message)
+      } else {
+        console.log('Success', email,otp,name,mobileNumber);
+        console.log('otp', JSON.stringify(mobileNumber));
+        console.log("msssg", responseData.message)
+        navigation.navigate('ContactInfo');
       }
     } catch (error) {
-      console.error('Error verifying OTP:', error);
+      console.error('Error verifying OTP:', responseData.message);
       Alert.alert('Error', 'An error occurred while verifying OTP');
     }
   };
@@ -48,7 +52,7 @@ const PersonalInfoOtp = ({ route, navigation }) => {
     const newOtpDigits = [...otpDigits];
     newOtpDigits[index] = value;
     setOtpDigits(newOtpDigits);
-
+    setOtp(otp)
     // Move to the next TextInput if a digit is entered
     if (value && index < otpDigits.length - 1) {
       digitRefs.current[index + 1].current.focus();

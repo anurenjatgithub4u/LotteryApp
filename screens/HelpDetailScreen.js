@@ -8,6 +8,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Foundation } from '@expo/vector-icons';
 import { EvilIcons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { StatusBar } from "expo-status-bar";
+
  // Make sure to import FontAwesome5 from the correct package
 
  const HelpDetailScreen = () => {
@@ -24,25 +26,56 @@ import { useNavigation, useRoute } from '@react-navigation/native';
  
 
 
-<View style={{ justifyContent: 'flex-start', paddingHorizontal: 16, paddingTop: 50 }}>
+<View style={{ justifyContent: 'flex-start', paddingHorizontal: 16, paddingTop: '12%',   paddingHorizontal: SCREEN_WIDTH * 0.025,}}>
 
-<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+<StatusBar backgroundColor={"transparent"} translucent />
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "flex-start",
+          justifyContent: "flex-start",
+         
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            
+          }}
+        >
+          <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+          <MaterialIcons
+            name="keyboard-arrow-left"
+            size={35}
+            color="black"
+            style={{
+              alignSelf: "flex-start", // Add this line,
+            }}
+          />
+        </TouchableOpacity>
 
-<TouchableOpacity  onPress={()=> navigation.navigate('Hel')}>
-  <MaterialIcons
-    name="keyboard-arrow-left"
-    size={35}
-    color="black"
-    style={{
-      marginLeft: 5,
-      alignSelf: 'flex-start', // Add this line,
-      
-    }}
-  />
-   </TouchableOpacity>
-  <EvilIcons name="bell" size={30} style={styles.bell} color="black" />
-  <AntDesign name="logout" size={19} style={styles.logout} color="black" />
-</View>
+
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginLeft:'35%'
+            
+          }}
+        >
+          <EvilIcons name="bell" size={30} style={styles.bell} color="black" />
+          <AntDesign
+            name="logout"
+            size={19}
+            style={styles.logout}
+            color="black"
+          />
+          </View>
+        </View>
+      </View>
 
 <Text style={{ fontSize: 31, fontWeight: '700', marginLeft: '5%' }}>Help & FAQs</Text>
 
@@ -135,20 +168,16 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     top: 1,
-    left: 130,
-    marginTop:5,
-    padding: '2px 3.5px 2px 3.5px',
-   
+    left: 150,
+    padding: "2px 3.5px 2px 3.5px",
   },
   logout: {
-    marginTop:6,
+    marginTop: 5,
     width: 24,
     height: 24,
     top: 1,
-    marginRight:20,
-    marginLeft:20
-   
-   
+    left: 165,
+    padding: "2px 3.5px 2px 3.5px",
   },
 
   searchContainer: {

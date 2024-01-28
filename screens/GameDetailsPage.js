@@ -104,6 +104,8 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { useState ,useEffect} from 'react';
+import { StatusBar } from "expo-status-bar";
 
 const { width, height } = Dimensions.get("window");
 
@@ -124,6 +126,12 @@ const NumberRow = ({ numbers }) => {
 const GameDetailsPage = ({ route }) => {
   const { game } = route.params;
   const navigation = useNavigation(); 
+
+
+  const [areaText, setAreaText] = useState('');
+  const [levelText, setLevelText] = useState('')
+
+
   const navigateToPlayScreen = () => {
     navigation.navigate('Play'); // 'Play' is the name of your 'PlayScreen' route
   };
@@ -132,13 +140,84 @@ const GameDetailsPage = ({ route }) => {
     month: 'long',
     year: 'numeric',
   });
-  return (
-    <View>
 
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       // Retrieve areaValue and levelValue from AsyncStorage
+  //       const areaValue = await AsyncStorage.getItem('area');
+  //       const levelValue = await AsyncStorage.getItem('level');
+
+  //       // Set the areaText based on the areaValue
+  //       let newAreaText = '';
+
+  //       if (areaValue === '1') {
+  //         newAreaText = 'Continental';
+  //       } else if (areaValue === '2') {
+  //         newAreaText = 'National';
+  //       } else {
+  //         // Handle other area values if needed
+  //       }
+
+  //       // Update state variables
+  //       setAreaText(newAreaText);
+       
+  //     } catch (error) {
+  //       console.error('Error fetching data from AsyncStorage:', error.message);
+  //     }
+  //   };
+
+  //   // Call the fetchData function when the component mounts
+  //   fetchData();
+  // }, []); 
+
+
+  // useEffect(() => {
+  //   const fetchLevel = async () => {
+  //     try {
+  //       // Retrieve areaValue and levelValue from AsyncStorage
+  //       const areaValue = await AsyncStorage.getItem('area');
+  //       const levelValue = await AsyncStorage.getItem('level');
+
+  //       // Set the areaText based on the areaValue
+  //       let newLevelText = '';
+
+  //       if (levelValue === '1') {
+  //         newLevelText = ' 1';
+  //       } else if (levelValue === '2') {
+  //         newLevelText = ' 2';
+  //       } else if(levelValue === '3'){
+  //         newLevelText = ' 3';
+  //       }
+
+  //       // Update state variables
+  //       setLevelText(newLevelText);
+       
+  //     } catch (error) {
+  //       console.error('Error fetching data from AsyncStorage:', error.message);
+  //     }
+  //   };
+
+  //   // Call the fetchData function when the component mounts
+  //   fetchLevel();
+  // }, []); 
+
+
+
+  return (
+    <View
+    style={{
+     
+      marginLeft: '1%',
+      
+      paddingTop: "12%",
+    }}
+  >
+<StatusBar backgroundColor={"transparent"} translucent />
 <TouchableOpacity  onPress={()=> navigation.navigate('Gam')}>
  <MaterialIcons name="keyboard-arrow-left" size={35} color="black" style={{
      
-     marginLeft: 10, marginTop:50// Add marginLeft to push the icon to the left
+     // Add marginLeft to push the icon to the left
    }}/>
 </TouchableOpacity>
       <Text  style={styles.yourGameText}>Your Game</Text>

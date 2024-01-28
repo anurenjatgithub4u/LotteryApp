@@ -202,6 +202,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { BackHandler } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialIcons } from '@expo/vector-icons';
+import { StatusBar } from "expo-status-bar";
+
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -223,16 +226,27 @@ const NumberRow = ({ numbers }) => {
 };
 
 const PlayedGame = ({ route }) => {
-  const { gameNumber,currentDate } = route.params;
+  const { gameNumber,currentDate,gameType ,announcementDate,winningAmt } = route.params;
   const navigation = useNavigation();
   const parsedDate = new Date(currentDate);
   const [areaText, setAreaText] = useState('');
   const [levelText, setLevelText] = useState('');
+  const [previousWinningContinentNumbers, setPreviousWinningContinentNumbers] = useState([]);
 
+  const [previousWinningNumbers, setPreviousWinningNumbers] = useState([]);
+  const [countryName, setcountryName] = useState([]);
+  const [ContinentWinningAmount, setContinentWinningAmount] = useState([]);
+  const [CountryWinningAmount, setCountryWinningAmount] = useState([]);
+  const [drawdate, setdrawdate] = useState();
   const navigateToPlayScreen = () => {
     navigation.navigate('Play'); // 'Play' is the name of your 'PlayScreen' route
   };
-  
+  const formattedAnnouncementDate = new Date(announcementDate).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+
   const navigateToGameScreen = () => {
     navigation.navigate('Game'); // 'Play' is the name of your 'PlayScreen' route
   };
@@ -266,6 +280,8 @@ const PlayedGame = ({ route }) => {
     // Call the fetchData function when the component mounts
     fetchData();
   }, []); 
+
+
 
 
   useEffect(() => {
@@ -319,12 +335,76 @@ const PlayedGame = ({ route }) => {
     // Clean up the event listener on component unmount
     return () => backHandler.remove();
   }, [navigation]);
+
+
+  
+  const fetchPreviousGameWinningNumbers = async () => {
+    const storedAccessToken = await AsyncStorage.getItem("accessToken");
+    const userId = await AsyncStorage.getItem("userId");
+
+    const url = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${storedAccessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(
+        "Error fetching previous game winning numbers:",
+        error.message
+      );
+      throw new Error(
+        "Something went wrong while fetching previous game winning numbers"
+      );
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchPreviousGameWinningNumbers();
+        setPreviousWinningNumbers(data.message.country || []); 
+        setPreviousWinningContinentNumbers(data.message.continent || [])
+        setcountryName(data.message.countryName);
+        setContinentWinningAmount(data.message.ContinentWinningAmount);
+        setCountryWinningAmount(data.message.CountryWinningAmount)
+        setdrawdate(data.message.announcementDate)
+        console.log("country winning numbers country winning numbers  country winning numbers country winning numbers",data.message )
+        console.log("date fetched " , drawdate)
+        // Assuming "country" is an array
+      } catch (error) {
+        console.error(error.message);
+        // Handle the error
+      }
+    };
+
+    fetchData(); // Invoke the fetchData function when the component mounts
+  }, []);
+
   return (
-    <View>
+    <View
+    style={{
+     
+     
+      
+      paddingTop: "12%",
+    }}>
+      <StatusBar backgroundColor={"transparent"} translucent />
       <TouchableOpacity  onPress={()=> navigation.navigate('ALScreen')}>
  <MaterialIcons name="keyboard-arrow-left" size={35} color="black" style={{
      
-     marginLeft: 10, marginTop:50// Add marginLeft to push the icon to the left
+     marginLeft: 10// Add marginLeft to push the icon to the left
    }}/>
 </TouchableOpacity>
       <Text style={styles.Heading}>Your  Previous Game</Text>
@@ -332,7 +412,7 @@ const PlayedGame = ({ route }) => {
       <Text style={styles.dateText}>{parsedDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</Text>
 
     
-<Text style={styles.subtitle}> {areaText} Level {levelText} $ {levelText} million</Text>
+<Text style={styles.subtitle}> {gameType} Level {levelText} $ {winningAmt}</Text>
 
       
       <LinearGradient
@@ -347,7 +427,7 @@ const PlayedGame = ({ route }) => {
 <Text  style={{fontSize:16 , fontWeight:400,marginStart:25,marginTop:20}}>  Winners will be announced on </Text>
 
 
-<Text style={styles.dateText}>{parsedDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</Text>
+<Text style={styles.dateText}>{formattedAnnouncementDate}</Text>
 
 <LinearGradient  colors={['#F0C735', '#D98F39']}  style={styles.doneButton}>
 
@@ -398,7 +478,7 @@ const styles = StyleSheet.create({
     color: '#333',
     lineHeight:44.2,
     marginStart: commonPaddingStart,
-    marginTop:10,
+   
     
    
   },
