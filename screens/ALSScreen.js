@@ -501,6 +501,10 @@ import {  TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BackHandler } from 'react-native';
 import { LinearGradient } from "expo-linear-gradient";
+import { useFocusEffect } from "@react-navigation/native";
+import { Alert } from 'react-native';
+
+
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -524,7 +528,10 @@ const MyCardComponent = () => {
   const [commonLevel,setCommonLevel] = useState(0);
   const [commonArea,setCommonArea] = useState(0);
   const [areaText, setAreaText] = useState('');
+  const [credits, setCredits] = useState(0);
 
+  const [CountrySymbol, setCountrySymbol] = useState([]);
+  const [ContinentSymbol, setContinentSymbol] = useState([]);
 
   const [previousWinningNumbers, setPreviousWinningNumbers] = useState([]);
   const [countryName, setcountryName] = useState([]);
@@ -581,6 +588,8 @@ const MyCardComponent = () => {
         setcountryName(data.message.countryName);
         setContinentWinningAmount(data.message.ContinentWinningAmount);
         setCountryWinningAmount(data.message.CountryWinningAmount)
+        setCountrySymbol(data.message.countrySymbol)
+        setContinentSymbol(data.message.ContinentCurrencySymbol)
         console.log("country winning numbers country winning numbers  country winning numbers country winning numbers",data.message )// Assuming "country" is an array
       } catch (error) {
         console.error(error.message);
@@ -592,7 +601,39 @@ const MyCardComponent = () => {
   }, []);
 
 
- 
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchPersonalDetails = async () => {
+        const userId = await AsyncStorage.getItem("userId");
+        const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`;
+        const storedAccessToken = await AsyncStorage.getItem("accessToken");
+
+        try {
+          const response = await fetch(apiUrl, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${storedAccessToken}`,
+            },
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`${response.status} - ${errorData.message}`);
+          }
+
+          const data = await response.json();
+          setCredits(data.message.credits);
+          console.log("credits credits credits credits credits credits credits", data.message.credits);
+          // Additional fields can be set here based on your API response
+        } catch (error) {
+          console.error("Error fetching personal details:", error.message);
+        }
+      };
+
+      fetchPersonalDetails();
+    }, []) // Empty dependency array means this effect will only run once when the component mounts
+  );
 
 
   useEffect(() => {
@@ -616,20 +657,69 @@ const MyCardComponent = () => {
     return () => backHandler.remove();
   }, [navigation]);
 
-  const isWorking = async() => {
-    console.log()
-  }
+  const checkCreditsAndNavigate =  async () => {
+    // Replace 0 with the actual condition to check if credits are 0
+    if (credits === 0) {
+      Alert.alert(
+        'Insufficient Credits',
+        'You don\'t have enough credits. Please add credits to continue.',
+        [{ text: 'OK', onPress: () => navigation.navigate("PaymentMethodPage") }]
+      );
+    } else {
+      // Navigate to ALScreen (replace 'ALScreen' with your actual screen name)
+      try {
+        // Retrieve 'area' and 'level' values from AsyncStorage
+        const areaValue = await AsyncStorage.getItem('area');
+        const levelValue = await AsyncStorage.getItem('level');
+    
+        // Check the conditions and navigate accordingly
+        if (areaValue === '1' && levelValue === '1') {
+        
+          navigation.navigate('Play', { countryName,CountrySymbol });
+        } else if(areaValue === '1' && levelValue === '2') {
+          navigation.navigate('Play', { countryName,CountrySymbol });
+        }else if(areaValue === '1' && levelValue === '3') {
+          navigation.navigate('Play', { countryName,CountrySymbol });
+        }else if(areaValue === '2' && levelValue === '1') {
+          navigation.navigate('Play', { countryName,CountrySymbol });
+        }else if(areaValue === '2' && levelValue === '2') {
+          navigation.navigate('Play', { countryName,CountrySymbol });
+        }else if(areaValue === '2' && levelValue === '3') {
+          navigation.navigate('Play', { countryName,CountrySymbol });
+        }
+  
+        console.log("testing area", areaValue)
+        console.log("testing level", levelValue)
+      } catch (error) {
+        console.error('Error checking conditions:', error.message);
+      }
+    }
+  };
 
+
+  const checking = async() => {
+    console.log("area ?....." ,commonArea)
+    console.log("level ?....." ,commonLevel)
+
+  }
   
   const handlePress = async () => {
-    setPressed(!pressed);
-  
     if (!pressed) {
-      // Store area value in AsyncStorage as 1 when Continental button is clicked
+      // Store area value in AsyncStorage as 1 only on the first click
       await AsyncStorage.setItem('area', '1');
+       // Update commonArea to 1 on the first click
     }
     setCommonArea(1);
-  };
+    
+    setPressed(!pressed);
+    console.log("area is testing......", commonArea);
+};
+
+
+
+// Call handlePress wherever you need to trigger the functionality
+
+  
   
   const handlePressLevelOne = async () => {
     setPressedLevelOne(!pressedLebelOne);
@@ -648,6 +738,8 @@ const MyCardComponent = () => {
       // Store area value in AsyncStorage as 2 when National button is clicked
       await AsyncStorage.setItem('area', '2');
     }
+    setPressed(!pressed);
+    console.log("ares is testing......",commonArea)
     setCommonArea(2);
   };
   
@@ -704,54 +796,47 @@ const MyCardComponent = () => {
   
 
   const checkCondition = async () => {
-    try {
-      // Retrieve 'area' and 'level' values from AsyncStorage
-      const areaValue = await AsyncStorage.getItem('area');
-      const levelValue = await AsyncStorage.getItem('level');
-  
-      // Check the conditions and navigate accordingly
-      if (areaValue === '1' && levelValue === '1') {
-      
-        navigation.navigate('Play');
-      } else if(areaValue === '1' && levelValue === '2') {
-        navigation.navigate('Play');
-      }else if(areaValue === '1' && levelValue === '3') {
-        navigation.navigate('Play');
-      }else if(areaValue === '2' && levelValue === '1') {
-        navigation.navigate('Play');
-      }else if(areaValue === '2' && levelValue === '2') {
-        navigation.navigate('Play');
-      }else if(areaValue === '2' && levelValue === '3') {
-        navigation.navigate('Play');
-      }
 
-      console.log("testing area", areaValue)
-      console.log("testing level", levelValue)
-    } catch (error) {
-      console.error('Error checking conditions:', error.message);
-    }
+
+
+   
   };
+
+
+  function interpolateColor(color1, color2, factor) {
+    const hex = (c) => {
+      const hex = c.toString(16);
+      return hex.length === 1 ? '0' + hex : hex;
+    };
   
-  // Example usage:
-  // Call the checkCondition function when needed, for example, on a button press or component mount
-  // For example:
-  // <Button
-  //   mode="contained"
-  //   onPress={checkCondition}
-  //   style={{ width: '80%', marginVertical: 10, alignSelf: 'center' }}
-  // >
-  //   Check Conditions and Navigate
-  // </Button>
+    const r1 = parseInt(color1.slice(1, 3), 16);
+    const g1 = parseInt(color1.slice(3, 5), 16);
+    const b1 = parseInt(color1.slice(5, 7), 16);
   
-  // Example usage:
-  // Call the checkUserIdAndReference function when needed, for example, on a button press
+    const r2 = parseInt(color2.slice(1, 3), 16);
+    const g2 = parseInt(color2.slice(3, 5), 16);
+    const b2 = parseInt(color2.slice(5, 7), 16);
+  
+    const r = Math.round(r1 + (r2 - r1) * factor);
+    const g = Math.round(g1 + (g2 - g1) * factor);
+    const b = Math.round(b1 + (b2 - b1) * factor);
+  
+    return `#${hex(r)}${hex(g)}${hex(b)}`;
+  }
+  
+  const color1 = "#F0C735";
+  const color2 = "#D98F39";
+  const midpointColor = interpolateColor(color1, color2, 0.5);
+  
+  
+  
   
   
 
 
   return (
 
-    <View  style={{  flex: 1, alignItems: 'center',paddingTop: "12%", }}  >
+    <View  style={{  flex: 1, alignItems: 'center',padding:16 ,height:hp(100)}}  >
 
 <StatusBar backgroundColor={"transparent"} translucent />
 
@@ -781,7 +866,7 @@ const MyCardComponent = () => {
           Continental
           {'\n'}
           <Text style={[ styles.buttonTextSmallTwo,{color:commonArea==1 ? 'white' : 'black'} ] }>
-          Play for your continent : {ContinentWinningAmount}
+          Play for your continent : {ContinentSymbol}{ContinentWinningAmount}
     </Text>
         </Text>
       </TouchableHighlight>
@@ -800,7 +885,7 @@ const MyCardComponent = () => {
           National
           {'\n'}
           <Text style={[styles.buttonTextSmallTwo, {color:commonArea==2 ? 'white' : 'black'}]}>
-      Play for your country : {CountryWinningAmount}
+      Play for your country : {CountrySymbol}{CountryWinningAmount}
     </Text>
         </Text>
       </TouchableHighlight>
@@ -866,19 +951,33 @@ const MyCardComponent = () => {
       </TouchableHighlight>
 
 
-      <TouchableHighlight
-        style={[
-          styles.buttonContainer,
-          { backgroundColor: commonLevel>0 && commonArea>0? '#F0C735' : 'rgba(240, 199, 53, 0.8)' },
-        ]}
-        onPress={checkCondition}
-        underlayColor="#31A062" // This sets the color when the button is pressed
-      >
-        <Text style={[styles.buttonText, { color: commonLevel==3 ? 'white' : 'black' }]}>
+      <TouchableOpacity  style={{ 
+    width: '100%',
+    marginVertical: 10,
+    marginTop: 15,
+    padding: 10,
+    alignItems: 'center',
+    borderRadius:10}}onPress={checkCreditsAndNavigate}>  
+<LinearGradient
+          colors={
+            commonLevel > 0 && commonArea > 0
+              ? ['#F0C735', '#D98F39']
+              : ['#F0C735', midpointColor,'#F0C735']
+          }// Example colors, replace with your desired gradient colors
+          style={[
+            styles.playGameButton,
+            
+          ]}
+        >
+
+        <Text style={[styles.buttonText, { color:  'white'  }]}>
          Play Game
         
         </Text>
-      </TouchableHighlight>
+       
+        </LinearGradient>
+
+        </TouchableOpacity>
 
 
 
@@ -921,11 +1020,31 @@ const styles = StyleSheet.create({
   buttonContainer: {
     backgroundColor: '#31A062',
     width: '90%',
+    marginVertical: '2%', // Adjust margin as needed
+    padding: '2%', // Adjust padding as needed
+    alignItems: 'center',
+    borderRadius: 20,
+  },
+
+
+  playGameButton: {
+    backgroundColor: '#31A062',
+    width: '90%',
     marginVertical: 10,
     marginTop: 15,
     padding: 10,
     alignItems: 'center',
-    borderRadius:20
+    borderRadius:10
+  },
+  buttonContainerTwo: {
+    backgroundColor: '#31A062',
+    width: '90%',
+    marginVertical: 10,
+    marginTop: 15,
+    padding: 10,
+    alignItems: 'center',
+    borderRadius:20,
+    height:100
   },
 
   PlayGamebuttonContainer: {

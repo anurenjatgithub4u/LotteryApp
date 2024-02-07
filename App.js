@@ -55,6 +55,10 @@ import GameNavigator from './screens/navigators/GameNavigator';
 import Notification from './screens/Notification';
 import PersonalInfoOtp from './screens/PersonalInfoOtp';
 import * as Notifications from 'expo-notifications';
+import KioskCode from './screens/KioskCode';
+import LoginTesting from './screens/LoginTesting';
+import ProfileLandingTesting from './screens/ProfileLandingTesting';
+import ForgotPasswordTwo from './screens/ForgotPasswordTwo';
 // Sentry.init({
 //   dsn: "https://a63ad10720920c86a1b3ed3f59f53861@o4506372185784320.ingest.sentry.io/4506372188667904",
 //   // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
@@ -81,7 +85,8 @@ const Tab = createBottomTabNavigator();
 
 const Splash = ({ navigation }) => {
   const [appIsReady, setAppIsReady] = useState(false);
-  const Lottie = useRef(null)
+  const Lottie = useRef(null);
+
   useEffect(() => {
     async function prepare() {
       try {
@@ -103,19 +108,23 @@ const Splash = ({ navigation }) => {
 
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
-      // This tells the splash screen to hide immediately! If we call this after
-      // `setAppIsReady`, then we may see a blank screen while the app is
-      // loading its initial state and rendering its first pixels. So instead,
-      // we hide the splash screen once we know the root view has already
-      // performed layout.
-      await SplashScreen.hideAsync();
-      const token = await AsyncStorage.getItem("accessToken");
-      // After three seconds, navigate to the login screen
-      setTimeout(() => {
+      try {
+        await SplashScreen.hideAsync();
+        const token = await AsyncStorage.getItem("accessToken");
 
-        console.log("token",token)
-        token?navigation.navigate('ProfileLanding'):navigation.navigate('ProfileLanding')
-      }, 3000);
+        // Play the Lottie animation
+        if (Lottie.current) {
+          Lottie.current.play();
+        }
+
+        setTimeout(() => {
+          token
+            ? navigation.navigate('ProfileLandingTesting')
+            : navigation.navigate('ProfileLandingTesting');
+        }, 3000);
+      } catch (error) {
+        console.warn("Error during splash screen setup:", error);
+      }
     }
   }, [appIsReady, navigation]);
 
@@ -125,20 +134,27 @@ const Splash = ({ navigation }) => {
 
   return (
     <View
-      style={{ flex: 1, alignItems: 'center', justifyContent: 'center',backgroundColor:'white' }}
-      onLayout={onLayoutRootView}>
-  
-  <LottieView
-      ref={Lottie}
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'white',
+      }}
+      onLayout={onLayoutRootView}
+    >
+      <LottieView
+        ref={Lottie}
         source={require('./assets/sec.json')}
         autoPlay
-        loop
+        loop={false}
+        onAnimationFinish={() => {
+          // Animation has finished playing, navigate or perform any other actions
+        }}
       />
-
     </View>
- 
   );
 };
+
 
 
 const styles = StyleSheet.create({
@@ -220,22 +236,18 @@ const OTPVerificationScreen = ({ route,navigation }) => {
   
 
   return (
-    <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-start' }}>
-<TouchableOpacity onPress={()=> navigation.navigate('Register')} >
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start',padding:16 }}>
 
-<MaterialIcons name="keyboard-arrow-left" size={35} color="black" style={{
-     
-     marginLeft: 10, marginTop:71// Add marginLeft to push the icon to the left
-   }}
-   
-   />
-   </TouchableOpacity>
 
-     <Text style={{ fontSize: 34, fontWeight: '700' ,marginLeft:'6%'}}>
-  OTP Verification 
-</Text>
+<View style={{ flexDirection: 'row', alignItems: 'center', marginTop: '12%', alignSelf: 'flex-start' }}>
+    <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+      <MaterialIcons name="keyboard-arrow-left" size={35} color="black" />
+    </TouchableOpacity>
+    <Text style={{ fontSize: 34, fontWeight: '700', marginLeft: 8 }}>OTP Verification</Text>
+  </View>
 
-      <View    style={{ flexDirection: 'row', marginTop: 40 ,marginLeft:'6%'}}>
+
+      <View    style={{ flexDirection: 'row', marginTop: 40 }}>
         {/* Create six TextInput components for each digit */}
         {otpDigits.map((digit, index) => (
 
@@ -417,19 +429,25 @@ const App = () => {
     headerShown: false
   }}>
         <Stack.Screen name="Splash" component={Splash} options={{ headerShown: false }}/>
-        <Stack.Screen name="Login" component={LoginScreen} options={{ gestureEnabled: false  }}/>
-        <Stack.Screen name="Register" component={RegisterScreen}options={{ gestureEnabled: false ,headerShown: false }} />
-        <Stack.Screen name="ProfileLanding" component={ProfileLandingScreen}options={{ gestureEnabled: false }} />
+        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false  }}/>
+        <Stack.Screen name="LoginTesting" component={LoginTesting} options={{ headerShown: false  }}/>
+        <Stack.Screen name="Register" component={RegisterScreen}options={{ headerShown: false }} />
+
+        <Stack.Screen name="ProfileLandingTesting" component={ProfileLandingTesting}options={{ headerShown: false  }} />
+        <Stack.Screen name="ProfileLanding" component={ProfileLandingScreen}options={{ headerShown: false  }} />
         <Stack.Screen name="Play" component={PlayScreen} options={{ headerShown: false ,header:null}} />
         <Stack.Screen name="OTP" component={OTPVerificationScreen} options={{ headerShown: false }}/>
        
-      
+        <Stack.Screen name="ForgotPasswordTwo" component={ForgotPasswordTwo}options={{ gestureEnabled: false , headerShown: false }}  />
 
         <Stack.Screen name="MainScreen" component={MainScreen} options={{ headerShown: false }} />
      
         <Stack.Screen name="DateRange" component={DateRangePicker} options={{ headerShown: false }}/>
         <Stack.Screen name="ChooseAccount" component={ChooseAccount} />
         <Stack.Screen name="ForgotPassword" component={ForgotPassword}options={{ gestureEnabled: false , headerShown: false }}  />
+
+
+     
         <Stack.Screen name="ResetPassword" component={ResetPassword}options={{ gestureEnabled: false ,headerShown: false}} />
         <Stack.Screen name='PaymentPageGateWay' component={PaymentPageGateWay}></Stack.Screen>
        
@@ -450,6 +468,9 @@ const App = () => {
         <Stack.Screen name='Notification' component={Notification} options={{ headerShown: false }} />
 
         <Stack.Screen name='PersonalInfoOtp' component={PersonalInfoOtp} options={{ headerShown: false }}/>
+
+
+        <Stack.Screen name='KioskCode' component={KioskCode} options={{ headerShown: false }}/>
 
       </Stack.Navigator>
     

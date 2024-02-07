@@ -46,12 +46,17 @@
 //   const [showPicker, setShowPicker] = useState(false);
 //   const [checked, setChecked] = useState('all'); 
 //   const [initialFetchComplete, setInitialFetchComplete] = useState(false);
+//   const [isThereIsGame, setIsThereIsGame] = useState(false); 
+//   const [radioGames, setRadioGames] = useState(true);
+//   const [showAllGames, setShowAllGames] = useState(true);
+
 //   const handleOnPressStartDate = () => {
 //     setOpenStartDatePicker(!openStartDatePicker);
 //   };
 //   const toggleDatePicker = () => {
 //     setShowPicker(!showPicker);
 //     console.log("date1...",date)
+//     setShowAllGames(false);
 //   };
 
 //   const onChange = ({ type }, selectedDate) => {
@@ -68,6 +73,7 @@
 //   };
   
 
+  
 
 //   const handleChangeStartDate = (date) => {
 //     setStartedDate(date);
@@ -89,7 +95,12 @@
 //     setEndShowPicker(!endshowPicker);
 //     console.log("dateee.." , endSetDate)
 //   };
-
+//   const navigateToNotificationScreen = () => {
+   
+  
+//     // Use navigation.navigate to navigate to the Notification screen
+//     navigation.navigate('Notification'); // Replace 'Notification' with the name of your Notification screen
+//   };
 
 //   const onEndChange = ({ type }, endSelecteddate) => {
 //     if (type == "set") {
@@ -153,7 +164,13 @@
 //       return true;
 //     }
 //   };
-  
+//   const filterGamesByWinner = (game) => {
+//     if (showWinners) {
+//       return true; // Show only winning games
+//     } else {
+//       return game.isWinner === true; // Show all games
+//     }
+//   };
 
   
 //   const logout = async () => {
@@ -301,45 +318,56 @@
 //   } catch (error) {
 //     console.error("Failed to fetch user games:", error.message);
 //   }
-//   const filterGamesByWinner = (game) => {
-//     if (showWinners) {
-//       return true; // Show only winning games
-//     } else {
-//       return game.isWinner === true; // Show all games
-//     }
-//   };
+ 
 
 //   // Function to handle radio button press
 //   const handleRadioButtonPress = () => {
-//     setShowWinners((prev) => !prev); // Toggle between true and false
+//     setShowWinners((prev) => !prev); 
+//     setRadioGames((prev) => !prev); // Toggle between true and false
 //   };
 //   useEffect(() => {
 //     setOpenStartDatePicker(false); // Ensure initial state
 //   }, []);
 
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         // Fetch or set userGames here
+//         // Example: const games = await fetchUserGames();
+//         // setUserGames(games);
+  
+//         // Instead of the above example, you can directly call getUserGames
+//         // assuming it sets the userGames state variable
+//         await getUserGames();
+  
+//         // Update isThereIsGame based on the condition
+//         setIsThereIsGame(userGames.length === 0);
+//         console.log("user game Numberuser game Number user game Number user game Number  ",userGames.length)
+//       } catch (error) {
+//         console.error("Error fetching or setting user games:", error.message);
+//       }
+//     };
+  
+//     // Fetch user games data when the component mounts
+//     fetchData();
+//   }, []);  
+
 //   return (
-//     <View style={{ paddingTop: "12%",
-//     paddingHorizontal: SCREEN_WIDTH * 0.025,
-//     flex: 1,
-//     justifyContent: 'flex-start'}}>
+//     <View style={{ flex:1, padding: 16 ,paddingTop:"12%"}}>
        
 //         <StatusBar backgroundColor={"transparent"} translucent />
-//       <View
-//         style={{
-//           flexDirection: "row",
-//           alignItems: "flex-start",
-//           justifyContent: "flex-start",
-         
-//         }}
-//       >
+  
 //         <View
-//           style={{
-//             flexDirection: "row",
-//             alignItems: "center",
-//             justifyContent: "space-between",
-            
-//           }}
-//         >
+//   style={{
+//     flexDirection: "row",
+//     marginBottom: hp("1%"),
+//     justifyContent: "space-between",
+//     alignItems: "center",
+    
+   
+//   }}
+// >
 //           <TouchableOpacity onPress={() => navigation.navigate("Home")}>
 //           <MaterialIcons
 //             name="keyboard-arrow-left"
@@ -352,16 +380,8 @@
 //         </TouchableOpacity>
 
 
-//         <View
-//           style={{
-//             flexDirection: "row",
-//             alignItems: "center",
-//             justifyContent: "space-between",
-//             marginLeft:'35%'
-            
-//           }}
-//         >
-//           <EvilIcons name="bell" size={30} style={styles.bell} color="black" />
+//         <View style={{ flexDirection: "row", alignItems: "center" }}>
+//           <EvilIcons name="bell" size={30} style={styles.bell} color="black" onPress={navigateToNotificationScreen}/>
 //           <AntDesign
 //             name="logout"
 //             size={19}
@@ -371,7 +391,7 @@
 //           />
 //           </View>
 //         </View>
-//       </View>
+      
 
 
 //       <Text style={styles.MainheaderText}>Your Games</Text>
@@ -380,36 +400,25 @@
 //           flexDirection: "row",
 //           alignItems: "center",
 //           justifyContent: "space-between",
-//           marginBottom:20
+//           marginBottom:'5%'
 //         }}
 //       >
-//         {/* <Card style={styles.card}>
-//         <Pressable onPress={toggleDatePicker}>
-//         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-//         <AntDesign name="calendar" size={24} color="black"  style={{  marginRight:10}} />
-//           <Text>Start Date</Text>
-         
-//           </View>
-
   
-
-        
-//         </Pressable>
-//       </Card> */}
   
-//       <Pressable   onPress={toggleDatePicker}>
+//       <Pressable   onPress={toggleDatePicker}  >
 
 
 // <View style={{ borderColor: 'black',
 //       backgroundColor: '#F8F8FF',
 //       width: '100%',
-//       marginLeft:'8%',
+      
 //       borderWidth: 1,
 //       height:58.5,
 //       borderWidth: 0,
 //       borderStyle: 'solid',
 //       fontSize: 15,
 //       borderRadius: 15,
+      
 //       color: '#F8F8FF',  // Text color
 //       overflow: "hidden",}}>
 
@@ -418,7 +427,7 @@
 //                 name="calendar"
 //                 size={24}
 //                 color="black"
-//                 style={{ marginRight: 1,marginLeft:8 }}
+//                 style={{ marginLeft:14 }}
 //               />
 //       <TextInput
 
@@ -447,13 +456,17 @@
 //             onChange={onChange}
 //           />
 //         )}
+
+
+
+
 //       <Pressable   onPress={toggleEndDatePicker}>
 
 
 // <View style={{ borderColor: 'black',
 //       backgroundColor: '#F8F8FF',
-//       width: '90%',
-//       marginRight:'15%',
+//       width: '100%',
+      
 //       borderWidth: 1,
 //       height:58.5,
 //       borderWidth: 0,
@@ -498,15 +511,24 @@
 //           />
 //         )}
 //       </View>
-//       <View style={{ flexDirection: 'row', alignItems: 'center' ,marginLeft:'2%'}}>
-//       <RadioButton
-//         value="all"
-//         status={showWinners ? 'unchecked' : 'checked'}
-//         onPress={handleRadioButtonPress}
-//       />
-     
-//         <Text>Show Only Wins</Text>
-//       </View>
+
+
+
+
+//       <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: '2%' }}>
+//   <RadioButton
+//     value="all"
+//     status={showWinners ? 'unchecked' : 'checked'}
+//     onPress={handleRadioButtonPress}
+//   />
+
+//   <Text>Show Only Wins</Text>
+
+//   <View style={{ marginLeft: 'auto' }}>
+//     <Text style={{color:"#FE555D"}}>Clear</Text>
+//   </View>
+// </View>
+
 
 //       {/* Your existing code */}
 
@@ -516,102 +538,198 @@
       
 
 
-// <ScrollView style={{ marginBottom: 10 }}>
-// {initialFetchComplete &&
-//   userGames
-   
-//     .map((game, index) => (
-//       <LinearGradient
-//       key={index}
-//       colors={["#F0C735", "#D98F39"]} // Example colors, replace with your desired gradient colors
-//       style={styles.mainCard}
-//     >
-//       <TouchableOpacity
-//         key={index}
-//         onPress={() => goToGameDetails(game)}
-//       >
-//         <View style={{ flexDirection: "row", alignItems: "center" }}>
-//           <Text style={styles.createdAtText}>
-//             {new Date(game.createdAt).toLocaleDateString("en-GB", {
-//               day: "numeric",
-//               month: "short",
-//               year: "numeric",
-//             })}
-//           </Text>
 
-//           <Text style={styles.viewGame}>View Game</Text>
-//         </View>
+// <ScrollView style={{ marginBottom: 10, marginTop: hp(0.01) }}>
 
-//         <View
-//           style={{
-//             flexDirection: "row",
-//             alignItems: "center",
-//             marginTop: 10,
-//             paddingStart:10
-//           }}
+
+// {showAllGames && radioGames ? (
+//   <>
+
+// {showAllGames && radioGames ? (
+//       userGames.map((game, index) => (
+//         <LinearGradient
+//           key={index}
+//           colors={["#F0C735", "#D98F39"]}
+//           style={styles.mainCard}
 //         >
-//           <View style={styles.container}>
-//             {game.selectedNumbers.map((number, index) => (
-//               <View key={index} style={styles.numberBox}>
-//                 <Text style={styles.numberText}>{number}</Text>
-//               </View>
-//             ))}
-//           </View>
-//         </View>
-//       </TouchableOpacity>
-//     </LinearGradient>
-//     ))}
-// {!initialFetchComplete &&  userGames
-//      .filter(filterGamesByWinner)
-//      .filter(filterGamesByDateRange)
-//     .map((game, index) => (
-//       <LinearGradient
-//       key={index}
-//       colors={["#F0C735", "#D98F39"]} // Example colors, replace with your desired gradient colors
-//       style={styles.mainCard}
-//     >
-//       <TouchableOpacity
-//         key={index}
-//         onPress={() => goToGameDetails(game)}
-//       >
-//         <View style={{ flexDirection: "row", alignItems: "center" }}>
-//           <Text style={styles.createdAtText}>
-//             {new Date(game.createdAt).toLocaleDateString("en-GB", {
-//               day: "numeric",
-//               month: "short",
-//               year: "numeric",
-//             })}
-//           </Text>
+//           <TouchableOpacity
+//             key={index}
+//             onPress={() => goToGameDetails(game)}
+//           >
+//             <View
+//               style={{
+//                 flexDirection: "row",
+//                 alignItems: "center",
+//                 justifyContent: "space-between",
+//                 marginBottom: "2%",
+//               }}
+//             >
+//               <Text style={styles.createdAtText}>
+//                 {new Date(game.createdAt).toLocaleDateString("en-GB", {
+//                   day: "numeric",
+//                   month: "short",
+//                   year: "numeric",
+//                 })}
+//               </Text>
+//             </View>
 
-//           <Text style={styles.viewGame}>View Game</Text>
-//         </View>
+//             <View style={styles.container}>
+//               {game.selectedNumbers.map((number, index) => (
+//                 <View key={index} style={styles.numberBox}>
+//                   <Text style={styles.numberText}>{number}</Text>
+//                 </View>
+//               ))}
+//             </View>
+//           </TouchableOpacity>
+//         </LinearGradient>
+//       ))
+//     ) : (
+//       userGames
+//         .filter(filterGamesByDateRange)
+//         .filter(filterGamesByWinner)
+//         .map((game, index) => (
+//           <LinearGradient
+//             key={index}
+//             colors={["#F0C735", "#D98F39"]}
+//             style={styles.mainCard}
+//           >
+//             <TouchableOpacity
+//               key={index}
+//               onPress={() => goToGameDetails(game)}
+//             >
+//               <View
+//                 style={{
+//                   flexDirection: "row",
+//                   alignItems: "center",
+//                   justifyContent: "space-between",
+//                   marginBottom: "2%",
+//                 }}
+//               >
+//                 <Text style={styles.createdAtText}>
+//                   {new Date(game.createdAt).toLocaleDateString("en-GB", {
+//                     day: "numeric",
+//                     month: "short",
+//                     year: "numeric",
+//                   })}
+//                 </Text>
 
-//         <View
-//           style={{
-//             flexDirection: "row",
-//             alignItems: "center",
-//             marginTop: 10,
-//           }}
-//         >
-//           <View style={styles.container}>
-//             {game.selectedNumbers.map((number, index) => (
-//               <View key={index} style={styles.numberBox}>
-//                 <Text style={styles.numberText}>{number}</Text>
+//                 <Text style={styles.viewGame}>View Game</Text>
 //               </View>
-//             ))}
-//           </View>
-//         </View>
-//       </TouchableOpacity>
-//     </LinearGradient>
-//     ))}
-// {initialFetchComplete &&
-//   userGames
-//     .filter(filterGamesByDateRange)
-//     .filter(filterGamesByWinner)
-//     .length === 0 && (
-//       <Text style={styles.noWinnersText}>No winners found</Text>
+
+//               <View style={styles.container}>
+//                 {game.selectedNumbers.map((number, index) => (
+//                   <View key={index} style={styles.numberBox}>
+//                     <Text style={styles.numberText}>{number}</Text>
+//                   </View>
+//                 ))}
+//               </View>
+//             </TouchableOpacity>
+//           </LinearGradient>
+//         ))
 //     )}
+
+//     {(userGames.length === 0) && (
+//       <Text style={styles.noWinnersText}>No Games found</Text>
+//     )}
+//   </>
+// ) : (
+//   <>
+//     {showAllGames && radioGames ? (
+//       userGames.map((game, index) => (
+//         <LinearGradient
+//           key={index}
+//           colors={["#F0C735", "#D98F39"]}
+//           style={styles.mainCard}
+//         >
+//           <TouchableOpacity
+//             key={index}
+//             onPress={() => goToGameDetails(game)}
+//           >
+//             <View
+//               style={{
+//                 flexDirection: "row",
+//                 alignItems: "center",
+//                 justifyContent: "space-between",
+//                 marginBottom: "2%",
+//               }}
+//             >
+//               <Text style={styles.createdAtText}>
+//                 {new Date(game.createdAt).toLocaleDateString("en-GB", {
+//                   day: "numeric",
+//                   month: "short",
+//                   year: "numeric",
+//                 })}
+//               </Text>
+//             </View>
+
+//             <View style={styles.container}>
+//               {game.selectedNumbers.map((number, index) => (
+//                 <View key={index} style={styles.numberBox}>
+//                   <Text style={styles.numberText}>{number}</Text>
+//                 </View>
+//               ))}
+//             </View>
+//           </TouchableOpacity>
+//         </LinearGradient>
+//       ))
+//     ) : (
+//       userGames
+//         .filter(filterGamesByDateRange)
+//         .filter(filterGamesByWinner)
+//         .map((game, index) => (
+//           <LinearGradient
+//             key={index}
+//             colors={["#F0C735", "#D98F39"]}
+//             style={styles.mainCard}
+//           >
+//             <TouchableOpacity
+//               key={index}
+//               onPress={() => goToGameDetails(game)}
+//             >
+//               <View
+//                 style={{
+//                   flexDirection: "row",
+//                   alignItems: "center",
+//                   justifyContent: "space-between",
+//                   marginBottom: "2%",
+//                 }}
+//               >
+//                 <Text style={styles.createdAtText}>
+//                   {new Date(game.createdAt).toLocaleDateString("en-GB", {
+//                     day: "numeric",
+//                     month: "short",
+//                     year: "numeric",
+//                   })}
+//                 </Text>
+
+//                 <Text style={styles.viewGame}>View Game</Text>
+//               </View>
+
+//               <View style={styles.container}>
+//                 {game.selectedNumbers.map((number, index) => (
+//                   <View key={index} style={styles.numberBox}>
+//                     <Text style={styles.numberText}>{number}</Text>
+//                   </View>
+//                 ))}
+//               </View>
+//             </TouchableOpacity>
+//           </LinearGradient>
+//         ))
+//     )}
+
+//     {(userGames.filter(filterGamesByDateRange).filter(filterGamesByWinner).length === 0) && (
+//       <Text style={styles.noWinnersText}>No Games found</Text>
+//     )}
+//   </>
+// )}
+
+
+
+
+
 // </ScrollView>
+
+
 //       )}
 
 //       <Modal
@@ -688,6 +806,11 @@
 //           </View>
 //         </View>
 //       </Modal>
+
+
+
+
+
 //     </View>
 //   );
 // };
@@ -711,22 +834,21 @@
 //     margin: wp("2%"), // Responsive margin
 //     padding: wp("4%"), // Responsive padding
 //     borderRadius: wp("5%"), // Responsive borderRadius
-
+    
 //     elevation: 3,
-//     height: hp("16%"), // Responsive height using heightPercentageToDP
-//     marginLeft: wp("2.5%"),
+//     height: hp("16%"), 
 //     backgroundColor: "#F0C735",
 //   },
 //   createdAtText: {
-//     fontWeight: "bold",
 //     fontSize: 15,
 //     marginLeft: 10,
-//     marginBottom: 10,
-//     color: "white", // Add margin left for spacing
+//     marginBottom: 5,
+//     color: "white",
+//     flex: 1,// Add margin left for spacing
 //   },
 //   viewGame: {
 //     fontSize: 15,
-//     marginLeft: 150,
+    
 //     marginBottom: 10,
 
 //     fontWeight: "bold",
@@ -768,6 +890,19 @@
 //   container: {
 //     flexDirection: "row",
 //     alignItems: "center",
+//     flexWrap: "wrap",
+//     justifyContent: "center",
+    
+//   },
+//   numberBox: {
+//     width: wp("10%"), // Adjust the width percentage as needed
+//     aspectRatio: 1, // Maintain a square aspect ratio
+//     borderRadius: wp("3%"), // Adjust the borderRadius percentage as needed
+//     borderWidth: 1,
+//     borderColor: "white",
+//     margin: wp("1%"), // Adjust the margin percentage as needed
+//     alignItems: "center",
+//     justifyContent: "center",
 //   },
 //   noWinnersText: {
 //     textAlign: 'center',
@@ -779,27 +914,20 @@
 //     width: 24,
 //     height: 24,
 //     top: 1,
-//     left: 150,
-//     padding: "2px 3.5px 2px 3.5px",
+//     marginRight: wp("1%"),
+//     marginLeft: wp("2%"),
+    
 //   },
 //   logout: {
 //     marginTop: 5,
 //     width: 24,
 //     height: 24,
 //     top: 1,
-//     left: 165,
-//     padding: "2px 3.5px 2px 3.5px",
+//     marginLeft: wp("1%")
+    
+   
 //   },
-//   numberBox: {
-//     width: 43,
-//     height: 37,
-//     borderRadius: 10, // Make it half of the width and height for a circular box
-//     borderWidth: 1,
-//     borderColor: "white",
-//     margin: 4.5,
-//     alignItems: "center",
-//     justifyContent: "center",
-//   },
+
 //   numberText: {
 //     fontSize: 12,
 //     fontWeight: "bold",
@@ -808,6 +936,8 @@
 // });
 
 // export default GameScreen;
+
+
 
 
 
@@ -851,14 +981,16 @@ const GameScreen = () => {
   const [openStartDatePicker, setOpenStartDatePicker] = useState(false);
   const [startedDate, setStartedDate] = useState(null);
   const [date, setDate] = useState(new Date());
+
+  
   const [filteredGames, setFilteredGames] = useState([]);
   const [showWinners, setShowWinners] = useState(true);
   const [selectedDate, setSelectedDate] = useState();
   const [showPicker, setShowPicker] = useState(false);
   const [checked, setChecked] = useState('all'); 
   const [initialFetchComplete, setInitialFetchComplete] = useState(false);
-
-
+  const [isThereIsGame, setIsThereIsGame] = useState(false); 
+  const [radioGames, setRadioGames] = useState(true);
   const [showAllGames, setShowAllGames] = useState(true);
 
   const handleOnPressStartDate = () => {
@@ -884,6 +1016,7 @@ const GameScreen = () => {
   };
   
 
+  
 
   const handleChangeStartDate = (date) => {
     setStartedDate(date);
@@ -974,6 +1107,8 @@ const GameScreen = () => {
       return true;
     }
   };
+
+
   const filterGamesByWinner = (game) => {
     if (showWinners) {
       return true; // Show only winning games
@@ -1132,35 +1267,65 @@ const GameScreen = () => {
 
   // Function to handle radio button press
   const handleRadioButtonPress = () => {
-    setShowWinners((prev) => !prev); // Toggle between true and false
+    setShowWinners((prev) => !prev); 
+    setRadioGames((prev) => !prev); // Toggle between true and false
   };
   useEffect(() => {
     setOpenStartDatePicker(false); // Ensure initial state
   }, []);
 
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch or set userGames here
+        // Example: const games = await fetchUserGames();
+        // setUserGames(games);
+  
+        // Instead of the above example, you can directly call getUserGames
+        // assuming it sets the userGames state variable
+        await getUserGames();
+  
+        // Update isThereIsGame based on the condition
+        setIsThereIsGame(userGames.length === 0);
+        console.log("user game Numberuser game Number user game Number user game Number  ",userGames.length)
+      } catch (error) {
+        console.error("Error fetching or setting user games:", error.message);
+      }
+    };
+  
+    // Fetch user games data when the component mounts
+    fetchData();
+  }, []);  
+
+
+  const handleClearFilters = () => {
+    setDate(new Date());
+    setStartedDate(null);
+    setEndSetDate(new Date());
+    setSelectedDate(null);
+    setEndSelecetedDate(null);
+    setShowAllGames(true);
+    setLoading(false);
+    // You may need to re-fetch the user games after clearing filters
+    getUserGames();
+  };
+
   return (
-    <View style={{ paddingTop: "12%",
-    paddingHorizontal: SCREEN_WIDTH * 0.025,
-    flex: 1,
-    justifyContent: 'flex-start'}}>
+    <View style={{ flex:1, padding: 16 ,paddingTop:"12%"}}>
        
         <StatusBar backgroundColor={"transparent"} translucent />
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "flex-start",
-          justifyContent: "flex-start",
-         
-        }}
-      >
+  
         <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            
-          }}
-        >
+  style={{
+    flexDirection: "row",
+    marginBottom: hp("1%"),
+    justifyContent: "space-between",
+    alignItems: "center",
+    
+   
+  }}
+>
           <TouchableOpacity onPress={() => navigation.navigate("Home")}>
           <MaterialIcons
             name="keyboard-arrow-left"
@@ -1173,15 +1338,7 @@ const GameScreen = () => {
         </TouchableOpacity>
 
 
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginLeft:'35%'
-            
-          }}
-        >
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
           <EvilIcons name="bell" size={30} style={styles.bell} color="black" onPress={navigateToNotificationScreen}/>
           <AntDesign
             name="logout"
@@ -1192,7 +1349,7 @@ const GameScreen = () => {
           />
           </View>
         </View>
-      </View>
+      
 
 
       <Text style={styles.MainheaderText}>Your Games</Text>
@@ -1201,45 +1358,35 @@ const GameScreen = () => {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
-          marginBottom:20
+          marginBottom:'5%'
         }}
       >
-        {/* <Card style={styles.card}>
-        <Pressable onPress={toggleDatePicker}>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <AntDesign name="calendar" size={24} color="black"  style={{  marginRight:10}} />
-          <Text>Start Date</Text>
-         
-          </View>
-
   
-
-        
-        </Pressable>
-      </Card> */}
   
-      <Pressable   onPress={toggleDatePicker}>
+      <Pressable   onPress={toggleDatePicker}  >
 
 
 <View style={{ borderColor: 'black',
       backgroundColor: '#F8F8FF',
       width: '100%',
-      marginLeft:'8%',
+      
       borderWidth: 1,
       height:58.5,
-      borderWidth: 0,
+      borderWidth: .5,
       borderStyle: 'solid',
       fontSize: 15,
       borderRadius: 15,
+      
       color: '#F8F8FF',  // Text color
       overflow: "hidden",}}>
 
 <View style={{ flexDirection: "row", alignItems: "center" }}>
+
               <AntDesign
                 name="calendar"
                 size={24}
                 color="black"
-                style={{ marginRight: 1,marginLeft:8 }}
+                style={{ marginLeft:14 }}
               />
       <TextInput
 
@@ -1252,7 +1399,7 @@ const GameScreen = () => {
           color: '#F8F8FF',
           backgroundColor: '#F8F8FF',
           height:60.5,
-         
+          
          }}
 
       ></TextInput>
@@ -1268,16 +1415,20 @@ const GameScreen = () => {
             onChange={onChange}
           />
         )}
+
+
+
+
       <Pressable   onPress={toggleEndDatePicker}>
 
 
 <View style={{ borderColor: 'black',
       backgroundColor: '#F8F8FF',
-      width: '90%',
-      marginRight:'15%',
+      width: '100%',
+      
       borderWidth: 1,
       height:58.5,
-      borderWidth: 0,
+      borderWidth: 0.5,
       borderStyle: 'solid',
       fontSize: 15,
       borderRadius: 15,
@@ -1319,15 +1470,26 @@ const GameScreen = () => {
           />
         )}
       </View>
-      <View style={{ flexDirection: 'row', alignItems: 'center' ,marginLeft:'2%'}}>
-      <RadioButton
-        value="all"
-        status={showWinners ? 'unchecked' : 'checked'}
-        onPress={handleRadioButtonPress}
-      />
-     
-        <Text>Show Only Wins</Text>
-      </View>
+
+
+
+
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: '2%' }}>
+  <RadioButton
+    value="all"
+    status={showWinners ? 'unchecked' : 'checked'}
+    onPress={handleRadioButtonPress}
+  />
+
+  <Text>Show Only Wins</Text>
+
+  <View style={{ marginLeft: 'auto' }}>
+  <TouchableOpacity onPress={handleClearFilters}>
+    <Text style={{color:"#FE555D"}}>Clear</Text>
+    </TouchableOpacity>
+  </View>
+</View>
+
 
       {/* Your existing code */}
 
@@ -1338,81 +1500,107 @@ const GameScreen = () => {
 
 
 
+<ScrollView style={{ marginBottom: 10, marginTop: hp(0.01) }}   showsVerticalScrollIndicator={false}>
 
-<ScrollView>
-  {showAllGames
-    ? userGames.map((game, index) => (
-      <LinearGradient
-      key={index}
-      colors={["#F0C735", "#D98F39"]} // Example colors, replace with your desired gradient colors
-      style={styles.mainCard}
-    >
-      <TouchableOpacity
-        key={index}
-        onPress={() => goToGameDetails(game)}
-      >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={styles.createdAtText}>
-            {new Date(game.createdAt).toLocaleDateString("en-GB", {
-              day: "numeric",
-              month: "short",
-              year: "numeric",
-            })}
-          </Text>
 
-          <Text style={styles.viewGame}>View Game</Text>
-        </View>
+{showAllGames && radioGames ? (
+  <>
 
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            marginTop: 10,
-          }}
-        >
-          <View style={styles.container}>
-            {game.selectedNumbers.map((number, index) => (
-              <View key={index} style={styles.numberBox}>
-                <Text style={styles.numberText}>{number}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
-      </TouchableOpacity>
-    </LinearGradient>
-      ))
-    : userGames
-        .filter(filterGamesByDateRange)
-        .filter(filterGamesByWinner)
-        .map((game, index) => (
-          <LinearGradient
+{showAllGames && radioGames ? (
+      [...userGames].reverse().map((game, index) => (
+        <LinearGradient
           key={index}
-          colors={["#F0C735", "#D98F39"]} // Example colors, replace with your desired gradient colors
+          colors={game.isWinner ? ["#F0C735", "#D98F39"] : ["#BA8DF3", "#615EE2"]}
           style={styles.mainCard}
         >
           <TouchableOpacity
             key={index}
             onPress={() => goToGameDetails(game)}
           >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text style={styles.createdAtText}>
-                {new Date(game.createdAt).toLocaleDateString("en-GB", {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                })}
-              </Text>
+             <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                   
+                    marginBottom: "2%",
+                  }}
+                >
+                   <Text style={styles.createdAtText}>
+                    {game.gameType},
+                  </Text>
 
-              <Text style={styles.viewGame}>View Game</Text>
+                  <Text style={styles.createdAtText}>
+                   Level {game.gameLevel},
+                  </Text>
+                  <Text style={styles.createdAtText}>
+                    {new Date(game.createdAt).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })},
+                  </Text>
+
+                  <Text  style={styles.createdAtText}>{new Date(game.createdAt).toLocaleTimeString("en-GB", {
+  hour: "numeric",
+  minute: "numeric",
+  hour12: true, 
+})}</Text>
+                </View>
+
+            <View style={styles.container}>
+              {game.selectedNumbers.map((number, index) => (
+                <View key={index} style={styles.numberBox}>
+                  <Text style={styles.numberText}>{number}</Text>
+                </View>
+              ))}
             </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginTop: 10,
-              }}
+          </TouchableOpacity>
+        </LinearGradient>
+      ))
+    ) : (
+      [...userGames].reverse()
+        .filter(filterGamesByDateRange)
+        .filter(filterGamesByWinner)
+        .map((game, index) => (
+          <LinearGradient
+            key={index}
+            colors={game.isWinner ? ["#F0C735", "#D98F39"] : ["#BA8DF3", "#615EE2"]}
+            style={styles.mainCard}
+          >
+            <TouchableOpacity
+              key={index}
+              onPress={() => goToGameDetails(game)}
             >
+               <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                   
+                    marginBottom: "2%",
+                  }}
+                >
+                   <Text style={styles.createdAtText}>
+                    {game.gameType},
+                  </Text>
+
+                  <Text style={styles.createdAtText}>
+                   Level {game.gameLevel},
+                  </Text>
+                  <Text style={styles.createdAtText}>
+                    {new Date(game.createdAt).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })},
+                  </Text>
+
+                  <Text  style={styles.createdAtText}>{new Date(game.createdAt).toLocaleTimeString("en-GB", {
+  hour: "numeric",
+  minute: "numeric",
+  hour12: true, 
+})}</Text>
+                </View>
+
               <View style={styles.container}>
                 {game.selectedNumbers.map((number, index) => (
                   <View key={index} style={styles.numberBox}>
@@ -1420,19 +1608,136 @@ const GameScreen = () => {
                   </View>
                 ))}
               </View>
+            </TouchableOpacity>
+          </LinearGradient>
+        ))
+    )}
+
+    {(userGames.length === 0) && (
+      <Text style={styles.noWinnersText}>No Games found</Text>
+    )}
+  </>
+) : (
+  <>
+    {showAllGames && radioGames ? (
+      [...userGames].reverse().map((game, index) => (
+        <LinearGradient
+          key={index}
+          colors={game.isWinner ? ["#F0C735", "#D98F39"] : ["#BA8DF3", "#615EE2"]}
+          style={styles.mainCard}
+        >
+          <TouchableOpacity
+            key={index}
+            onPress={() => goToGameDetails(game)}
+          >
+            <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                   
+                    marginBottom: "2%",
+                  }}
+                >
+                   <Text style={styles.createdAtText}>
+                    {game.gameType},
+                  </Text>
+
+                  <Text style={styles.createdAtText}>
+                   Level {game.gameLevel},
+                  </Text>
+                  <Text style={styles.createdAtText}>
+                    {new Date(game.createdAt).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })},
+                  </Text>
+
+                  <Text  style={styles.createdAtText}>{new Date(game.createdAt).toLocaleTimeString("en-GB", {
+  hour: "numeric",
+  minute: "numeric",
+  hour12: true, 
+})}</Text>
+                </View>
+
+            <View style={styles.container}>
+              {game.selectedNumbers.map((number, index) => (
+                <View key={index} style={styles.numberBox}>
+                  <Text style={styles.numberText}>{number}</Text>
+                </View>
+              ))}
             </View>
           </TouchableOpacity>
         </LinearGradient>
-        ))}
-  
-  {userGames
-    .filter(filterGamesByDateRange)
-    .filter(filterGamesByWinner)
-    .length === 0 && (
-      <Text style={styles.noWinnersText}>No winners found</Text>
-  )}
+      ))
+    ) : (
+      [...userGames].reverse()
+        .filter(filterGamesByDateRange)
+        .filter(filterGamesByWinner)
+        .map((game, index) => (
+          <LinearGradient
+            key={index}
+            colors={game.isWinner ? ["#F0C735", "#D98F39"] : ["#BA8DF3", "#615EE2"]}
+            style={styles.mainCard}
+          >
+            <TouchableOpacity
+              key={index}
+              onPress={() => goToGameDetails(game)}
+            >
+              <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                   
+                    marginBottom: "2%",
+                  }}
+                >
+                   <Text style={styles.createdAtText}>
+                    {game.gameType},
+                  </Text>
+
+                  <Text style={styles.createdAtText}>
+                   Level {game.gameLevel},
+                  </Text>
+                  <Text style={styles.createdAtText}>
+                    {new Date(game.createdAt).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })},
+                  </Text>
+
+                  <Text  style={styles.createdAtText}>{new Date(game.createdAt).toLocaleTimeString("en-GB", {
+  hour: "numeric",
+  minute: "numeric",
+  hour12: true, 
+})}</Text>
+                </View>
+
+              <View style={styles.container}>
+                {game.selectedNumbers.map((number, index) => (
+                  <View key={index} style={styles.numberBox}>
+                    <Text style={styles.numberText}>{number}</Text>
+                  </View>
+                ))}
+              </View>
+            </TouchableOpacity>
+          </LinearGradient>
+        ))
+    )}
+
+    {(userGames.filter(filterGamesByDateRange).filter(filterGamesByWinner).length === 0) && (
+      <Text style={styles.noWinnersText}>No Games found</Text>
+    )}
+  </>
+)}
+
+
+
+
 
 </ScrollView>
+
 
       )}
 
@@ -1510,6 +1815,11 @@ const GameScreen = () => {
           </View>
         </View>
       </Modal>
+
+
+
+
+
     </View>
   );
 };
@@ -1530,25 +1840,30 @@ const styles = StyleSheet.create({
 
   mainCard: {
     width: wp("90%"),
-    margin: wp("2%"), // Responsive margin
+    marginTop:'2%',
+    marginBottom:'2%', // Responsive margin
     padding: wp("4%"), // Responsive padding
     borderRadius: wp("5%"), // Responsive borderRadius
-
+    
     elevation: 3,
-    height: hp("16%"), // Responsive height using heightPercentageToDP
-    marginLeft: wp("2.5%"),
+    height: hp("16%"), 
     backgroundColor: "#F0C735",
+
+    flex: 1,
+  
+    alignSelf:'center'
+  
   },
   createdAtText: {
-    fontWeight: "bold",
     fontSize: 15,
-    marginLeft: 10,
-    marginBottom: 10,
-    color: "white", // Add margin left for spacing
+    
+    marginBottom: 5,
+    color: "white",
+    paddingRight:'2%'
   },
   viewGame: {
     fontSize: 15,
-    marginLeft: 150,
+    
     marginBottom: 10,
 
     fontWeight: "bold",
@@ -1590,6 +1905,19 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    
+  },
+  numberBox: {
+    width: wp("10%"), // Adjust the width percentage as needed
+    aspectRatio: 1, // Maintain a square aspect ratio
+    borderRadius: wp("3%"), // Adjust the borderRadius percentage as needed
+    borderWidth: 1,
+    borderColor: "white",
+    margin: wp("1%"), // Adjust the margin percentage as needed
+    alignItems: "center",
+    justifyContent: "center",
   },
   noWinnersText: {
     textAlign: 'center',
@@ -1601,27 +1929,20 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     top: 1,
-    left: 150,
-    padding: "2px 3.5px 2px 3.5px",
+    marginRight: wp("1%"),
+    marginLeft: wp("2%"),
+    
   },
   logout: {
     marginTop: 5,
     width: 24,
     height: 24,
     top: 1,
-    left: 165,
-    padding: "2px 3.5px 2px 3.5px",
+    marginLeft: wp("1%")
+    
+   
   },
-  numberBox: {
-    width: 43,
-    height: 37,
-    borderRadius: 10, // Make it half of the width and height for a circular box
-    borderWidth: 1,
-    borderColor: "white",
-    margin: 4.5,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+
   numberText: {
     fontSize: 12,
     fontWeight: "bold",

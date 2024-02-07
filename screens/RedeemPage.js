@@ -6,6 +6,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { useFocusEffect } from "@react-navigation/native";
+import { responsiveFontSize, responsiveHeight } from "react-native-responsive-dimensions";
 
 const RedeemPage = () => {
   const navigation = useNavigation();
@@ -49,13 +50,13 @@ const RedeemPage = () => {
   );
 
   return (
-    <View>
+    <View  style={{padding:responsiveHeight(4)}}>
       <View
         style={{
           flexDirection: 'row',
           alignItems: 'flex-start',
           justifyContent: 'flex-start',
-          marginTop: 40,
+         
         }}
       >
         <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
@@ -64,7 +65,7 @@ const RedeemPage = () => {
             size={35}
             color="black"
             style={{
-              marginLeft: '5%', // Add marginLeft to push the icon to the left
+               // Add marginLeft to push the icon to the left
             }}
           />
         </TouchableOpacity>
@@ -84,8 +85,12 @@ const RedeemPage = () => {
                     flexDirection: 'column',
                   }}
                 >
+                   <Text style={{ marginLeft: 20 }}>{account.accountHolderName}</Text>
+                  <Text style={{ marginLeft: 20 }}>{account.accountNumber}</Text>
+                 
+                  <Text style={{ marginLeft: 20 }}>{account.BIC}</Text>
+                  <Text style={{ marginLeft: 20 }}>{account.branch}</Text>
                   <Text style={{ marginLeft: 20 }}>{account.branchName}</Text>
-                  <Text style={{ marginLeft: 20 }}>{account.accountHolderName}</Text>
                 </View>
               </View>
             </Card>
@@ -134,13 +139,13 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 15,
     alignSelf: "center",
-    marginTop: 10,
+    marginTop: 1,
     borderRadius: 20,
     backgroundColor: "#f0f0f0",
     elevation: 3,
     width: 350,
     alignSelf: "center",
-    height: 111,
+    height: 121,
   },
 
   cardTwo: {

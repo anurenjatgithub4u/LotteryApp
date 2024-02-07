@@ -489,32 +489,31 @@ useEffect(() => {
         source={{ uri: 'https://th.bing.com/th/id/R.fa0ca630a6a3de8e33e03a009e406acd?rik=MMtJ1mm73JsM6w&riu=http%3a%2f%2fclipart-library.com%2fimg%2f1905734.png&ehk=iv2%2fLMRQKA2W8JFWCwwq6BdYfKr2FmBAlFys22RmPI8%3d&risl=&pid=ImgRaw&r=0' }}
         style={styles.profilePicture}
       />
-        <View style={{ flexDirection: 'row', alignItems: 'center',  justifyContent:'space-between',marginTop:25 }}>
-              
-        <TextInput
-        value={accountHolderName}
-        onChangeText={text => setAccountHolderName(text)}
-        placeholder="Name"
-        style={{
-          height: 40,
-          width:'85%',
-          color: 'white',
-          marginTop: 8,
-          paddingLeft: 8,
-          backgroundColor: 'white',
-          fontSize: 16, // Adjust the font size to your preference
-          lineHeight: 20, 
-          borderBottomColor: '#31A062', // Set the desired border color
-          borderBottomWidth: .1, // Set the desired border width
-          borderRadius: 8,// Adjust the line height to match the font size
-        }}
-        editable={mode === 'edit'} // Allow editing only in "edit" mode
-      />
-      <TouchableOpacity onPress={handleModeChange}>
-      <Text style={{ color: '#31A062' }}>{mode === 'edit' ? 'Done' : 'Change'}</Text>
-      </TouchableOpacity>
-        </View>
-         <View style={styles.underline} />
+       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 25, borderBottomWidth: 1, borderBottomColor: 'gray' }}>
+  <TextInput
+    value={accountHolderName}
+    onChangeText={text => setAccountHolderName(text)}
+    placeholder="Name"
+    style={{
+      height: 40,
+      width: '85%',
+      color: 'black', // Change the text color to your preference
+      marginTop: 8,
+      paddingLeft: 8,
+      backgroundColor: 'white',
+      fontSize: 16,
+      borderRadius: 8,
+    }}
+    editable={mode === 'edit'}
+  />
+  <TouchableOpacity onPress={handleModeChange}>
+    <Text style={{ color: '#31A062' }}>{mode === 'edit' ? 'Done' : 'Change'}</Text>
+  </TouchableOpacity>
+</View>
+
+
+        
+      
 
          <View style={{ flexDirection: 'row', alignItems: 'center',  justifyContent:'space-between', marginTop:25 }}>
               
@@ -588,7 +587,7 @@ const styles =  StyleSheet.create({
   },
   underline: {
     borderBottomColor: 'black',
-    borderBottomWidth: .5,
+    borderBottomWidth: .9,
   },
   
   profilePicture: {

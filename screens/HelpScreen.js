@@ -389,24 +389,19 @@ import { StatusBar } from "expo-status-bar";
 
 
   return (
-    <View style={styles.container}>
+    <View style={{ flex:1, padding: 16 ,paddingTop:"12%"}}>
   <StatusBar backgroundColor={"transparent"} translucent />
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "flex-start",
-          justifyContent: "flex-start",
-         
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            
-          }}
-        >
+
+  <View
+  style={{
+    flexDirection: "row",
+    marginBottom: hp("1%"),
+    justifyContent: "space-between",
+    alignItems: "center",
+    
+   
+  }}
+>
           <TouchableOpacity onPress={() => navigation.navigate("Home")}>
           <MaterialIcons
             name="keyboard-arrow-left"
@@ -419,30 +414,23 @@ import { StatusBar } from "expo-status-bar";
         </TouchableOpacity>
 
 
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginLeft:'35%'
-            
-          }}
-        >
-          <EvilIcons name="bell" size={30} style={styles.bell} color="black" onPress={navigateToNotificationScreen} />
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <EvilIcons name="bell" size={30} style={styles.bell} color="black" onPress={navigateToNotificationScreen}/>
           <AntDesign
             name="logout"
             size={19}
             style={styles.logout}
             color="black"
+            onPress={logout}
           />
           </View>
         </View>
-      </View>
+      
 
 
 
   
-      <Text style={{ fontSize: 31, fontWeight: '700', marginLeft: '5%' }}>Help & FAQs</Text>
+      <Text style={{ fontSize: 31, fontWeight: '700' ,marginLeft: "6%",}}>Help & FAQs</Text>
   
       <View style={styles.searchContainer}>
       <TextInput
@@ -560,16 +548,18 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     top: 1,
-    left: 150,
-    padding: "2px 3.5px 2px 3.5px",
+    marginRight: wp("1%"),
+    marginLeft: wp("2%"),
+    
   },
   logout: {
     marginTop: 5,
     width: 24,
     height: 24,
     top: 1,
-    left: 165,
-    padding: "2px 3.5px 2px 3.5px",
+    marginLeft: wp("1%")
+    
+   
   },
 
   searchContainer: {

@@ -106,6 +106,8 @@ const PurchaseScreen = () => {
               </View>
               <Text style={styles.timeText}>{getTimeAgoText(purchase.date)}</Text>
             </View>
+
+
             <View style={styles.underline} />
           </View>
         ))}
@@ -148,7 +150,9 @@ const styles = StyleSheet.create({
       detailsText:{
         marginStart:10,
         fontSize:17,
-        fontWeight:'400'
+        fontWeight:'400',
+        alignSelf:'flex-start'
+        
       },
       underline: {
         borderBottomColor: 'black',
@@ -157,13 +161,13 @@ const styles = StyleSheet.create({
         alignSelf:'center',
         marginTop:10
       },
-      timeText:{
-        fontSize:13,
-        fontWeight:'300',
-        marginBottom:30,
-        paddingLeft:10,
-        marginLeft:10
-      }
+  timeText:{
+    fontSize:13,
+    fontWeight:'300',
+    marginBottom:30,
+    paddingLeft:10,
+    marginLeft:10
+  }
 
 })
 export default PurchaseScreen

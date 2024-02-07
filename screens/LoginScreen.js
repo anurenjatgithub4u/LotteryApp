@@ -14,7 +14,11 @@
 // import { useAuth } from './auth/AuthContext';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 // import axios from 'axios';
-
+// import { Alert } from 'react-native';
+// import {
+//   widthPercentageToDP as wp,
+//   heightPercentageToDP as hp,
+// } from "react-native-responsive-screen";
 
 
 // const CustomPicker = ({ visible, onClose, onSelect, data }) => {
@@ -57,26 +61,7 @@
 //   const [modalVisible, setModalVisible] = useState(false);
 
   
-//   useEffect(() => {
-//     // Add event listener for hardware back button press
-//     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-//       // Handle back button press
-//       // Here, you can add your logic to close the app
-//       // For example, you might want to show an exit confirmation dialog
-//       // If the screen is the Login screen, you can close the app
-//       if (navigation.isFocused()) {
-//         // Close the app (exit)
-//         BackHandler.exitApp();
-//         return true; // Prevent default behavior (exit the app)
-//       }
 
-//       // If it's not the Login screen, let the default back button behavior occur
-//       return false;
-//     });
-
-//     // Clean up the event listener on component unmount
-//     return () => backHandler.remove();
-//   }, [navigation]);
 
 //   useEffect(() => {
 //     fetchCountries();
@@ -161,23 +146,16 @@
 //   };
   
 //   // Call fetchAndConsoleStoredAccessToken to retrieve and console the stored Access Token
-
+//   useEffect(() => {
+//     const unsubscribe = navigation.addListener('focus', () => {
+//       console.log('LoginScreen focused');
+//     });
   
-//   const fetchAndConsoleStoredCredits = async () => {
-//     try {
-//       // Retrieve userCredits from AsyncStorage
-//       const storedUserCredits = await AsyncStorage.getItem('userCredits');
+//     return unsubscribe;
+//   }, [navigation]);
   
-//       // Log the stored user credits
-//       console.log('Stored User credits again:', storedUserCredits);
   
-//       // If needed, you can parse it back to a number
-//       const userCredits = storedUserCredits ? parseInt(storedUserCredits) : 0;
-//       console.log('Parsed User credits (as number):', userCredits);
-//     } catch (error) {
-//       console.error('Error fetching stored user credits:', error.message);
-//     }
-//   };
+  
 //   const handleLogin = async () => {
 //     try {
 //       // Validate input fields (you may want to add more validation)
@@ -195,6 +173,7 @@
 //         body: JSON.stringify({
 //           email,
 //           password,
+//           pushNotificationToken:'NR8AdCA0x-RmA1L7JSb_LL'
 //         }),
 //       });
   
@@ -237,6 +216,12 @@
 //       } else {
 //         // If login fails, handle the error (show an alert, etc.)
 //         console.error('Login failed');
+
+//         Alert.alert(
+//           '',
+//           'Login Failed',
+//           [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+//         );
 //       }
 //     } catch (error) {
 //       console.error('Error during login:', error.message);
@@ -253,10 +238,10 @@
 //     <View style={{ borderColor: 'black',
 //       backgroundColor: 'white',
 //       width: '100%',
-//       borderWidth: 0.5,
+//       borderWidth: 0,
 //       borderStyle: 'solid',
 //       fontSize: 15,
-//       height:60,
+//       height:58.5,
 //       borderRadius: 25,
 
 //       color: 'white',  // Text color
@@ -272,7 +257,7 @@
 //         autoCapitalize="none"
 //         value={email}
 //         onChangeText={setEmail}
-//         onSubmitEditing={() => Keyboard.dismiss()}
+        
 //       />
 //       </View>
 
@@ -280,10 +265,10 @@
 //       <View style={{ borderColor: 'black',
 //       backgroundColor: 'white',
 //       width: '100%',
-//       borderWidth: 0.5,
+//       borderWidth: 0,
 //       borderStyle: 'solid',
 //       fontSize: 15,
-//       height:60,
+//       height:58.5,
 //       borderRadius: 25,
 //       marginTop:15,
 //       color: 'white',  // Text color
@@ -298,7 +283,7 @@
 //         secureTextEntry
 //         value={password}
 //         onChangeText={setPassword}
-//         onSubmitEditing={() => Keyboard.dismiss()}
+       
 //       />
 
       
@@ -315,7 +300,7 @@
 // <View style={{ borderColor: 'black',
 //       backgroundColor: 'white',
 //       width: '20%',
-//       borderWidth: 0.5,
+//       borderWidth: 0,
 //             borderStyle: 'solid',
 //       fontSize: 15,
 //       borderRadius: 25,
@@ -341,8 +326,8 @@
 //       backgroundColor: 'white',
 //       width: '75%',
 //       borderWidth: 1,
-//       height:60,
-//       borderWidth: 0.5,
+//       height:58.5,
+//       borderWidth: 0,
 //       borderStyle: 'solid',
 //       fontSize: 15,
 //       borderRadius: 25,
@@ -354,13 +339,13 @@
 //       style={{
 //         color: 'white',
 //         backgroundColor: 'white',
-//         height:60,
+//         height:60.5,
        
 //        }}
 //       keyboardType="phone-pad" // Use 'phone-pad' keyboard type for mobile numbers
 //       value={mobileNumberLogin}
 //       onChangeText={setMobileNumberLogin}
-//       onSubmitEditing={() => Keyboard.dismiss()}
+      
 //     />
 //  </View>
 
@@ -424,13 +409,13 @@
    
 //     // Add this line to align text to the left
 //     width: 354,
-//     height: 41,
+    
 //     top: 99,
 //     left: 30,
-
+//      minHeight: hp("7%"),
 //     fontSize: 34, // Adjust the font size as needed
 //     fontWeight: 'bold',
-//     marginBottom:100
+//     marginBottom:90
 //   },
 
 //   createaccountTextTwo: {
@@ -485,9 +470,8 @@
 
 
 
-
 import React, { useState, useEffect, useCallback,createRef } from 'react';
-import { View, Text,StyleSheet,TouchableOpacity,Modal } from 'react-native';
+import { View, Text,StyleSheet,TouchableOpacity,Modal,ActivityIndicator  } from 'react-native';
 import * as Font from 'expo-font';
 import { Entypo } from '@expo/vector-icons';
 import * as SplashScreen from 'expo-splash-screen';
@@ -500,8 +484,12 @@ import { BackHandler } from 'react-native';
 import { useAuth } from './auth/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-
-
+import { Alert } from 'react-native';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+import { StatusBar } from "expo-status-bar";
 
 const CustomPicker = ({ visible, onClose, onSelect, data }) => {
   return (
@@ -541,28 +529,9 @@ const LoginScreen = ({ navigation }) => {
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   
-  useEffect(() => {
-    // Add event listener for hardware back button press
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      // Handle back button press
-      // Here, you can add your logic to close the app
-      // For example, you might want to show an exit confirmation dialog
-      // If the screen is the Login screen, you can close the app
-      if (navigation.isFocused()) {
-        // Close the app (exit)
-        BackHandler.exitApp();
-        return true; // Prevent default behavior (exit the app)
-      }
 
-      // If it's not the Login screen, let the default back button behavior occur
-      return false;
-    });
-
-    // Clean up the event listener on component unmount
-    return () => backHandler.remove();
-  }, [navigation]);
 
   useEffect(() => {
     fetchCountries();
@@ -647,25 +616,19 @@ const LoginScreen = ({ navigation }) => {
   };
   
   // Call fetchAndConsoleStoredAccessToken to retrieve and console the stored Access Token
-
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      console.log('LoginScreen focused');
+    });
   
-  const fetchAndConsoleStoredCredits = async () => {
-    try {
-      // Retrieve userCredits from AsyncStorage
-      const storedUserCredits = await AsyncStorage.getItem('userCredits');
+    return unsubscribe;
+  }, [navigation]);
   
-      // Log the stored user credits
-      console.log('Stored User credits again:', storedUserCredits);
   
-      // If needed, you can parse it back to a number
-      const userCredits = storedUserCredits ? parseInt(storedUserCredits) : 0;
-      console.log('Parsed User credits (as number):', userCredits);
-    } catch (error) {
-      console.error('Error fetching stored user credits:', error.message);
-    }
-  };
+  
   const handleLogin = async () => {
     try {
+      setLoading(true);
       // Validate input fields (you may want to add more validation)
       if (!email || !password) {
         console.log('Please fill in all fields');
@@ -684,7 +647,7 @@ const LoginScreen = ({ navigation }) => {
           pushNotificationToken:'NR8AdCA0x-RmA1L7JSb_LL'
         }),
       });
-  
+      
       if (response.ok) {
         // If login is successful, you may want to store user information or a token
         const result = await response.json();
@@ -713,26 +676,40 @@ const LoginScreen = ({ navigation }) => {
          await AsyncStorage.setItem('userName', userName);
          await AsyncStorage.setItem('credits', credits.toString());
 
-        // await AsyncStorage.setItem('userDetails', JSON.stringify(user));
 
-        // fetchCredits();
-        // fetchAndConsoleStoredCredits();
+         await new Promise(resolve => setTimeout(resolve, 2000));
+         navigation.navigate('MainScreen', { screen: 'MainScreen' });
+       
         fetchAndConsoleStoredAccessToken();
         // setAccessToken(result.message.accessToken);
         // You may want to navigate to another screen or perform authentication
-        navigation.navigate('MainScreen', { screen: 'MainScreen' });
+       
       } else {
         // If login fails, handle the error (show an alert, etc.)
         console.error('Login failed');
+
+        Alert.alert(
+          '',
+          'Login Failed',
+          [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+        );
       }
     } catch (error) {
       console.error('Error during login:', error.message);
+    }
+    finally {
+      // Set loading to false regardless of whether login was successful or not
+      setLoading(false);
     }
   };
   
 
   return (
     <View style={{ flex:1,alignItems: 'center',justifyContent:'flex-start' , padding: 16 }}>
+
+<StatusBar backgroundColor={"transparent"} translucent />
+
+
          <Text  style={styles.createaccountText}>Login</Text>
     <Text  style={styles.createaccountTextTwo}>Play and manage your games</Text>
 
@@ -759,7 +736,7 @@ const LoginScreen = ({ navigation }) => {
         autoCapitalize="none"
         value={email}
         onChangeText={setEmail}
-        onSubmitEditing={() => Keyboard.dismiss()}
+        
       />
       </View>
 
@@ -785,7 +762,7 @@ const LoginScreen = ({ navigation }) => {
         secureTextEntry
         value={password}
         onChangeText={setPassword}
-        onSubmitEditing={() => Keyboard.dismiss()}
+       
       />
 
       
@@ -847,26 +824,35 @@ const LoginScreen = ({ navigation }) => {
       keyboardType="phone-pad" // Use 'phone-pad' keyboard type for mobile numbers
       value={mobileNumberLogin}
       onChangeText={setMobileNumberLogin}
-      onSubmitEditing={() => Keyboard.dismiss()}
+      
     />
  </View>
 
 
 </View>
 
-      <Button mode="contained" onPress={handleLogin}  contentStyle={{
-    height: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-  }}
-  style={{
-    backgroundColor: '#31A062',
-    width: '100%',
-    marginVertical: 10,
-    marginTop: 15,
-  }}>
-        Login
-      </Button>
+{loading ? (
+    <ActivityIndicator style={{ marginTop: 15 }} color="#31A062" size="large" />
+  ) : (
+    <Button
+      mode="contained"
+      onPress={handleLogin}
+      contentStyle={{
+        height: 60,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+      style={{
+        backgroundColor: '#31A062',
+        width: '100%',
+        marginVertical: 10,
+        marginTop: 15,
+      }}
+      disabled={loading}
+    >
+      Login
+    </Button>
+  )}
 
       <Text style={{ marginVertical: 10, color: '#31A062' }} onPress={() => navigation.navigate('Register')}>
        Create an account?
@@ -911,13 +897,13 @@ const styles = StyleSheet.create({
    
     // Add this line to align text to the left
     width: 354,
-    height: 41,
+    
     top: 99,
     left: 30,
-
+     minHeight: hp("7%"),
     fontSize: 34, // Adjust the font size as needed
     fontWeight: 'bold',
-    marginBottom:100
+    marginBottom:90
   },
 
   createaccountTextTwo: {

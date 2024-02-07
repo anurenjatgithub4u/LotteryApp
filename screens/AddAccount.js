@@ -74,12 +74,12 @@ const AddAccount = () => {
   
   return (
     <KeyboardAwareScrollView  style={{backgroundColor:'white'}}>
-   <View>
+   <View style={{padding:'5%',paddingTop:'12%'}}>
    <TouchableOpacity onPress={()=> navigation.navigate('Redeem')} >
 
 <MaterialIcons name="keyboard-arrow-left" size={35} color="black" style={{
      
-     marginLeft: 10, marginTop:51// Add marginLeft to push the icon to the left
+     marginLeft: 10// Add marginLeft to push the icon to the left
    }}
    
    />
@@ -104,7 +104,7 @@ const AddAccount = () => {
           onChangeText={text => setAccountHolderName(text)}
           placeholder="Enter account holder name"
           style={{
-            width:'80%',
+            width:'100%',
             height: 40,
             color:'white',
             marginTop: 8,
@@ -114,7 +114,7 @@ const AddAccount = () => {
         />
        
         </View>
-         <View style={styles.underline} />
+      
 
          <View style={{ flexDirection: 'row', alignItems: 'center',  justifyContent:'space-between', marginTop:25 }}>
               
@@ -123,7 +123,7 @@ const AddAccount = () => {
                 onChangeText={text => setAccountNumber(text)}
                 placeholder="Account Number"
                 style={{
-                  width:'80%',
+                  width:'100%',
                   height: 40,
                   backgroundColor: 'white',
                   marginTop: 8,
@@ -132,7 +132,7 @@ const AddAccount = () => {
               />
              
               </View>
-               <View style={styles.underline} />
+              
 
 
                <View style={{ flexDirection: 'row', alignItems: 'center',  justifyContent:'space-between', marginTop:25 }}>
@@ -142,7 +142,7 @@ const AddAccount = () => {
                 onChangeText={text => setBicCode(text)}
                 placeholder="BIC Code "
                 style={{
-                  width:'80%',
+                  width:'100%',
                   height: 40,
                   backgroundColor: 'white',
                   marginTop: 8,
@@ -151,7 +151,7 @@ const AddAccount = () => {
               />
             
               </View>
-               <View style={styles.underline} />
+              
 
 
                <View style={{ flexDirection: 'row', alignItems: 'center',  justifyContent:'space-between', marginTop:25 }}>
@@ -161,7 +161,7 @@ const AddAccount = () => {
                 onChangeText={text => setBranchName(text)}
                 placeholder="Branch Name "
                 style={{
-                  width:'80%',
+                  width:'100%',
                   height: 40,
                   backgroundColor: 'white',
                   marginTop: 8,
@@ -170,7 +170,7 @@ const AddAccount = () => {
               />
               
               </View>
-               <View style={styles.underline} />
+               
 
                
                <View style={{ flexDirection: 'row', alignItems: 'center',  justifyContent:'space-between', marginTop:25 }}>
@@ -180,7 +180,7 @@ const AddAccount = () => {
                 onChangeText={text => setBranch(text)}
                 placeholder="Branch "
                 style={{
-                  width:'80%',
+                  width:'100%',
                   height: 40,
                   backgroundColor: 'white',
                   marginTop: 8,
@@ -189,7 +189,7 @@ const AddAccount = () => {
               />
               
               </View>
-               <View style={styles.underline} />
+              
 
 
       </View>
@@ -232,7 +232,7 @@ const styles =  StyleSheet.create({
     height: 100,
     borderRadius: 50,
     alignSelf:'center',
-    marginTop:100
+    marginTop:'15%'
   },
 });
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput,StyleSheet ,TouchableOpacity } from 'react-native';
+import { View, Text, TextInput,StyleSheet ,TouchableOpacity , Dimensions } from 'react-native';
 import { Card, Title, Paragraph } from 'react-native-paper'; 
 import { FontAwesome5 } from '@expo/vector-icons'; // Make sure to import FontAwesome5 from the correct package
 
@@ -9,6 +9,10 @@ import { Foundation } from '@expo/vector-icons';
 import { EvilIcons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { StatusBar } from "expo-status-bar";
+
+const { width, height } = Dimensions.get("window");
+
+const SCREEN_WIDTH = width < height ? width : height;
 
  // Make sure to import FontAwesome5 from the correct package
 
@@ -45,7 +49,7 @@ import { StatusBar } from "expo-status-bar";
             
           }}
         >
-          <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+          <TouchableOpacity onPress={() => navigation.navigate("Hel")}>
           <MaterialIcons
             name="keyboard-arrow-left"
             size={35}

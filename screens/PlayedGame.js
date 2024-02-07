@@ -203,6 +203,8 @@ import { BackHandler } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialIcons } from '@expo/vector-icons';
 import { StatusBar } from "expo-status-bar";
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
+
 
 
 
@@ -226,7 +228,7 @@ const NumberRow = ({ numbers }) => {
 };
 
 const PlayedGame = ({ route }) => {
-  const { gameNumber,currentDate,gameType ,announcementDate,winningAmt } = route.params;
+  const { gameNumber,currentDate,gameType ,announcementDate,winningAmt ,gameSymbol} = route.params;
   const navigation = useNavigation();
   const parsedDate = new Date(currentDate);
   const [areaText, setAreaText] = useState('');
@@ -397,14 +399,14 @@ const PlayedGame = ({ route }) => {
     style={{
      
      
-      
+      padding:responsiveHeight(3),
       paddingTop: "12%",
     }}>
       <StatusBar backgroundColor={"transparent"} translucent />
       <TouchableOpacity  onPress={()=> navigation.navigate('ALScreen')}>
  <MaterialIcons name="keyboard-arrow-left" size={35} color="black" style={{
      
-     marginLeft: 10// Add marginLeft to push the icon to the left
+     // Add marginLeft to push the icon to the left
    }}/>
 </TouchableOpacity>
       <Text style={styles.Heading}>Your  Previous Game</Text>
@@ -412,7 +414,7 @@ const PlayedGame = ({ route }) => {
       <Text style={styles.dateText}>{parsedDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</Text>
 
     
-<Text style={styles.subtitle}> {gameType} Level {levelText} $ {winningAmt}</Text>
+<Text style={styles.subtitle}> {gameType}, Level {levelText}, {gameSymbol}{winningAmt}</Text>
 
       
       <LinearGradient
@@ -424,16 +426,18 @@ const PlayedGame = ({ route }) => {
       </LinearGradient>
 
 
-<Text  style={{fontSize:16 , fontWeight:400,marginStart:25,marginTop:20}}>  Winners will be announced on </Text>
+<Text  style={{fontSize:16 , fontWeight:400,marginTop:20}}>  Winners will be announced on </Text>
 
 
-<Text style={styles.dateText}>{formattedAnnouncementDate}</Text>
+
+
+<Text style={styles.dateTextTwo}>{formattedAnnouncementDate}</Text>
 
 <LinearGradient  colors={['#F0C735', '#D98F39']}  style={styles.doneButton}>
 
    <TouchableOpacity  onPress={()=>navigation.navigate('ALScreen')}>
 
-   <Text  style={{alignSelf:'center', marginTop:12, color:'white'}}>Play again</Text>
+   <Text  style={{alignSelf:'center',  color:'white'}}>Play again</Text>
    </TouchableOpacity>
 </LinearGradient>
 
@@ -464,7 +468,7 @@ const styles = StyleSheet.create({
     fontSize: SCREEN_WIDTH * 0.04,
    
     color:'black',
-    marginLeft: SCREEN_WIDTH * 0.07,
+   
     marginTop:10
   },
   numberText: {
@@ -477,7 +481,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#333',
     lineHeight:44.2,
-    marginStart: commonPaddingStart,
+   
    
     
    
@@ -540,7 +544,7 @@ const styles = StyleSheet.create({
     marginEnd: 23,
   },
   mainCard: {
-    margin: 10,
+    
     padding: 15,
     borderRadius: 15,
     height:134,
@@ -552,13 +556,23 @@ const styles = StyleSheet.create({
   },
   dateText: {
     fontSize: 32,
-    fontWeight: '400',
-    marginStart: '7%',
+    
+    
     marginTop:5,
-    marginRight:33,
+   
     color:'black',
 
-    marginEnd: 32,
+    
+  },
+  dateTextTwo: {
+    fontSize: 32,
+    marginLeft:responsiveWidth(1),
+    
+    marginTop:5,
+   
+    color:'black',
+
+    
   },
   doneButton: {
    
@@ -567,6 +581,8 @@ const styles = StyleSheet.create({
     marginBottom:2,
     width:348,
     alignSelf:'center',
+    alignItems:'center',
+    justifyContent:'center',
     marginTop:30
   },
 });

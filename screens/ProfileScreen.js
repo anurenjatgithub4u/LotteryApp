@@ -15,6 +15,7 @@ import { EvilIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { logout } from './auth/logout';
 import { StatusBar } from "expo-status-bar";
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 const ProfileScreen = () => {
 
@@ -83,26 +84,20 @@ const ProfileScreen = () => {
  
 return(
   
-  <View style={styles.container}>
+  <View style={{ flex:1, padding: 16 ,paddingTop:"12%"}}>
   
 
   <StatusBar backgroundColor={"transparent"} translucent />
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "flex-start",
-          justifyContent: "flex-start",
-         
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            
-          }}
-        >
+  <View
+  style={{
+    flexDirection: "row",
+    marginBottom: hp("1%"),
+    justifyContent: "space-between",
+    alignItems: "center",
+    
+   
+  }}
+>
           <TouchableOpacity onPress={() => navigation.navigate("Home")}>
           <MaterialIcons
             name="keyboard-arrow-left"
@@ -115,19 +110,8 @@ return(
         </TouchableOpacity>
 
 
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginLeft:'35%'
-            
-          }}
-        >
-          <TouchableOpacity>
-            
-          </TouchableOpacity>
-          <EvilIcons name="bell" size={30} style={styles.bell} color="black"  onPress={navigateToNotificationScreen} />
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <EvilIcons name="bell" size={30} style={styles.bell} color="black" onPress={navigateToNotificationScreen}/>
           <AntDesign
             name="logout"
             size={19}
@@ -137,7 +121,6 @@ return(
           />
           </View>
         </View>
-      </View>
 
 <Text  style={{fontSize:31,fontWeight:'700',marginLeft:30}}>Profile</Text>
 
@@ -163,6 +146,8 @@ return(
      
 
     <View style={styles.personalInfoContainer}>
+
+      
   <Ionicons name="person" size={24} color="#555" />
   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
     <Paragraph style={{...styles.personalInfoText,flex:.9}}  >Personal Info</Paragraph>
@@ -229,7 +214,7 @@ return(
     <Ionicons name="settings" size={24} color="black" />
   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
     <Paragraph style={{...styles.personalInfoText,flex:.9}}  >Password</Paragraph>
-    <TouchableOpacity  onPress={() => navigation.navigate('ForgotPassword')}>
+    <TouchableOpacity  onPress={() => navigation.navigate('ForgotPasswordTwo')}>
     <MaterialIcons name="arrow-forward-ios" size={24} color="black" />
     </TouchableOpacity>
   </View>
@@ -299,27 +284,29 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     top: 1,
-    left: 150,
-    padding: "2px 3.5px 2px 3.5px",
+    marginRight: wp("1%"),
+    marginLeft: wp("2%"),
+    
   },
   logout: {
     marginTop: 5,
     width: 24,
     height: 24,
     top: 1,
-    left: 165,
-    padding: "2px 3.5px 2px 3.5px",
+    marginLeft: wp("1%")
+    
+   
   },
   personalInfoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
+   
     alignSelf:'center'
   },
   personalInfoText: {
     fontSize: 16,
     color: '#555',
-    marginLeft: 5,
+    marginLeft: '8%',
     alignSelf:'flex-end'
   },
  

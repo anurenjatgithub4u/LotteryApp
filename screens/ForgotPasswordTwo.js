@@ -8,7 +8,7 @@ import { KeyboardAwareScrollView } from '@codler/react-native-keyboard-aware-scr
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { MaterialIcons } from '@expo/vector-icons';
 
-const ForgotPassword = () => {
+const ForgotPasswordTwo = () => {
   const [emailFor, setEmailFor] = useState('');
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
     const navigation = useNavigation();
@@ -38,7 +38,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
                 onClose();
               }}
             >
-              <Text>{`${country.countryCode} - ${country.country}`}</Text>
+              <Text>{`${country.country} - ${country.countryCode}`}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -427,4 +427,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ForgotPassword;
+export default ForgotPasswordTwo;

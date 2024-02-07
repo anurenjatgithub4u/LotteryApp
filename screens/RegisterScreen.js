@@ -1,132 +1,13 @@
-// import React, { useState, useEffect, useCallback,createRef } from 'react';
-// import { View, Text,StyleSheet } from 'react-native';
-// import * as Font from 'expo-font';
-// import { Entypo } from '@expo/vector-icons';
-// import * as SplashScreen from 'expo-splash-screen';
-// import { Ionicons } from '@expo/vector-icons';
-// import { createStackNavigator } from '@react-navigation/stack';
-// import { TextInput, Button } from 'react-native-paper';
-// import { NavigationContainer, useNavigation } from '@react-navigation/native';
-// import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
-
-// import { MaterialIcons } from '@expo/vector-icons';
-// import axios from 'axios';
-
-// const RegisterScreen = () => {
-//   const navigation = useNavigation();
-
-
-//   // State for input fields
-//   const [name, setName] = useState('');
-//   const [email, setEmail] = useState('');
-//   const [password, setPassword] = useState('');
-//   const [mobileNumber, setMobileNumber] = useState('');
-//   // Function to handle registration
-
-
-// const handleRegister = async () => {
-//   try {
-//     // Validate input fields (you may want to add more validation)
-//     if (!name || !email || !password || !mobileNumber) {
-//       console.log('Please fill in all fields');
-//       return;
-//     }
-
-//     // Make API request to register user using Axios
-//     const response = await axios.post('https://lottery-backend-tau.vercel.app/api/v1/user/register', { email, password ,name});
-
-//     if (response.status === 200) {
-//       console.log('Registration successful:', response.data.message);
-//       navigation.navigate('OTP',{
-//         email,
-//         name,
-//         mobileNumber
-//       });
-//       // You may want to navigate to another screen or perform authentication logic here
-
-//     } else {
-//       console.log('Registration failed:', response.data.message);
-//       // Handle registration error (e.g., display an error message to the user)
-//     }
-//   } catch (error) {
-//     console.error('Error during registration:', error.message);
-//     // Handle unexpected errors during registration
-//   }
-// };
-
-
-//   return (
-//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-//       <Text style={styles.circleText}>LOGO</Text>
-//     <Text>Sign Up</Text>
-//     <TextInput
-//       label="Name"
-//       mode="outlined"
-//       style={{ width: '100%', marginVertical: 10 }}
-//       value={name}
-//       onChangeText={setName}
-//     />
-//     <TextInput
-//       label="Email"
-//       mode="outlined"
-//       style={{ width: '100%', marginVertical: 10 }}
-//       keyboardType="email-address"
-//       autoCapitalize="none"
-//       value={email}
-//       onChangeText={setEmail}
-//     />
-//     <TextInput
-//       label="Mobile Number"
-//       mode="outlined"
-//       style={{ width: '100%', marginVertical: 10 }}
-//       keyboardType="phone-pad" // Use 'phone-pad' keyboard type for mobile numbers
-//       value={mobileNumber}
-//       onChangeText={setMobileNumber}
-//     />
-//     <TextInput
-//       label="Password"
-//       mode="outlined"
-//       style={{ width: '100%', marginVertical: 10 }}
-//       secureTextEntry
-//       value={password}
-//       onChangeText={setPassword}
-//     />
-//     <Button mode="contained" onPress={handleRegister} style={{ width: '100%', marginVertical: 10 }}>
-//       Register
-//     </Button>
-//     <Text style={{ marginVertical: 10 }}>
-//       Already registered?{' '} </Text>
-//       <Text style={{ color: 'blue' }} onPress={() => navigation.navigate('Login')}>
-//         Login
-//       </Text>
-   
-//   </View>
-  
-//   );
-// };
-// const styles = StyleSheet.create({
-  // circleText: {
-  //   backgroundColor: 'white',
-  //   borderRadius: 50,
-  //   width: 100,
-  //   height: 100,
-  //   textAlign: 'center',
-  //   lineHeight: 100,
-  //   fontSize: 20,
-  //   marginTop: -20, // Adjust the negative margin top to move the circle upward
-  // },
-// });
-// export default RegisterScreen;
 
 
 import React, { useState,useEffect } from 'react';
-import { View, Text, StyleSheet,TouchableOpacity,Modal } from 'react-native';
+import { View, Text, StyleSheet,TouchableOpacity,Modal,ActivityIndicator } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import {CountryPicker} from "react-native-country-codes-picker";
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { TextInput as PaperTextInput } from 'react-native-paper';
+import { Alert } from 'react-native';
 
 
 const CustomPicker = ({ visible, onClose, onSelect, data }) => {
@@ -139,25 +20,26 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
     >
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          {data.map((country) => (
-            <TouchableOpacity
-              key={country.countryCode}
-              style={styles.countryItem}
-              onPress={() => {
-                onSelect(country.countryCode);
-                onClose();
-              }}
-            >
-              <Text>{`${country.country} - ${country.countryCode}`}</Text>
-            </TouchableOpacity>
-          ))}
+        {data.map((country, index) => (
+  <TouchableOpacity
+    key={`${country.countryCode}_${index}`}
+    style={styles.countryItem}
+    onPress={() => {
+      onSelect(country.countryCode);
+      onClose();
+    }}
+  >
+    <Text>{`${country.countryCode} - ${country.country}`}</Text>
+  </TouchableOpacity>
+))}
+
         </View>
       </View>
     </Modal>
   );
 };
 const RegisterScreen = () => {
-  // State for input fields
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -167,11 +49,12 @@ const RegisterScreen = () => {
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
- 
+  const [loading, setLoading] = useState(false);
 
   const handleRegister = async () => {
     try {
-      // Validate input fields
+      // Validate inp
+      setLoading(true);
       if (!name || !email || !password || !mobileNumber || !selectedCountry) {
         console.log('Please fill in all fields');
         return;
@@ -185,6 +68,7 @@ const RegisterScreen = () => {
       const response = await axios.post('https://lottery-backend-tau.vercel.app/api/v1/user/register', {
         email,
         mobileNumber: mobileWithCountry,
+        name:name
       });
   
       if (response.data.statusCode === 200) {
@@ -203,16 +87,24 @@ const RegisterScreen = () => {
       } else {
         console.log('Registration failed:', response.data.message);
         console.log('Registration:', response);
+        Alert.alert(
+          '',
+          'Register Failed',
+          [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+        );
         // Handle registration error (e.g., display an error message to the user)
       }
     } catch (error) {
       console.error('Error during registration:', error.message);
       // Handle unexpected errors during registration
+    }finally {
+      // Set loading to false regardless of whether login was successful or not
+      setLoading(false);
     }
   };
   
 
-  // const handleRegister = async () => {
+
   //   try {
   //     // Validate input fields (you may want to add more validation)
   //     if (!name || !email || !password || !mobileNumber || !selectedCountry) {
@@ -258,18 +150,19 @@ const RegisterScreen = () => {
   const logSelectedCountryCode = () => {
     console.log('Selected Country Code:', selectedCountry,mobileNumber);
   };
-  
   const fetchCountries = async () => {
     try {
       const response = await axios.get(
         'https://lottery-backend-tau.vercel.app//api/v1/admin/get-country'
       );
-      const countriesData = response.data.message;
+  
+      const countriesData = response.data.message.filter(country => country.country !== 'Continent');
       setCountries(countriesData);
     } catch (error) {
       console.error('Error fetching countries:', error.message);
     }
   };
+  
   return (
     <View style={{ flex:1,alignItems: 'center',justifyContent:'center' , padding: 16 }}>
 
@@ -420,23 +313,29 @@ marginTop:15,
       onChangeText={setPassword}
     />
  </View>
- <Button
-  mode="contained"
-  onPress={handleRegister}
-  contentStyle={{
-    height: 60.5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  }}
-  style={{
-    backgroundColor: '#31A062',
-    width: '100%',
-    marginVertical: 10,
-    marginTop: 15,
-  }}
->
-  Create Account
-</Button>
+
+ {loading ? (
+    <ActivityIndicator style={{ marginTop: 15 }} color="#31A062" size="large" />
+  ) : (
+    <Button
+      mode="contained"
+      onPress={handleRegister}
+      contentStyle={{
+        height: 60,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+      style={{
+        backgroundColor: '#31A062',
+        width: '100%',
+        marginVertical: 10,
+        marginTop: 15,
+      }}
+      disabled={loading}
+    >
+      Craete Account
+    </Button>
+  )}
 
 <View style={{ flex:1  }}>
   <Text style={{ marginVertical: 10 ,textAlign:'center'  ,color: '#31A062'}}>

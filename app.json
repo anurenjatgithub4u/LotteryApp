@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "lottery_app",
+    "name": "ALS",
     "slug": "lottery_app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/lottery-android-icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": null,
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -29,7 +29,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "d08cd3bc-ae26-4286-8e70-50acfef35d38"
+        "projectId": "5e29da4f-d3e0-46e8-8a4d-8cf73fd69b57"
       }
     }
   }
