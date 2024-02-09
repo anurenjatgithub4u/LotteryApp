@@ -59,6 +59,7 @@ import KioskCode from './screens/KioskCode';
 import LoginTesting from './screens/LoginTesting';
 import ProfileLandingTesting from './screens/ProfileLandingTesting';
 import ForgotPasswordTwo from './screens/ForgotPasswordTwo';
+import LoginOtp from './screens/LoginOtp';
 // Sentry.init({
 //   dsn: "https://a63ad10720920c86a1b3ed3f59f53861@o4506372185784320.ingest.sentry.io/4506372188667904",
 //   // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
@@ -236,10 +237,10 @@ const OTPVerificationScreen = ({ route,navigation }) => {
   
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start',padding:16 }}>
+    <View style={{ flex: 1, alignItems: 'center',padding:16 }}>
 
 
-<View style={{ flexDirection: 'row', alignItems: 'center', marginTop: '12%', alignSelf: 'flex-start' }}>
+<View style={{ flexDirection: 'row', alignItems: 'center', marginTop: '5%', alignSelf: 'flex-start' }}>
     <TouchableOpacity onPress={() => navigation.navigate('Register')}>
       <MaterialIcons name="keyboard-arrow-left" size={35} color="black" />
     </TouchableOpacity>
@@ -247,12 +248,14 @@ const OTPVerificationScreen = ({ route,navigation }) => {
   </View>
 
 
-      <View    style={{ flexDirection: 'row', marginTop: 40 }}>
+      <View    style={{ flexDirection: 'row', marginTop: 40 ,alignItems:'center'}}>
         {/* Create six TextInput components for each digit */}
         {otpDigits.map((digit, index) => (
 
 
-<View key={index} style={{ borderColor: 'black',
+<View key={index}
+
+style={{ borderColor: 'black',
       backgroundColor: 'white',
       width: 50,
       borderWidth: 0.5,
@@ -260,6 +263,7 @@ const OTPVerificationScreen = ({ route,navigation }) => {
       fontSize: 15,
       height:55,
       borderRadius: 10,
+      alignItems:'center',
      margin:5,
       marginTop:15,
       color: 'white',  // Text color
@@ -381,9 +385,26 @@ async function registerForPushNotificationsAsync() {
 }
 const App = () => {
 
+  Notifications.setNotificationHandler({
+    handleNotification: async (notification) => {
+      console.log('Received notification:', notification);
+
+      // You can add custom logic here based on the received notification
+      // For example, you might want to navigate to a specific screen or update some state in your component.
+
+      return {
+        shouldShowAlert: true,
+      };
+    },
+  });
+
+
   useEffect(() => {
     const registerForPushNotifications = async () => {
       try {
+
+
+      
         const { status: existingStatus } = await Notifications.getPermissionsAsync();
         let finalStatus = existingStatus;
 
@@ -401,6 +422,8 @@ const App = () => {
         const { data: pushToken } = await Notifications.getExpoPushTokenAsync({
           projectId: 'd08cd3bc-ae26-4286-8e70-50acfef35d38', // Replace with your Firebase project ID
         });
+
+        await AsyncStorage.setItem('ExpoPushToken', pushToken);
         console.log('Expo Push Token:', pushToken);
       } catch (error) {
         console.error('Error getting Expo Push Token:', error);
@@ -410,13 +433,9 @@ const App = () => {
     registerForPushNotifications();
   }, []);
 
+ 
 
 
-    Notifications.setNotificationHandler({
-      handleNotification: async () => ({
-        shouldShowAlert: true
-      }),
-    });
 
   
   return (
@@ -471,6 +490,9 @@ const App = () => {
 
 
         <Stack.Screen name='KioskCode' component={KioskCode} options={{ headerShown: false }}/>
+
+
+        <Stack.Screen name='LoginOtp' component={LoginOtp} options={{ headerShown: false }}/>
 
       </Stack.Navigator>
     

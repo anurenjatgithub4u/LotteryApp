@@ -86,15 +86,32 @@ const PersonalInfoOtp = ({ route, navigation }) => {
   OTP Verification 
 </Text>
 
-    <View style={{ flexDirection: 'row', marginTop: 40, marginLeft: '6%' }}>
+<View    style={{ flexDirection: 'row', marginTop: 40 ,alignItems:'center',paddingLeft:'6%',paddingRight:'6%'}}>
    
       {otpDigits.map((digit, index) => (
-        <View key={index} style={{ borderColor: 'black', backgroundColor: 'white', width: 50, borderWidth: 0.5, borderStyle: 'solid', fontSize: 15, height: 55, borderRadius: 10, margin: 5, marginTop: 15, color: 'white', overflow: "hidden" }}>
+        <View key={index}
+        
+        style={{ borderColor: 'black',
+        backgroundColor: 'white',
+        width: 50,
+        borderWidth: 0.5,
+        borderStyle: 'solid',
+        fontSize: 15,
+        height:55,
+        borderRadius: 10,
+        alignItems:'center',
+       margin:5,
+        marginTop:15,
+        color: 'white',  // Text color
+        overflow: "hidden",}}>
           <TextInput
             key={index}
             style={{
+              alignSelf:'center',
+              textAlign:'center',
+              marginTop:'2%',
               textAlign: 'center',
-              backgroundColor: 'white'
+              backgroundColor:'white'
             }}
             keyboardType="numeric"
             maxLength={1}

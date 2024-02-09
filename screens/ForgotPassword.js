@@ -168,7 +168,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
    
   }}
 >
-          <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
           <MaterialIcons
             name="keyboard-arrow-left"
             size={35}
@@ -197,6 +197,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
       borderStyle: 'solid',
       fontSize: 15,
       borderRadius: 25,
+      
       color: 'white',  
       overflow: "hidden",}}>
       <TextInput
@@ -312,6 +313,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
     backgroundColor: 'white',
     width: 50,
     borderWidth: 0,
+    alignItems:'center',
     borderStyle: 'solid',
     fontSize: 15,
     height:58.5,

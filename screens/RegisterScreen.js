@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { TextInput as PaperTextInput } from 'react-native-paper';
 import { Alert } from 'react-native';
-
+import { responsiveFontSize, responsiveHeight } from "react-native-responsive-dimensions";
 
 const CustomPicker = ({ visible, onClose, onSelect, data }) => {
   return (
@@ -164,75 +164,113 @@ const RegisterScreen = () => {
   };
   
   return (
-    <View style={{ flex:1,alignItems: 'center',justifyContent:'center' , padding: 16 }}>
+    <View style={{ flex:1,alignItems: 'center',justifyContent:'flex-start' , padding: 16 ,paddingTop:'25%'}}>
 
     <Text  style={styles.createaccountText}>Create an Account</Text>
     <Text  style={styles.createaccountTextTwo}>Play the game and get lucky</Text>
 
-    <View style={{ borderColor: 'black',
-      backgroundColor: 'white',
-      width: '100%',
-      borderWidth: 0,
-      borderStyle: 'solid',
-      fontSize: 15,
-      height:58.5,
-      borderRadius: 25,
-      color: 'white',  // Text color
-      overflow: "hidden",}}>
-  <TextInput
-    label="Name"
+ 
+    <View
+   style={{
+    backgroundColor: '#B6B6B4',
+    borderRadius: 20,
+    padding: .8,
+    marginBottom: 7,
+    marginTop:2,
+    shadowColor: '#363636',
+ 
     
-    value={name}
-    onChangeText={setName}
-     style={{
-      color: 'white',
-     
-      backgroundColor: 'white',
-      height:60.5,
-     }}
-  />
+    borderLeftWidth:0,
+        borderRightWidth:0,
+    width:'100%',
+    borderColor:'#363636'
+}}
+>
+    <TextInput
+        label="Name"
+        value={name}
+        onChangeText={setName}
+        style={{
+          color: 'white',
+          width: '100%',
+          height: 60.5,
+          borderBottomColor: 'white',
+          borderBottomWidth: 0,
+          borderLeftWidth:.2,
+          borderRightWidth:.2,
+          borderTopWidth:.2,
+          backgroundColor:'white',
+          borderRadius: 20,
+          overflow:'hidden',
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          borderBottomLeftRadius: 20,
+          borderBottomRightRadius: 20,
+      }}
+    />
 </View>
 
 
 
-<View style={{ borderColor: 'black',
-marginTop:15,
-      backgroundColor: 'white',
-      width: '100%',
-      borderWidth: 0,
-      borderStyle: 'solid',
-      fontSize: 15,
-      borderRadius: 25,
-      height:58.5,
-      color: 'white',  // Text color
-      overflow: "hidden",}}>
+<View
+    style={{
+        backgroundColor: '#B6B6B4',
+        borderRadius: 20,
+        padding: .8,
+        marginBottom: 7,
+        marginTop:2,
+        shadowColor: '#363636',
+     
+        
+        borderLeftWidth:0,
+            borderRightWidth:0,
+        width:'100%',
+        borderColor:'#363636'
+    }}
+>
+
     <TextInput
       label="Email"
      
 
       style={{
         color: 'white',
-        backgroundColor: 'white',
-        height:60.5,
-       
-       }}
+          width: '100%',
+          height: 60.5,
+          borderBottomColor: 'white',
+          borderBottomWidth: 0,
+          borderLeftWidth:.2,
+          borderRightWidth:.2,
+          borderTopWidth:.2,
+          backgroundColor:'white',
+          borderRadius: 20,
+          overflow:'hidden',
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          borderBottomLeftRadius: 20,
+          borderBottomRightRadius: 20,
+    }}
       keyboardType="email-address"
       autoCapitalize="none"
       value={email}
       onChangeText={setEmail}
     />
+
     </View>
 
-<View style={{ flexDirection: 'row', alignItems: 'center', marginTop:15, }}>
 
-<View style={{ borderColor: 'black',
+<View style={{ flexDirection: 'row', alignItems: 'center',  }}>
+
+<View style={{ borderColor: '#B6B6B4',
       backgroundColor: 'white',
       width: '20%',
-      borderWidth: 0,
+      borderWidth:  0.7,
             borderStyle: 'solid',
       fontSize: 15,
+      height:60.5,
       borderRadius: 25,
       marginRight:15,
+     marginBottom:5,
       color: 'white',  // Text color
       overflow: "hidden",}}>
 <TouchableOpacity onPress={() => {setModalVisible(true);  logSelectedCountryCode()}}>
@@ -249,17 +287,23 @@ marginTop:15,
 </View>
 
 
-<View style={{ borderColor: 'black',
-      backgroundColor: 'white',
-      width: '75%',
-      borderWidth: 1,
-      height:58.5,
-      borderWidth: 0,
-      borderStyle: 'solid',
-      fontSize: 15,
-      borderRadius: 25,
-      color: 'white',  // Text color
-      overflow: "hidden",}}>
+<View
+    style={{
+        backgroundColor: '#B6B6B4',
+        borderRadius: 20,
+        padding: .8,
+        marginBottom: 7,
+        marginTop:4,
+        shadowColor: '#363636',
+     
+        
+        borderLeftWidth:0,
+            borderRightWidth:0,
+        width:'75%',
+        borderColor:'#363636'
+    }}
+>
+
     <TextInput
       label="Mobile Number"
       
@@ -275,10 +319,21 @@ marginTop:15,
 
       style={{
         color: 'white',
-        backgroundColor: 'white',
-        height:60.5,
-       
-       }}
+        width: '100%',
+        height: 60.5,
+        borderBottomColor: 'white',
+        borderBottomWidth: 0,
+        borderLeftWidth:.2,
+        borderRightWidth:.2,
+        borderTopWidth:.2,
+        backgroundColor:'white',
+        borderRadius: 20,
+        overflow:'hidden',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+    }}
     />
 
 </View>
@@ -287,33 +342,48 @@ marginTop:15,
 </View>
       
 
+<View
+    style={{
+        backgroundColor: '#B6B6B4',
+        borderRadius: 20,
+        padding: .8,
+        marginBottom: 10,
+        shadowColor: '#363636',
+     
+        
+        borderLeftWidth:0,
+            borderRightWidth:0,
+        width:'100%',
+        borderColor:'#363636'
+    }}
+>
 
-<View style={{ borderColor: 'black',
-      backgroundColor: 'white',
-      marginTop:15,
-      width: '100%',
-      height:58.5,
-      borderWidth: 0,
-      borderStyle: 'solid',
-      fontSize: 15,
-      borderRadius: 25,
-      color: 'white',  
-      overflow: "hidden",}}>
     <TextInput
       label="Password"
       
       style={{
         color: 'white',
-        backgroundColor: 'white',
-        height:60,
-      
-       }}
+        width: '100%',
+        height: 60.5,
+        borderBottomColor: 'white',
+        borderBottomWidth: 0,
+        borderLeftWidth:.2,
+        borderRightWidth:.2,
+        borderTopWidth:.2,
+        backgroundColor:'white',
+        borderRadius: 20,
+        overflow:'hidden',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+    }}
       secureTextEntry
       value={password}
       onChangeText={setPassword}
     />
- </View>
 
+</View>
  {loading ? (
     <ActivityIndicator style={{ marginTop: 15 }} color="#31A062" size="large" />
   ) : (
@@ -333,7 +403,7 @@ marginTop:15,
       }}
       disabled={loading}
     >
-      Craete Account
+      Create Account
     </Button>
   )}
 
@@ -372,12 +442,12 @@ const styles = StyleSheet.create({
     // Add this line to align text to the left
     width: 354,
     height: 41,
-    top: 103,
+    
     left: 30,
-
+    
     fontSize: 34, // Adjust the font size as needed
     fontWeight: 'bold',
-    marginBottom:100
+   
   },
 
   textInput: {
@@ -401,7 +471,7 @@ const styles = StyleSheet.create({
     left: 38,
   
     fontSize: 13,
-    marginBottom: 80,
+    marginBottom: 40,
     textAlign: 'left', // Add this line to align text to the left
   },
   

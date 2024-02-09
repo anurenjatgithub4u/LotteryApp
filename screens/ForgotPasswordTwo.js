@@ -318,6 +318,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
     borderRadius: 15,
    margin:5,
     marginTop:15,
+    alignItems:'center',
     color: 'white',  // Text color
     overflow: "hidden",}}>
     <TextInput

@@ -881,7 +881,7 @@ const NumberRow = ({ numbers }) => {
     </View>
   );
 };
-const HomeScreen = () => {
+const HomeScreen = ({goToGameScreen }) => {
   const navigation = useNavigation();
   const [userGames, setUserGames] = useState([]);
   const [userName, setUserName] = useState(null);
@@ -922,7 +922,7 @@ const HomeScreen = () => {
       // Check if the logout was successful.
       if (response.status === 200) {
         console.log("Logged out successfully");
-        navigation.navigate("ProfileLanding");
+        navigation.navigate("ProfileLandingTesting");
         // Redirect or perform any other action after successful logout.
       } else {
         console.error("Logout failed");
@@ -1067,7 +1067,7 @@ const HomeScreen = () => {
     try {
       // Reset the value for 'area'
       await AsyncStorage.setItem('area', '0');
-      await AsyncStorage.setItem('level', '1');
+      await AsyncStorage.setItem('level', '0');
 
       // Navigate to ALScreen
       navigation.navigate('ALScreen');
@@ -1076,6 +1076,35 @@ const HomeScreen = () => {
     }
   };
 
+
+  const resetTwo = async () => {
+    try {
+      // Reset the value for 'area'
+      await AsyncStorage.setItem('area', '2');
+      await AsyncStorage.setItem('level', '0');
+
+      const areaType = await AsyncStorage.getItem("area");
+
+      // Navigate to ALScreen
+      navigation.navigate('ALScreen',{areaType});
+    } catch (error) {
+      console.error('Error setting value for "area" or navigating to ALScreen:', error.message);
+    }
+  };
+  const resetOne = async () => {
+    try {
+      // Reset the value for 'area'
+      await AsyncStorage.setItem('area', '1');
+      await AsyncStorage.setItem('level', '0');
+
+      const areaType = await AsyncStorage.getItem("area");
+
+      // Navigate to ALScreen
+      navigation.navigate('ALScreen',{areaType});
+    } catch (error) {
+      console.error('Error setting value for "area" or navigating to ALScreen:', error.message);
+    }
+  };
 
   useFocusEffect(
     React.useCallback(() => {
@@ -1187,8 +1216,9 @@ const HomeScreen = () => {
     return () => backHandler.remove();
   }, [navigation]);
 
-
-
+  const navigateToGameScreen = () => {
+    navigation.navigate('Game'); // 'Gam' is the name of the screen in GameNavigator
+  };
 
   return (
     <View style={{ flex:1, paddingLeft: 16 , paddingRight:16 ,paddingTop:"12%"}}>
@@ -1238,12 +1268,60 @@ const HomeScreen = () => {
             
           }}
         >
-          <Text style={styles.createdAtText}>Africa winning numbers</Text>
+  {loading ? (
+          <ActivityIndicator   style={{marginLeft:20,alignSelf:'center'}}size="small" color="white" />
+        ) : (
+          <Text  style={{color:'white',marginBottom:responsiveFontSize(1)}}>Winning Amount : {ContinentSymbol}{ContinentWinningAmount}</Text>
+
+        )}
+
+
+                 
 
          
         </View>
-        <Text  style={{color:'white',marginBottom:responsiveFontSize(1)}}>Winning Amount : {ContinentSymbol}{ContinentWinningAmount}</Text>
-        <NumberRow numbers={previousWinningContinentNumbers} />
+
+        {previousWinningContinentNumbers && previousWinningContinentNumbers.length ?(
+
+<>
+<Text style={styles.createdAtText}>Continent winning numbers</Text>
+       {loading ? (
+         <ActivityIndicator   style={{marginLeft:20}}size="small" color="white" />
+       ) : (
+       <NumberRow numbers={previousWinningContinentNumbers} />
+       )}
+ </>
+
+  
+   ):(
+
+<>
+
+<LinearGradient
+          colors={["#F0C735", "#D98F39"]} // Example colors, replace with your desired gradient colors
+          style={styles.buycreditscardTwo}
+        >
+          <TouchableOpacity onPress={resetOne }>
+
+          <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+          
+              <Text style={{ color: "white" , alignSelf:"center"}}>Play Now</Text>
+
+              </View>
+            
+          </TouchableOpacity>
+        </LinearGradient></>
+
+
+   
+   )}
+
       </LinearGradient>
 
       <LinearGradient
@@ -1258,13 +1336,49 @@ const HomeScreen = () => {
            
           }}
         >
-          <Text style={styles.createdAtText}>{countryName} winning numbers</Text>
-
+           {loading ? (
+          <ActivityIndicator   style={{marginLeft:20,alignSelf:'center'}}size="small" color="white" />
+        ) : (
+            <Text  style={{color:'white',marginBottom:responsiveFontSize(1)}}>Winning Amount : {CountrySymbol}{CountryWinningAmount}</Text>
+            )}
          
         </View>
 
-        <Text  style={{color:'white',marginBottom:responsiveFontSize(1)}}>Winning Amount : {CountrySymbol}{CountryWinningAmount}</Text>
-        <NumberRow numbers={previousWinningNumbers} />
+
+
+        {previousWinningNumbers && previousWinningNumbers.length > 0 ? (
+  <>
+    <Text style={styles.createdAtText}>{countryName} winning numbers</Text>
+
+    {loading ? (
+      <ActivityIndicator style={{ marginLeft: 20, alignSelf: 'center' }} size="small" color="white" />
+    ) : (
+      <NumberRow numbers={previousWinningNumbers} />
+    )}
+  </>
+) : (
+<LinearGradient
+          colors={["#F0C735", "#D98F39"]} // Example colors, replace with your desired gradient colors
+          style={styles.buycreditscardTwo}
+        >
+          <TouchableOpacity onPress={resetTwo }>
+
+          <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+          
+              <Text style={{ color: "white" , alignSelf:"center",fontSize:10}}>Play Now</Text>
+
+              </View>
+            
+          </TouchableOpacity>
+        </LinearGradient>)}
+
+
       </LinearGradient>
 
 
@@ -1337,14 +1451,22 @@ const HomeScreen = () => {
    
   }}
 >
-  <Text style={styles.previousgames}>Previous 5 Games</Text>
+{userGames.length === 0 || userGames === null ? (
+        <Text style={styles.previousgames}>No Previous Games</Text>
+      ) : userGames.length < 5 ? (
+        <Text style={styles.previousgames}>Previous Games</Text>
+      ) : (
+        <Text style={styles.previousgames}>Previous 5 Games</Text>
+      )}
+
+      
   <View style={{ flexDirection: "row", alignItems: "center" }}>
-    <TouchableOpacity onPress={() => navigation.navigate("Gam")}>
+    <TouchableOpacity onPress={navigateToGameScreen}>
       <Text style={styles.seeAll}>See all</Text>
     </TouchableOpacity>
 
 
-    <TouchableOpacity onPress={() => navigation.navigate("Gam")}>
+    <TouchableOpacity onPress={navigateToGameScreen}>
       <AntDesign
         name="arrowright"
         style={{ marginLeft: wp("1%") }}
@@ -1560,7 +1682,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#31A078",
     elevation: 3,
     flex: 1,// Responsive height using heightPercentageToDP
-    alignSelf:'center'
+    alignSelf:'center',
+    alignItems:'flex-start'
   },
   playNowcard: {
     width: wp("33%"), // Adjust the percentage as needed
@@ -1588,6 +1711,19 @@ const styles = StyleSheet.create({
     paddingLeft: wp("4%"), // Responsive paddingLeft
     marginRight: wp("1%"), // Responsive marginRight
     marginLeft: wp("10%"), // Responsive marginLeft
+    alignSelf: "flex-start",
+  },
+  buycreditscardTwo: {
+    width: wp("23%"), // Adjust the percentage as needed
+    margin: wp("0.5%"), // Responsive margin
+    padding: wp("3%"), // Responsive padding
+    borderRadius: wp("2%"), // Responsive borderRadius
+    
+   
+    minHeight: hp("3%"), // Responsive height using heightPercentageToDP
+    paddingLeft: wp("4%"), // Responsive paddingLeft
+    marginRight: wp("1%"), // Responsive marginRight
+     // Responsive marginLeft
     alignSelf: "flex-start",
   },
   containerSecond: {

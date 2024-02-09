@@ -6,7 +6,8 @@ import { FontAwesome } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { useFocusEffect } from "@react-navigation/native";
-import { responsiveFontSize, responsiveHeight } from "react-native-responsive-dimensions";
+import { responsiveFontSize, responsiveHeight ,responsiveWidth} from "react-native-responsive-dimensions";
+
 
 const RedeemPage = () => {
   const navigation = useNavigation();
@@ -54,7 +55,7 @@ const RedeemPage = () => {
       <View
         style={{
           flexDirection: 'row',
-          alignItems: 'flex-start',
+          alignItems: 'center',
           justifyContent: 'flex-start',
          
         }}
@@ -107,7 +108,7 @@ const RedeemPage = () => {
           }}
           style={{
             backgroundColor: '#31A062',
-            width: 354,
+            width: '100%',
             marginVertical: 10,
             marginTop: 15,
             alignSelf: 'center',

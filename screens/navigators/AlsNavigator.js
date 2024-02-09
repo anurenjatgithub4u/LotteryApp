@@ -10,6 +10,37 @@ import GameDetailsPageTwo from '../GameDetailsPageTwo';
 const Stack = createStackNavigator();
 
 function ALSNaviagator() {
+
+
+  // const navigateToGameDetailsPage = () => {
+  //   navigation.dispatch(
+  //     CommonActions.navigate({
+  //       name: 'Game',
+  //       params: {
+  //         screen: GameDetailsPage,
+  //         params: {
+  //           // Your game details here
+  //         },
+  //       },
+  //     })
+  //   );
+  // };
+
+  const navigateToPlayedGame = () => {
+    navigation.dispatch(
+      CommonActions.navigate({
+        name: 'Gam',  // Fix the typo here
+        params: {
+          screen: GameScreen,
+          params: {
+            // Your PlayedGame details here
+          },
+        },
+      })
+    );
+  };
+
+
   console.log(Stack);
   return (
     <Stack.Navigator
@@ -17,13 +48,16 @@ function ALSNaviagator() {
         headerShown: false,
       }}
       initialRouteName="Login">
-      <Stack.Screen name="Hom" component={HomeScreen} />
+       <Stack.Screen name="Hom" component={HomeScreen} navigateToPlayedGame={navigateToPlayedGame} />
 
       
       <Stack.Screen name="GameDetailsPageTwo" component={GameDetailsPageTwo} />
       <Stack.Screen name="ALScreen" component={MyCardComponent} />
-      <Stack.Screen name="PlayedGame" component={PlayedGame}  options={{ headerShown: false }} />
+
       
+     
+            <Stack.Screen name="PlayedGame" component={PlayedGame}  options={{ headerShown: false }} />
+
     </Stack.Navigator>
   );
 }

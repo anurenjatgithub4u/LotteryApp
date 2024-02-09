@@ -485,6 +485,8 @@ import { useAuth } from './auth/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { Alert } from 'react-native';
+import { responsiveFontSize, responsiveHeight } from "react-native-responsive-dimensions";
+
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -623,12 +625,14 @@ const LoginScreen = ({ navigation }) => {
   
     return unsubscribe;
   }, [navigation]);
-  
-  
+ 
+ 
+    
   
   const handleLogin = async () => {
     try {
       setLoading(true);
+      const storedPushToken = await AsyncStorage.getItem('ExpoPushToken');
       // Validate input fields (you may want to add more validation)
       if (!email || !password) {
         console.log('Please fill in all fields');
@@ -644,7 +648,7 @@ const LoginScreen = ({ navigation }) => {
         body: JSON.stringify({
           email,
           password,
-          pushNotificationToken:'NR8AdCA0x-RmA1L7JSb_LL'
+          pushNotificationToken:storedPushToken
         }),
       });
       
@@ -659,6 +663,8 @@ const LoginScreen = ({ navigation }) => {
         const credits = result.data.user.credits;
         const userId = result.data.user._id;
         const userName = result.data.user.name;
+
+        const userDate = result.data.user.createdAt;
         // Access user details from the response
         const user = result.message.user;
         console.log('User Details:', user);
@@ -674,6 +680,7 @@ const LoginScreen = ({ navigation }) => {
 
          await AsyncStorage.setItem('userId', userId);
          await AsyncStorage.setItem('userName', userName);
+         await AsyncStorage.setItem('userDate', userDate);
          await AsyncStorage.setItem('credits', credits.toString());
 
 
@@ -687,6 +694,7 @@ const LoginScreen = ({ navigation }) => {
       } else {
         // If login fails, handle the error (show an alert, etc.)
         console.error('Login failed');
+        console.log("push notification" , storedPushToken)
 
         Alert.alert(
           '',
@@ -702,10 +710,59 @@ const LoginScreen = ({ navigation }) => {
       setLoading(false);
     }
   };
+
+
+
+  const loginWithNumber = async () => {
+    try {
+
+      const number = `${selectedCountry}${mobileNumberLogin}`
+      const response = await fetch('https://lottery-backend-tau.vercel.app/api/v1/auth/login-with-number', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          mobileNumber: number,
+        }),
+      });
+      
+      if (!response.ok) {
+        // Handle error cases
+        const errorData = await response.json();
+        console.error(`Error: ${errorData.message}`);
+
+       
+        // You may want to display an error message to the user
+      } else {
+        // Request successful
+        const responseData = await response.json();
+        navigation.navigate('LoginOtp',{mobileNumber: number})
+        console.log("Success",responseData); // You can handle the success response here
+        // For example, display a success message to the user or redirect them
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      
+      // Handle unexpected errors
+    }
+  };
+  
+  const loginUser = async () => {
+    const storedPushToken = await AsyncStorage.getItem('ExpoPushToken');
+  
+    if (email && password) {
+      // If email and password are provided, call handleLogin
+      await handleLogin(email, password, storedPushToken);
+    } else {
+      // If email and password are not provided, call loginWithNumber
+      await loginWithNumber(storedPushToken);
+    }
+  };
   
 
   return (
-    <View style={{ flex:1,alignItems: 'center',justifyContent:'flex-start' , padding: 16 }}>
+    <View style={{ flex:1,alignItems: 'center',justifyContent:'flex-start' , padding: 16,paddingTop:'25%' }}>
 
 <StatusBar backgroundColor={"transparent"} translucent />
 
@@ -713,60 +770,99 @@ const LoginScreen = ({ navigation }) => {
          <Text  style={styles.createaccountText}>Login</Text>
     <Text  style={styles.createaccountTextTwo}>Play and manage your games</Text>
 
-
-    <View style={{ borderColor: 'black',
-      backgroundColor: 'white',
-      width: '100%',
-      borderWidth: 0,
-      borderStyle: 'solid',
-      fontSize: 15,
-      height:58.5,
-      borderRadius: 25,
-
-      color: 'white',  // Text color
-      overflow: "hidden",}}>
-      <TextInput
-        label="Email"
-       
-        style={{ color: 'white',
+    <View
+    style={{
+        backgroundColor: '#B6B6B4',
+        borderRadius: 20,
+        padding: .8,
+        marginBottom: 6,
+        shadowColor: '#363636',
      
-        backgroundColor: 'white',
-        height:60.5, }}
-        keyboardType="email-address"
-        autoCapitalize="none"
-        value={email}
-        onChangeText={setEmail}
         
-      />
-      </View>
+        borderLeftWidth:0,
+            borderRightWidth:0,
+        width:'100%',
+        borderColor:'#363636'
+    }}
+>
 
-
-      <View style={{ borderColor: 'black',
-      backgroundColor: 'white',
-      width: '100%',
-      borderWidth: 0,
-      borderStyle: 'solid',
-      fontSize: 15,
-      height:58.5,
-      borderRadius: 25,
-      marginTop:15,
-      color: 'white',  // Text color
-      overflow: "hidden",}}>
-      <TextInput
-        label="Password"
-        
-        style={{ color: 'white',
+    <TextInput
+      label="Email"
      
-        backgroundColor: 'white',
-        height:60.5, }}
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-       
-      />
 
+      style={{
+        color: 'white',
+        width: '100%',
+        height: 60.5,
+        borderBottomColor: 'white',
+        borderBottomWidth: 0,
+        borderLeftWidth:.2,
+        borderRightWidth:.2,
+        borderTopWidth:.2,
+        backgroundColor:'white',
+        borderRadius: 20,
+        overflow:'hidden',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+    }}
+      keyboardType="email-address"
+      autoCapitalize="none"
+      value={email}
+      onChangeText={setEmail}
+    />
+
+    </View>
+
+
+    <View
+    style={{
+        backgroundColor: '#B6B6B4',
+        borderRadius: 20,
+        padding: .8,
+        marginBottom: 10,
+        shadowColor: '#363636',
+        marginTop:5,
+        
+        borderLeftWidth:0,
+            borderRightWidth:0,
+        width:'100%',
+        borderColor:'#363636'
+    }}
+>
+
+    <TextInput
+      label="Password"
       
-   </View>
+      style={{
+        color: 'white',
+        width: '100%',
+        height: 60.5,
+        borderBottomColor: 'white',
+        borderBottomWidth: 0,
+        borderLeftWidth:.2,
+        borderRightWidth:.2,
+        borderTopWidth:.2,
+        backgroundColor:'white',
+        borderRadius: 20,
+        marginTop:.2,
+        overflow:'hidden',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+    }}
+      secureTextEntry
+      value={password}
+      onChangeText={setPassword}
+    />
+
+</View>
+
+
+
+
 
    <Text style={{ marginVertical: 10, color: '#31A062' }}>Or</Text>
 
@@ -779,12 +875,14 @@ const LoginScreen = ({ navigation }) => {
 <View style={{ borderColor: 'black',
       backgroundColor: 'white',
       width: '20%',
-      borderWidth: 0,
+      borderWidth: 0.5,
             borderStyle: 'solid',
+            height:60.5,
+            marginBottom:10,
       fontSize: 15,
       borderRadius: 25,
       marginRight:15,
-      color: 'white',  // Text color
+      color: 'white',  
       overflow: "hidden",}}>
 <TouchableOpacity onPress={() => setModalVisible(true)}>
         <Text style={styles.selectedCountryText}>
@@ -801,26 +899,42 @@ const LoginScreen = ({ navigation }) => {
 
 
 
-<View style={{ borderColor: 'black',
-      backgroundColor: 'white',
-      width: '75%',
-      borderWidth: 1,
-      height:58.5,
-      borderWidth: 0,
-      borderStyle: 'solid',
-      fontSize: 15,
-      borderRadius: 25,
-      color: 'white',  // Text color
-      overflow: "hidden",}}>
+<View
+    style={{
+        backgroundColor: '#B6B6B4',
+        borderRadius: 20,
+        padding: .8,
+        marginBottom: 10,
+        shadowColor: '#363636',
+     
+        
+        borderLeftWidth:0,
+            borderRightWidth:0,
+        width:'75%',
+        borderColor:'#363636'
+    }}
+>
 <TextInput
       label="Mobile Number"
       
+     
       style={{
         color: 'white',
-        backgroundColor: 'white',
-        height:60.5,
-       
-       }}
+        width: '100%',
+        height: 60.5,
+        borderBottomColor: 'white',
+        borderBottomWidth: 0,
+        borderLeftWidth:.2,
+        borderRightWidth:.2,
+        borderTopWidth:.2,
+        backgroundColor:'white',
+        borderRadius: 20,
+        overflow:'hidden',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+    }}
       keyboardType="phone-pad" // Use 'phone-pad' keyboard type for mobile numbers
       value={mobileNumberLogin}
       onChangeText={setMobileNumberLogin}
@@ -836,7 +950,7 @@ const LoginScreen = ({ navigation }) => {
   ) : (
     <Button
       mode="contained"
-      onPress={handleLogin}
+      onPress={loginUser}
       contentStyle={{
         height: 60,
         justifyContent: 'center',
@@ -898,12 +1012,12 @@ const styles = StyleSheet.create({
     // Add this line to align text to the left
     width: 354,
     
-    top: 99,
+   
     left: 30,
      minHeight: hp("7%"),
     fontSize: 34, // Adjust the font size as needed
     fontWeight: 'bold',
-    marginBottom:90
+   
   },
 
   createaccountTextTwo: {
@@ -911,11 +1025,11 @@ const styles = StyleSheet.create({
     fontSize: 17,
     width: 354,
     height: 22,
-    top: 10,
+    
     left: 33,
   
     fontSize: 13,
-    marginBottom: 80,
+    marginBottom: 40,
     textAlign: 'left', // Add this line to align text to the left
   },
   modalContent: {

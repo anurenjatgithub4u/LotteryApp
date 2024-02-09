@@ -514,7 +514,10 @@ import { StatusBar } from "expo-status-bar";
 const { width, height } = Dimensions.get("window");
 const SCREEN_WIDTH = width < height ? width : height;
 
-const MyCardComponent = () => {
+const MyCardComponent = ({route }) => {
+
+const areaType = route.params;
+
   const navigation = useNavigation();
   const [userCredits, setUserCredits] = useState(0);
   const [pressed, setPressed] = useState(false);
@@ -529,6 +532,9 @@ const MyCardComponent = () => {
   const [commonArea,setCommonArea] = useState(0);
   const [areaText, setAreaText] = useState('');
   const [credits, setCredits] = useState(0);
+  const [winningAmt, setwinningAmt] = useState("");
+
+ 
 
   const [CountrySymbol, setCountrySymbol] = useState([]);
   const [ContinentSymbol, setContinentSymbol] = useState([]);
@@ -537,6 +543,20 @@ const MyCardComponent = () => {
   const [countryName, setcountryName] = useState([]);
   const [ContinentWinningAmount, setContinentWinningAmount] = useState([]);
   const [CountryWinningAmount, setCountryWinningAmount] = useState([]);
+
+
+  const [creditsMain, setcreditsMain] = useState(false);
+
+
+  const [creditsForContinentLevelOne, setcreditsForContinentLevelOne] = useState("");
+  const [creditsForContinentLevelTwo, setcreditsForContinentLevelTwo] = useState("");
+  const [creditsForContinentLevelThree, setcreditsForContinentLevelThree] = useState("");
+  
+  
+  
+  const [creditsForCountryLevelOne, setcreditsForCountryLevelOne] = useState("");
+  const [creditsForCountryLevelTwo, setcreditsForCountryLevelTwo] = useState("");
+  const [creditsForCountryLevelThree, setcreditsForCountryLevelThree] = useState("");
   
   const [previousWinningContinentNumbers, setPreviousWinningContinentNumbers] = useState([]);
 
@@ -590,6 +610,14 @@ const MyCardComponent = () => {
         setCountryWinningAmount(data.message.CountryWinningAmount)
         setCountrySymbol(data.message.countrySymbol)
         setContinentSymbol(data.message.ContinentCurrencySymbol)
+
+        setcreditsForContinentLevelOne(data.message.creditsForContinentLevelOne)
+        setcreditsForContinentLevelTwo(data.message.creditsForContinentLevelTwo)
+        setcreditsForContinentLevelThree(data.message.creditsForContinentLevelThree)
+
+        setcreditsForCountryLevelOne(data.message.creditsForCountryLevelOne)
+        setcreditsForCountryLevelTwo(data.message.creditsForCountryLevelTwo)
+        setcreditsForCountryLevelThree(data.message.creditsForCountryLevelThree)
         console.log("country winning numbers country winning numbers  country winning numbers country winning numbers",data.message )// Assuming "country" is an array
       } catch (error) {
         console.error(error.message);
@@ -637,6 +665,50 @@ const MyCardComponent = () => {
 
 
   useEffect(() => {
+    const fetchCreditss = async () => {
+      try {
+        // Retrieve areaValue and levelValue from AsyncStorage
+        const areaValue = await AsyncStorage.getItem("area");
+        const levelValue = await AsyncStorage.getItem("level");
+
+        // Set the areaText based on the areaValue
+        let fetchedCredit = "";
+
+        if (areaValue === "1") {
+         
+
+          if(levelValue === "1"){
+            fetchedCredit  = creditsForContinentLevelOne;
+          }else if(levelValue === "2"){
+            fetchedCredit  = creditsForContinentLevelTwo;
+          }else{
+            fetchedCredit  = creditsForContinentLevelThree
+          }
+
+
+
+        } else if (areaValue === "2") {
+          if(levelValue === "1"){
+            fetchedCredit  = creditsForCountryLevelOne;
+          }else if(levelValue === "2"){
+            fetchedCredit  = creditsForCountryLevelTwo;
+          }else{
+            fetchedCredit  = creditsForCountryLevelThree;
+          }
+        } 
+
+        // Update state variables
+        setcreditsMain(fetchedCredit);
+      } catch (error) {
+        console.error("Error fetching data from AsyncStorage:", error.message);
+      }
+    };
+
+    // Call the fetchData function when the component mounts
+    fetchCreditss();
+  }, []);
+
+  useEffect(() => {
     // Add event listener for hardware back button press
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
       // Handle back button press
@@ -658,6 +730,9 @@ const MyCardComponent = () => {
   }, [navigation]);
 
   const checkCreditsAndNavigate =  async () => {
+
+    console.log("last winning ...." , winningAmt)
+   
     // Replace 0 with the actual condition to check if credits are 0
     if (credits === 0) {
       Alert.alert(
@@ -671,21 +746,27 @@ const MyCardComponent = () => {
         // Retrieve 'area' and 'level' values from AsyncStorage
         const areaValue = await AsyncStorage.getItem('area');
         const levelValue = await AsyncStorage.getItem('level');
-    
+       
         // Check the conditions and navigate accordingly
         if (areaValue === '1' && levelValue === '1') {
         
-          navigation.navigate('Play', { countryName,CountrySymbol });
+          navigation.navigate('Play', { countryName,CountrySymbol,creditsForContinentLevelOne,creditsForContinentLevelTwo,
+            creditsForContinentLevelThree,creditsForCountryLevelOne,creditsForCountryLevelTwo,creditsForCountryLevelThree,ContinentWinningAmount,CountryWinningAmount });
         } else if(areaValue === '1' && levelValue === '2') {
-          navigation.navigate('Play', { countryName,CountrySymbol });
+          navigation.navigate('Play', { countryName,CountrySymbol,creditsForContinentLevelOne,creditsForContinentLevelTwo,
+            creditsForContinentLevelThree,creditsForCountryLevelOne,creditsForCountryLevelTwo,creditsForCountryLevelThree ,ContinentWinningAmount,CountryWinningAmount});
         }else if(areaValue === '1' && levelValue === '3') {
-          navigation.navigate('Play', { countryName,CountrySymbol });
+          navigation.navigate('Play', { countryName,CountrySymbol,creditsForContinentLevelOne,creditsForContinentLevelTwo,
+            creditsForContinentLevelThree,creditsForCountryLevelOne,creditsForCountryLevelTwo,creditsForCountryLevelThree ,ContinentWinningAmount,CountryWinningAmount});
         }else if(areaValue === '2' && levelValue === '1') {
-          navigation.navigate('Play', { countryName,CountrySymbol });
+          navigation.navigate('Play', { countryName,CountrySymbol,creditsForContinentLevelOne,creditsForContinentLevelTwo,
+            creditsForContinentLevelThree,creditsForCountryLevelOne,creditsForCountryLevelTwo,creditsForCountryLevelThree,ContinentWinningAmount ,CountryWinningAmount});
         }else if(areaValue === '2' && levelValue === '2') {
-          navigation.navigate('Play', { countryName,CountrySymbol });
+          navigation.navigate('Play', { countryName,CountrySymbol,creditsForContinentLevelOne,creditsForContinentLevelTwo,
+            creditsForContinentLevelThree,creditsForCountryLevelOne,creditsForCountryLevelTwo,creditsForCountryLevelThree ,ContinentWinningAmount,CountryWinningAmount});
         }else if(areaValue === '2' && levelValue === '3') {
-          navigation.navigate('Play', { countryName,CountrySymbol });
+          navigation.navigate('Play', { countryName,CountrySymbol,creditsForContinentLevelOne,creditsForContinentLevelTwo,
+            creditsForContinentLevelThree,creditsForCountryLevelOne,creditsForCountryLevelTwo,creditsForCountryLevelThree , ContinentWinningAmount,CountryWinningAmount});
         }
   
         console.log("testing area", areaValue)
@@ -696,10 +777,41 @@ const MyCardComponent = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchDataWinnigAmt = async () => {
+
+      console.log("winning Amt fetched",winningAmt)
+      try {
+        // Retrieve areaValue and levelValue from AsyncStorage
+        const areaValue = await AsyncStorage.getItem("area");
+        const levelValue = await AsyncStorage.getItem("level");
+    
+        // Set the areaText based on the areaValue
+        let winningAmount = "";
+
+        if (areaValue === "1") {
+          winningAmount = ContinentWinningAmount;
+        } else if (areaValue === "2") {
+          winningAmount = CountryWinningAmount;
+        } else {
+          // Handle other area values if needed
+        }
+
+        // Update state variables
+        setwinningAmt(winningAmount);
+      } catch (error) {
+        console.error("Error fetching data from AsyncStorage:", error.message);
+      }
+    };
+
+    // Call the fetchData function when the component mounts
+    fetchDataWinnigAmt();
+  }, []);
+
 
   const checking = async() => {
     console.log("area ?....." ,commonArea)
-    console.log("level ?....." ,commonLevel)
+    console.log("credits ?....." ,creditsForContinentLevelOne)
 
   }
   
@@ -714,7 +826,22 @@ const MyCardComponent = () => {
     setPressed(!pressed);
     console.log("area is testing......", commonArea);
 };
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      // Fetch the value of 'area' from AsyncStorage
+      const areaValue = await AsyncStorage.getItem('area');
 
+      // Update the state with the fetched value
+      setCommonArea(parseInt(areaValue) || 0);
+    } catch (error) {
+      console.error('Error fetching value for "area":', error.message);
+    }
+  };
+
+  // Call the fetchData function when the component mounts
+  fetchData();
+}, []);
 
 
 // Call handlePress wherever you need to trigger the functionality
@@ -876,7 +1003,7 @@ const MyCardComponent = () => {
       <TouchableHighlight
         style={[
           styles.buttonContainer,
-          { backgroundColor: commonArea==2 ? '#31A062' : 'rgba(49, 160, 98, 0.33)' },
+          { backgroundColor: commonArea === 2 || areaType === 2 ? '#31A062' : 'rgba(49, 160, 98, 0.33)' },
         ]}
         onPress={handlePressNational}
         underlayColor="#31A062" // This sets the color when the button is pressed

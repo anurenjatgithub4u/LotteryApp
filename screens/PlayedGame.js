@@ -228,11 +228,11 @@ const NumberRow = ({ numbers }) => {
 };
 
 const PlayedGame = ({ route }) => {
-  const { gameNumber,currentDate,gameType ,announcementDate,winningAmt ,gameSymbol} = route.params;
+  const { gameNumber,currentDate,gameType ,announcementDate,winningAmt ,gameSymbol,level,winnerAmt} = route.params;
   const navigation = useNavigation();
   const parsedDate = new Date(currentDate);
   const [areaText, setAreaText] = useState('');
-  const [levelText, setLevelText] = useState('');
+ 
   const [previousWinningContinentNumbers, setPreviousWinningContinentNumbers] = useState([]);
 
   const [previousWinningNumbers, setPreviousWinningNumbers] = useState([]);
@@ -245,8 +245,15 @@ const PlayedGame = ({ route }) => {
   };
   const formattedAnnouncementDate = new Date(announcementDate).toLocaleDateString('en-GB', {
     day: 'numeric',
-    month: 'long',
+    month: 'short',
     year: 'numeric',
+  });
+
+
+  const formattedAnnouncementTime = new Date(announcementDate).toLocaleTimeString('en-GB', {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true, 
   });
 
   const navigateToGameScreen = () => {
@@ -286,35 +293,6 @@ const PlayedGame = ({ route }) => {
 
 
 
-  useEffect(() => {
-    const fetchLevel = async () => {
-      try {
-        // Retrieve areaValue and levelValue from AsyncStorage
-        const areaValue = await AsyncStorage.getItem('area');
-        const levelValue = await AsyncStorage.getItem('level');
-
-        // Set the areaText based on the areaValue
-        let newLevelText = '';
-
-        if (levelValue === '1') {
-          newLevelText = ' 1';
-        } else if (levelValue === '2') {
-          newLevelText = ' 2';
-        } else if(levelValue === '3'){
-          newLevelText = ' 3';
-        }
-
-        // Update state variables
-        setLevelText(newLevelText);
-       
-      } catch (error) {
-        console.error('Error fetching data from AsyncStorage:', error.message);
-      }
-    };
-
-    // Call the fetchData function when the component mounts
-    fetchLevel();
-  }, []); 
 
 
   useEffect(() => {
@@ -399,7 +377,7 @@ const PlayedGame = ({ route }) => {
     style={{
      
      
-      padding:responsiveHeight(3),
+      padding:responsiveHeight(4),
       paddingTop: "12%",
     }}>
       <StatusBar backgroundColor={"transparent"} translucent />
@@ -414,7 +392,7 @@ const PlayedGame = ({ route }) => {
       <Text style={styles.dateText}>{parsedDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</Text>
 
     
-<Text style={styles.subtitle}> {gameType}, Level {levelText}, {gameSymbol}{winningAmt}</Text>
+<Text style={styles.subtitle}> {gameType}, Level {level}, {gameSymbol}{winnerAmt}</Text>
 
       
       <LinearGradient
@@ -430,8 +408,16 @@ const PlayedGame = ({ route }) => {
 
 
 
+<View style={{flexDirection:'row'}}>
 
 <Text style={styles.dateTextTwo}>{formattedAnnouncementDate}</Text>
+
+<Text style={styles.dateTextTwo}>,{formattedAnnouncementTime}</Text>
+</View>
+
+
+
+
 
 <LinearGradient  colors={['#F0C735', '#D98F39']}  style={styles.doneButton}>
 

@@ -73,13 +73,13 @@ const PurchaseScreen = () => {
 
 
   return (
-    <View>
+    <View style={{ flex:1, paddingLeft: 16 , paddingRight:16 }}>
     <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
       <MaterialIcons
         name="keyboard-arrow-left"
         size={35}
         color="black"
-        style={{ marginLeft: 10, paddingTop: '12%' }}
+        style={{  paddingTop: '12%' }}
       />
     </TouchableOpacity>
 
@@ -92,7 +92,7 @@ const PurchaseScreen = () => {
       <ScrollView style={{ marginBottom: 150 }}>
         {purchases.map((purchase) => (
           <View key={purchase._id}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' ,justifyContent:'space-between'}}>
               <Image
                 source={{
                   uri: 'https://www.europeanbusinessreview.com/wp-content/uploads/2020/01/ThinkstockPhotos-172587244-1.jpg',
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
       myPurchase: {
         fontSize: 34,
         fontWeight: '700',
-        marginStart:'5%'
+        
         
       },
       
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
         marginTop:40,
         paddingLeft:32,
         paddingStart:32,
-        marginLeft:32
+        
       },
 
       detailsText:{

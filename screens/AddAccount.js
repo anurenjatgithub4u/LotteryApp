@@ -232,7 +232,7 @@ const styles =  StyleSheet.create({
     height: 100,
     borderRadius: 50,
     alignSelf:'center',
-    marginTop:'15%'
+    marginTop:'5%'
   },
 });
 

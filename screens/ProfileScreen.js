@@ -23,6 +23,8 @@ const ProfileScreen = () => {
   const navigation = useNavigation();
   const [userName, setUserName] = useState(null);
 
+  const [userSince, setUserSince] = useState(null);
+
   const logout = async () => {
     try {
       // Replace 'YOUR_BACKEND_URL' with the actual URL of your backend server.
@@ -47,7 +49,7 @@ const ProfileScreen = () => {
       // Check if the logout was successful.
       if (response.status === 200) {
         console.log('Logged out successfully');
-        navigation.navigate('ProfileLanding');
+        navigation.navigate('ProfileLandingTesting');
         // Redirect or perform any other action after successful logout.
       } else {
         console.error('Logout failed');
@@ -64,13 +66,29 @@ const ProfileScreen = () => {
     // Use navigation.navigate to navigate to the Notification screen
     navigation.navigate('Notification'); // Replace 'Notification' with the name of your Notification screen
   };
+
+
+  const formattedDate = (dateString) => {
+    const options = { month: 'long', year: 'numeric' };
+    const formatted = new Date(dateString).toLocaleDateString(undefined, options);
+    return formatted;
+  };
+
+
+  const formattedUserSince = formattedDate(userSince);
+
+  
   useEffect(() => {
     // Function to retrieve userName from AsyncStorage
     const getUserNameFromStorage = async () => {
       try {
         const storedUserName = await AsyncStorage.getItem('userName');
+
+        const storedUserDate = await AsyncStorage.getItem('userDate');
+
         if (storedUserName !== null) {
           setUserName(storedUserName);
+          setUserSince(storedUserDate);
         }
       } catch (error) {
         console.error('Error retrieving userName from AsyncStorage:', error);
@@ -135,7 +153,7 @@ return(
     <Text style={styles.userName}> {userName || 'Guest'}</Text>
 
     {/* Member Since */}
-    <Text style={styles.memberSince}>Member since January 2022</Text>
+    <Text style={styles.memberSince}>Member since {formattedUserSince}</Text>
 
 
     

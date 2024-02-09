@@ -430,16 +430,15 @@ const GameDetailsPageTwo = ({ route }) => {
       try {
         const data = await fetchPreviousGameWinningNumbers();
 
-        if (game.gameType === "Continent") {
-          setPreviousWinningNumbers(data.message.continent || []);
-        } else {
-          setPreviousWinningNumbers(data.message.country || []);
-        }
-
-        if (game.isDrawPerformed === false) {
-          setPreviousWinningNumbers(data.message.continent || []);
-        } else {
-          setPreviousWinningNumbers(data.message.country || []);
+     
+        if(game.gameType === "Continent"){
+          if(game.isDrawPerformed === true){
+            setPreviousWinningNumbers(data.message.continent || []);
+          }
+        }else{
+          if(game.isDrawPerformed === true){
+            setPreviousWinningNumbers(data.message.country || []);
+          }
         }
 
         setContinentSymbol(data.message.ContinentCurrencySymbol);
@@ -526,7 +525,9 @@ const GameDetailsPageTwo = ({ route }) => {
 
       </LinearGradient>
 
-      <Text style={styles.matchedNumberText}>
+      {game.isDrawPerformed ?(
+   <>
+ <Text style={styles.matchedNumberText}>
         {" "}
         You have matched {matchNumbers} Numbers{" "}
       </Text>
@@ -539,6 +540,18 @@ const GameDetailsPageTwo = ({ route }) => {
           {game.prizeMoney}
         </Text>
       </View>
+
+  </>
+   ):(
+
+    <>
+     
+    </>
+   )
+
+ 
+
+   }
 
     
     </View>
@@ -597,7 +610,7 @@ const styles = StyleSheet.create({
     height: 235,
     elevation: 3,
     backgroundColor: "#F0C735",
-    width: responsiveWidth(95),
+    width: responsiveWidth(90),
     alignSelf: "center",
     marginTop: hp("3%"),
   },

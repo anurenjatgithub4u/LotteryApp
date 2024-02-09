@@ -1142,7 +1142,7 @@ const GameScreen = () => {
       // Check if the logout was successful.
       if (response.status === 200) {
         console.log("Logged out successfully");
-        navigation.navigate("ProfileLanding");
+        navigation.navigate("ProfileLandingTesting");
         // Redirect or perform any other action after successful logout.
       } else {
         console.error("Logout failed");

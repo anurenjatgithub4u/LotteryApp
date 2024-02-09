@@ -5,6 +5,7 @@ import MyCardComponent from '../ALSScreen';
 import GameScreen from '../GameScreen';
 import GameDetailsPage from '../GameDetailsPage';
 import HomeScreen from '../HomeScreen';
+import PlayedGame from '../PlayedGame';
 
 const Stack = createStackNavigator();
 
