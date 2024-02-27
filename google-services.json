@@ -1,0 +1,49 @@
+
+  {
+    "project_info": {
+      "project_number": "991166433248",
+      "project_id": "als-notification-d5c78",
+      "storage_bucket": "als-notification-d5c78.appspot.com"
+    },
+    "client": [
+      {
+        "client_info": {
+          "mobilesdk_app_id": "1:991166433248:android:4b6ed98c40efd86719cd85",
+          "android_client_info": {
+            "package_name": "com.neurosphere.lottery_app"
+          }
+        },
+        "oauth_client": [],
+        "api_key": [
+          {
+            "current_key": "AIzaSyBdehpFlV8Htzd4AD27FE8ljvrPEGgYSkc"
+          }
+        ],
+        "services": {
+          "appinvite_service": {
+            "other_platform_oauth_client": []
+          }
+        }
+      },
+      {
+        "client_info": {
+          "mobilesdk_app_id": "1:991166433248:android:9d72ed1d10161f3919cd85",
+          "android_client_info": {
+            "package_name": "com.unlock_007.rnpushnotifications"
+          }
+        },
+        "oauth_client": [],
+        "api_key": [
+          {
+            "current_key": "AIzaSyBdehpFlV8Htzd4AD27FE8ljvrPEGgYSkc"
+          }
+        ],
+        "services": {
+          "appinvite_service": {
+            "other_platform_oauth_client": []
+          }
+        }
+      }
+    ],
+    "configuration_version": "1"
+  }

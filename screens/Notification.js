@@ -181,6 +181,7 @@ import React, { useState, useEffect } from 'react'
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { responsiveFontSize, responsiveHeight, responsiveScreenWidth, responsiveWidth } from "react-native-responsive-dimensions";
 
 const Notification = () => {
   const [notifications, setNotifications] = useState([]);
@@ -220,17 +221,14 @@ const Notification = () => {
     }, []);
 
 
-    const truncateText = (text, maxWordsPerLine) => {
+    const truncateText = (text, wordsPerLine) => {
       const words = text.split(' ');
+      let lines = [];
     
-      if (words.length <= maxWordsPerLine) {
-        return text;
-      }
-    
-      const lines = [];
-      for (let i = 0; i < words.length; i += maxWordsPerLine) {
-        const line = words.slice(i, i + maxWordsPerLine).join(' ');
+      for (let i = 0, j = 0; i < words.length && j < wordsPerLine.length; j++) {
+        const line = words.slice(i, i + wordsPerLine[j]).join(' ');
         lines.push(line);
+        i += wordsPerLine[j];
       }
     
       return lines.join('\n');
@@ -280,7 +278,7 @@ const Notification = () => {
         <ScrollView style={{ marginBottom: 150 }}>
           {notifications.map((notification, index) => (
      <View key={index}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',marginTop:responsiveHeight(1),marginBottom:responsiveHeight(1) }}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Image
             source={{
@@ -290,7 +288,9 @@ const Notification = () => {
           />
 
           <View style={{ flexDirection: 'column', alignItems: 'center', marginTop: 10 }}>
-            <Text style={styles.detailsText}>{truncateText(notification.content, 4)}</Text>
+          <Text style={styles.detailsText}>
+  {truncateText(notification.content, [4, 3, 3])}
+</Text>
           </View>
         </View>
 
@@ -330,11 +330,13 @@ const styles = StyleSheet.create({
     
     profilePicture: {
       width: 70,
-      height: 70,
+      height: 50,
       borderRadius: 20,
-      
+      alignSelf:'center',
+      justifyContent:"center",
+      alignItems:'center',
       paddingTop:80,
-      marginTop:40,
+      marginTop:responsiveHeight(2),
       paddingLeft:32,
       paddingStart:32,
       marginLeft:'5%'
@@ -342,13 +344,13 @@ const styles = StyleSheet.create({
 
     detailsText:{
       marginStart:10,
-      fontSize:17,
+      fontSize:18,
       fontWeight:'400',
       alignSelf:'flex-start'
     },
     underline: {
       borderBottomColor: 'black',
-      borderBottomWidth: 0.5,
+      borderBottomWidth: 0.3,
       width:'90%',
       alignSelf:'center',
       marginTop:10
@@ -356,7 +358,8 @@ const styles = StyleSheet.create({
 timeText:{
   fontSize:13,
   fontWeight:'300',
-  marginBottom:30,
+  marginBottom:responsiveWidth(3),
+  marginRight:'4%'
   
  
 }

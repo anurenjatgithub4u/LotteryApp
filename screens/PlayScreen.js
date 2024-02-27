@@ -45,7 +45,7 @@ const PlayScreen = ({route }) => {
 
  
   const [totalSelectedNumbers, setTotalSelectedNumbers] = useState([]);
-  const [levelText, setLevelText] = useState("");
+ 
   const [Symbol, setSymbol] = useState("");
   const [genearalSymbol,setGeneralSymbol]  = useState("");
   const [area, setArea] = useState("");
@@ -54,15 +54,15 @@ const PlayScreen = ({route }) => {
 
   const [previousWinningNumbers, setPreviousWinningNumbers] = useState([]);
   const [countryNamess, setcountryName] = useState([]);
-
+  const [checkingCredits,setCheckingCredits] = useState("")
   const [drawdate, setdrawdate] = useState([]);
 
-
+  const [response, setResponse] = useState(null);
 
   const [creditsMain, setcreditsMain] = useState(false);
 
   const [winnerAmt, setwinningAmt] = useState("");
-
+  const [levelText,setLevelText] = useState("");
 
 
   const [credits, setcredits] = useState(false);
@@ -120,6 +120,7 @@ const handleNumberClick = (number) => {
   };
   
 
+
   const createGame = async () => {
     try {
       const storedUserDetails = await AsyncStorage.getItem("userDetails");
@@ -136,8 +137,8 @@ const handleNumberClick = (number) => {
       const level = 1;
       const userNewCredits = 0;
       const gameNumber = selectedNumbers;
-      console.log("GameType......", areaText, userId, level, userCredits, gameNumber);
-  
+      console.log("GameType......", areaText, userId, level, creditsMain, gameNumber);
+  const levelValue = await AsyncStorage.getItem('level');
       setLoading(true);
   
    
@@ -145,7 +146,7 @@ const handleNumberClick = (number) => {
         "https://lottery-backend-tau.vercel.app/api/v1/user/game/new-game",
         {
           userId,
-          gameLevel: levelText,
+          gameLevel: parseInt(levelText, 10),
           credits: creditsMain,
           selectedNumbers: gameNumber,
           gameType: areaText,
@@ -162,15 +163,14 @@ const handleNumberClick = (number) => {
   
      
   
-      const announcementDate = response.data.message.announcementDate;
-     
+      const announcementDate = response.data.data.announcementDate;     
       const currentDate = new Date();
     
 
   
   
       if (response.data.statusCode === 200) {
-        console.log("if checking.....",creditsMain,levelText)
+        console.log("if checking.....",announcementDate)
         navigation.navigate("PlayedGame", {
           gameNumber,
           gameType: areaText,
@@ -191,6 +191,11 @@ const handleNumberClick = (number) => {
       setLoading(false);
     }
   };
+
+  
+  
+ 
+  
   const validateAndCreateGame = async () => {
     // Check if selectedNumbers is an array and has exactly 6 numbers
     if (Array.isArray(selectedNumbers) && selectedNumbers.length === 6) {
@@ -351,7 +356,7 @@ const handleNumberClick = (number) => {
         let newAreaText = "";
         
         if (areaValue === "1") {
-          newAreaText = "Continent";
+          newAreaText = "Africa";
          
 
         } else if (areaValue === "2") {
@@ -412,7 +417,7 @@ const handleNumberClick = (number) => {
 
         // Set the areaText based on the areaValue
         let newLevelText = "";
-
+        
         if (levelValue === "1") {
           newLevelText = " 1";
         } else if (levelValue === "2") {

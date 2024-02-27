@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "ALS",
-    "slug": "lottery_app",
+    "slug": "afroalsapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/lottery-android-icon.png",
@@ -11,26 +11,31 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "useNextNotificationsApi": true,
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.neurosphere.lotteryapp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/lottery-android-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.neurosphere.lottery_app"
+      "package": "com.neurosphere.lottery_app",
+      "googleServicesFile": "./google-services.json",
+      "useNextNotificationsApi": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "9269ba53-1391-4870-a915-7902e25739d7"
+        "projectId": "0bb3470e-2599-49f1-be08-9b6def18edc2"
       }
-    }
+    },
+    "owner": "sreya_111"
   }
 }

@@ -1,7 +1,7 @@
 
 import 'react-native-gesture-handler';
 import React, { useState, useEffect, useCallback,createRef, useRef } from 'react';
-import { View, Text,StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text,StyleSheet, TouchableOpacity, Alert ,Platform } from 'react-native';
 import * as Font from 'expo-font';
 import { Entypo } from '@expo/vector-icons';
 import * as SplashScreen from 'expo-splash-screen';
@@ -9,7 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createStackNavigator } from '@react-navigation/stack';
 import { TextInput, Button } from 'react-native-paper';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import RegisterScreen from './screens/RegisterScreen';
 import LoginScreen from './screens/LoginScreen';
@@ -40,26 +40,36 @@ import PayStack from './screens/PayStack';
 import BuyCredits from './screens/BuyCredits';
 import ChooseLevel from './screens/ChooseLevel';
 import FaqPage from './screens/FaqPage';
-import PlayedGame from './screens/PlayedGame';
-import HomeScreen from './screens/HomeScreen';
+
+
+
 import ContactinfoScreen from './screens/ContactinfoScreen';
 import PurchaseScreen from './screens/PurchaseScreen';
 import RedeemPage from './screens/RedeemPage';
-import HelpDetailScreen from './screens/HelpDetailScreen';
 
-import splashScreenTesting from './screens/SplashScreenTesting';
 import SplashScreenTesting from './screens/SplashScreenTesting';
 import ALSNaviagator from './screens/navigators/AlsNavigator';
 import HelpNavigator from './screens/navigators/HelpNavigator';
 import GameNavigator from './screens/navigators/GameNavigator';
 import Notification from './screens/Notification';
 import PersonalInfoOtp from './screens/PersonalInfoOtp';
-import * as Notifications from 'expo-notifications';
+
 import KioskCode from './screens/KioskCode';
 import LoginTesting from './screens/LoginTesting';
 import ProfileLandingTesting from './screens/ProfileLandingTesting';
 import ForgotPasswordTwo from './screens/ForgotPasswordTwo';
 import LoginOtp from './screens/LoginOtp';
+
+import LocalAuthenticationScreenWrapper from './screens/LocalAuthenticationScreenWrapper';
+import TermsAndConditions from './screens/TermsAndConditions';
+
+
+
+
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
+
+
 // Sentry.init({
 //   dsn: "https://a63ad10720920c86a1b3ed3f59f53861@o4506372185784320.ingest.sentry.io/4506372188667904",
 //   // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
@@ -87,7 +97,6 @@ const Tab = createBottomTabNavigator();
 const Splash = ({ navigation }) => {
   const [appIsReady, setAppIsReady] = useState(false);
   const Lottie = useRef(null);
-
   useEffect(() => {
     async function prepare() {
       try {
@@ -108,6 +117,8 @@ const Splash = ({ navigation }) => {
   }, []);
 
   const onLayoutRootView = useCallback(async () => {
+    const userNumber = await AsyncStorage.getItem('userNumber');
+
     if (appIsReady) {
       try {
         await SplashScreen.hideAsync();
@@ -119,9 +130,11 @@ const Splash = ({ navigation }) => {
         }
 
         setTimeout(() => {
-          token
-            ? navigation.navigate('ProfileLandingTesting')
-            : navigation.navigate('ProfileLandingTesting');
+          if (userNumber === '1') { // Note: '1' because AsyncStorage returns strings
+            navigation.navigate('MainScreen');
+          } else {
+            navigation.navigate('ProfileLandingTesting');
+          }   
         }, 3000);
       } catch (error) {
         console.warn("Error during splash screen setup:", error);
@@ -244,11 +257,11 @@ const OTPVerificationScreen = ({ route,navigation }) => {
     <TouchableOpacity onPress={() => navigation.navigate('Register')}>
       <MaterialIcons name="keyboard-arrow-left" size={35} color="black" />
     </TouchableOpacity>
-    <Text style={{ fontSize: 34, fontWeight: '700', marginLeft: 8 }}>OTP Verification</Text>
+    <Text style={{ fontSize: 34, fontWeight: '700', marginLeft: 8,marginTop:'12%' }}>OTP Verification</Text>
   </View>
 
 
-      <View    style={{ flexDirection: 'row', marginTop: 40 ,alignItems:'center'}}>
+      <View    style={{ flexDirection: 'row', marginTop: 40 ,alignItems:'center',paddingLeft:10,paddingRight:10}}>
         {/* Create six TextInput components for each digit */}
         {otpDigits.map((digit, index) => (
 
@@ -383,61 +396,11 @@ async function registerForPushNotificationsAsync() {
 
   return token;
 }
+
+
+
 const App = () => {
 
-  Notifications.setNotificationHandler({
-    handleNotification: async (notification) => {
-      console.log('Received notification:', notification);
-
-      // You can add custom logic here based on the received notification
-      // For example, you might want to navigate to a specific screen or update some state in your component.
-
-      return {
-        shouldShowAlert: true,
-      };
-    },
-  });
-
-
-  useEffect(() => {
-    const registerForPushNotifications = async () => {
-      try {
-
-
-      
-        const { status: existingStatus } = await Notifications.getPermissionsAsync();
-        let finalStatus = existingStatus;
-
-        if (existingStatus !== 'granted') {
-          const { status } = await Notifications.requestPermissionsAsync();
-          finalStatus = status;
-        }
-
-        if (finalStatus !== 'granted') {
-          console.error('Notification permission not granted');
-          return;
-        }
-
-        // Get the push token with projectId
-        const { data: pushToken } = await Notifications.getExpoPushTokenAsync({
-          projectId: 'd08cd3bc-ae26-4286-8e70-50acfef35d38', // Replace with your Firebase project ID
-        });
-
-        await AsyncStorage.setItem('ExpoPushToken', pushToken);
-        console.log('Expo Push Token:', pushToken);
-      } catch (error) {
-        console.error('Error getting Expo Push Token:', error);
-      }
-    };
-
-    registerForPushNotifications();
-  }, []);
-
- 
-
-
-
-  
   return (
 
 
@@ -494,11 +457,32 @@ const App = () => {
 
         <Stack.Screen name='LoginOtp' component={LoginOtp} options={{ headerShown: false }}/>
 
+        <Stack.Screen name='TermsAndConditions' component={TermsAndConditions} options={{ headerShown: false }}/>
+
+        {/* <Stack.Screen
+  name='LocalAuthenticationScreen'
+  options={{ headerShown: false }}
+>
+  {(props) => (
+    <>
+    {isAuthenticated
+ ? <MainScreen {...props} />
+ : <LocalAuthenticationScreenWrapper {...props}  />
+    }
+     
+    </>
+  )}
+</Stack.Screen> */}
+        <Stack.Screen name='LocalAuthenticationScreen' component={LocalAuthenticationScreenWrapper} options={{ headerShown: false }}/>
+
+
+
       </Stack.Navigator>
     
     </NavigationContainer>
     </AuthProvider>
   );
+  
 };
 
 

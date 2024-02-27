@@ -485,13 +485,15 @@ import { useAuth } from './auth/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { Alert } from 'react-native';
-import { responsiveFontSize, responsiveHeight } from "react-native-responsive-dimensions";
+import SensitiveInfo from 'react-native-sensitive-info';
+import { responsiveFontSize, responsiveHeight, responsiveScreenWidth, responsiveWidth } from "react-native-responsive-dimensions";
 
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { StatusBar } from "expo-status-bar";
+import { FontAwesome } from '@expo/vector-icons';
 
 const CustomPicker = ({ visible, onClose, onSelect, data }) => {
   return (
@@ -512,7 +514,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
                 onClose();
               }}
             >
-              <Text>{`${country.country} - ${country.countryCode}`}</Text>
+              <Text>{` ${country.countryCode} - ${country.country}`}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -532,8 +534,8 @@ const LoginScreen = ({ navigation }) => {
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   
-
 
   useEffect(() => {
     fetchCountries();
@@ -626,76 +628,67 @@ const LoginScreen = ({ navigation }) => {
     return unsubscribe;
   }, [navigation]);
  
- 
+  const [fcmToken, setFcmToken] = useState(null);
     
-  
   const handleLogin = async () => {
     try {
       setLoading(true);
       const storedPushToken = await AsyncStorage.getItem('ExpoPushToken');
-      // Validate input fields (you may want to add more validation)
+  
       if (!email || !password) {
-        console.log('Please fill in all fields');
+        Alert.alert(
+          '',
+          'Please fill in all fields',
+          [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+        );
         return;
       }
   
-      // Make API request to login user using fetch
-      const response = await fetch('https://lottery-backend-tau.vercel.app/api/v1/user/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          password,
-          pushNotificationToken:storedPushToken
-        }),
+      const response = await axios.post('https://lottery-backend-tau.vercel.app/api/v1/user/login', {
+        email,
+        password,
+        pushNotificationToken: storedPushToken,
       });
-      
-      if (response.ok) {
-        // If login is successful, you may want to store user information or a token
-        const result = await response.json();
-      
+  
+      console.log("response", response);
+  
+      if (response.status === 200) {
+        const result = response.data;
+  
         console.log('User logged in successfully:', result);
+  
         const accessToken = result.data.accessToken;
         const refreshToken = result.data.refreshToken;
-
         const credits = result.data.user.credits;
         const userId = result.data.user._id;
         const userName = result.data.user.name;
-
         const userDate = result.data.user.createdAt;
-        // Access user details from the response
-        const user = result.message.user;
-        console.log('User Details:', user);
+        const userNumber = 1;
+        // Setting the value for 'loginId' key
+        
+        console.log('User Details:', result.message.user);
         console.log('Access Token:', accessToken);
         console.log('Credits:', credits);
-        console.log('UserId',userId);
-        console.log('UserName..',userName);
-
+        console.log('UserId', userId);
+        console.log('UserName..', userName);
         console.log('Refresh Token:', result.message.refreshToken);
-        // Store user details or navigate to another screen
-         await AsyncStorage.setItem('accessToken', accessToken);
-         await AsyncStorage.setItem('refreshToken', refreshToken);
+  
+        await AsyncStorage.setItem('accessToken', accessToken);
+        await AsyncStorage.setItem('refreshToken', refreshToken);
+        await AsyncStorage.setItem('userId', userId);
+        await AsyncStorage.setItem('userName', userName);
+        await AsyncStorage.setItem('userDate', userDate);
+        await AsyncStorage.setItem('credits', credits.toString());
+        await AsyncStorage.setItem('userNumber', userNumber.toString());
 
-         await AsyncStorage.setItem('userId', userId);
-         await AsyncStorage.setItem('userName', userName);
-         await AsyncStorage.setItem('userDate', userDate);
-         await AsyncStorage.setItem('credits', credits.toString());
-
-
-         await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        await new Promise(resolve => setTimeout(resolve, 2000));
          navigation.navigate('MainScreen', { screen: 'MainScreen' });
-       
+        // navigation.navigate("LocalAuthenticationScreen")
         fetchAndConsoleStoredAccessToken();
-        // setAccessToken(result.message.accessToken);
-        // You may want to navigate to another screen or perform authentication
-       
       } else {
-        // If login fails, handle the error (show an alert, etc.)
-        console.error('Login failed');
-        console.log("push notification" , storedPushToken)
-
+        
+  
         Alert.alert(
           '',
           'Login Failed',
@@ -703,10 +696,13 @@ const LoginScreen = ({ navigation }) => {
         );
       }
     } catch (error) {
-      console.error('Error during login:', error.message);
-    }
-    finally {
-      // Set loading to false regardless of whether login was successful or not
+      
+      Alert.alert(
+        '',
+        'Login Failed',
+        [{ text: error.response.data.message, onPress: () => console.log('OK Pressed') }]
+      );
+    } finally {
       setLoading(false);
     }
   };
@@ -749,7 +745,9 @@ const LoginScreen = ({ navigation }) => {
   };
   
   const loginUser = async () => {
-    const storedPushToken = await AsyncStorage.getItem('ExpoPushToken');
+
+    
+    const storedPushToken = await AsyncStorage.getItem('expoPushToken');
   
     if (email && password) {
       // If email and password are provided, call handleLogin
@@ -759,10 +757,26 @@ const LoginScreen = ({ navigation }) => {
       await loginWithNumber(storedPushToken);
     }
   };
+
   
+  useEffect(() => {
+    const getStoredToken = async () => {
+      try {
+        const storedToken = await AsyncStorage.getItem('fcmToken');
+        if (storedToken) {
+          console.log('Stored Token:', storedToken);
+          setFcmToken(storedToken);
+        }
+      } catch (error) {
+        console.error('Error retrieving token from AsyncStorage:', error);
+      }
+    };
+
+    getStoredToken();
+  }, []);
 
   return (
-    <View style={{ flex:1,alignItems: 'center',justifyContent:'flex-start' , padding: 16,paddingTop:'25%' }}>
+    <View style={{ flex:1,alignItems: 'center',justifyContent:'flex-start' , padding: 16,paddingTop:'25%',backgroundColor:"white" }}>
 
 <StatusBar backgroundColor={"transparent"} translucent />
 
@@ -770,19 +784,21 @@ const LoginScreen = ({ navigation }) => {
          <Text  style={styles.createaccountText}>Login</Text>
     <Text  style={styles.createaccountTextTwo}>Play and manage your games</Text>
 
-    <View
+
+    {/* <View
     style={{
         backgroundColor: '#B6B6B4',
         borderRadius: 20,
         padding: .8,
         marginBottom: 6,
         shadowColor: '#363636',
-     
+        borderColor: 'gray',
+        
         
         borderLeftWidth:0,
             borderRightWidth:0,
         width:'100%',
-        borderColor:'#363636'
+       
     }}
 >
 
@@ -792,73 +808,167 @@ const LoginScreen = ({ navigation }) => {
 
       style={{
         color: 'white',
-        width: '100%',
-        height: 60.5,
-        borderBottomColor: 'white',
-        borderBottomWidth: 0,
-        borderLeftWidth:.2,
-        borderRightWidth:.2,
-        borderTopWidth:.2,
-        backgroundColor:'white',
-        borderRadius: 20,
-        overflow:'hidden',
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
+            width: '100%', // Adjust the width as needed
+            height: 60.5,
+            borderBottomColor: 'white',
+            borderBottomWidth: 0,
+            borderLeftWidth: 0,
+            borderRightWidth: 0,
+            borderTopWidth: 0,
+            backgroundColor: 'white',
+            borderRadius: 20,
+            marginTop: 0.2,
+            overflow: 'hidden',
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            borderBottomLeftRadius: 20,
+            borderBottomRightRadius: 20,
+            overflow: "hidden",
     }}
+    activeUnderlineColor="gray"
       keyboardType="email-address"
       autoCapitalize="none"
       value={email}
       onChangeText={setEmail}
     />
 
-    </View>
+    </View> */}
+
+<View
+
+style={{ borderColor: 'black',
+      backgroundColor: 'white',
+      marginTop:15,
+      width: '100%',
+      marginBottom: 10,
+      height:60,
+      borderWidth: .5,
+      borderStyle: 'solid',
+      fontSize: 15,
+      borderRadius: 25,
+      
+      color: 'white',  
+      overflow: "hidden",}}
+      
+      
+      >
+      <TextInput
+        label="Email"
+        
+        style={{
+          color: 'white',
+          backgroundColor: 'white',
+          height:60.5,
+        
+         }}
+        keyboardType="email-address"
+        autoCapitalize="none"
+        value={email}
+        onChangeText={setEmail}
+      />
+      </View>
 
 
+{/*       
     <View
-    style={{
-        backgroundColor: '#B6B6B4',
+      style={{
+        backgroundColor: 'white',
         borderRadius: 20,
         padding: .8,
         marginBottom: 10,
         shadowColor: '#363636',
-        marginTop:5,
-        
-        borderLeftWidth:0,
-            borderRightWidth:0,
-        width:'100%',
-        borderColor:'#363636'
-    }}
->
-
-    <TextInput
-      label="Password"
-      
-      style={{
-        color: 'white',
+        marginTop: 5,
+        borderLeftWidth: 1,
+        borderRightWidth: 1,
         width: '100%',
-        height: 60.5,
-        borderBottomColor: 'white',
-        borderBottomWidth: 0,
-        borderLeftWidth:.2,
-        borderRightWidth:.2,
-        borderTopWidth:.2,
-        backgroundColor:'white',
-        borderRadius: 20,
-        marginTop:.2,
-        overflow:'hidden',
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
-    }}
-      secureTextEntry
-      value={password}
-      onChangeText={setPassword}
-    />
+        borderColor: '#363636',
+        borderWidth: 1,  // Adjust the border width as needed
+        borderColor: 'gray',
+      }}
+    >
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <TextInput
+          label="Password"
+          style={{
+            color: 'white',
+            width: '90%', // Adjust the width as needed
+            height: 60.5,
+            borderBottomColor: 'white',
+            borderBottomWidth: 0,
+            borderLeftWidth: 0,
+            borderRightWidth: 0,
+            borderTopWidth: 0,
+            backgroundColor: 'white',
+            borderRadius: 20,
+            marginTop: 0.2,
+            overflow: 'hidden',
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            borderBottomLeftRadius: 20,
+            borderBottomRightRadius: 20,
+          }}
+          activeUnderlineColor="gray"
+          secureTextEntry={!showPassword}
+          value={password}
+          onChangeText={setPassword}
+        />
+        <TouchableOpacity
+          onPress={() => setShowPassword(!showPassword)}
+          style={{ padding: responsiveWidth(3), position: 'absolute', right: 0, zIndex: 1 }}
+        >
+          <FontAwesome
+            name={showPassword ? 'eye-slash' : 'eye'}
+            size={24}
+            color="black"
+          />
+        </TouchableOpacity>
+      </View>
+    </View> */}
 
-</View>
+
+
+          
+<View
+      style={{ borderColor: 'black',
+      backgroundColor: 'white',
+      marginTop:15,
+      width: '100%',
+      marginBottom: 10,
+      height:60.5,
+      borderWidth: .5,
+      borderStyle: 'solid',
+      fontSize: 15,
+      borderRadius: 25,
+      
+      color: 'white',  
+      overflow: "hidden",}}>
+    
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <TextInput
+          label="Password"
+          style={{
+            color: 'white',
+            backgroundColor: 'white',
+            height:60.5,
+          
+           }}
+          activeUnderlineColor="gray"
+          secureTextEntry={!showPassword}
+          value={password}
+          onChangeText={setPassword}
+        />
+        <TouchableOpacity
+          onPress={() => setShowPassword(!showPassword)}
+          style={{ padding: responsiveWidth(3), position: 'absolute', right: 0, zIndex: 1 }}
+        >
+          <FontAwesome
+            name={showPassword ? 'eye-slash' : 'eye'}
+            size={24}
+            color="black"
+          />
+        </TouchableOpacity>
+      </View>
+    </View>
 
 
 
@@ -868,22 +978,24 @@ const LoginScreen = ({ navigation }) => {
 
 
 
-<View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+<View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 11 }}>
 
 
 
-<View style={{ borderColor: 'black',
-      backgroundColor: 'white',
-      width: '20%',
-      borderWidth: 0.5,
-            borderStyle: 'solid',
-            height:60.5,
-            marginBottom:10,
-      fontSize: 15,
-      borderRadius: 25,
-      marginRight:15,
-      color: 'white',  
-      overflow: "hidden",}}>
+<View  style={{ borderColor: 'black',
+    backgroundColor: 'white',
+    marginTop:15,
+    width: '20%',
+    marginBottom: 10,
+    marginRight:15,
+    height:60,
+    borderWidth: .5,
+    borderStyle: 'solid',
+    fontSize: 15,
+    borderRadius: 25,
+    
+    color: 'white',  
+    overflow: "hidden",}}>
 <TouchableOpacity onPress={() => setModalVisible(true)}>
         <Text style={styles.selectedCountryText}>
           {selectedCountry || 'Ext'}
@@ -900,19 +1012,19 @@ const LoginScreen = ({ navigation }) => {
 
 
 <View
-    style={{
-        backgroundColor: '#B6B6B4',
-        borderRadius: 20,
-        padding: .8,
-        marginBottom: 10,
-        shadowColor: '#363636',
-     
-        
-        borderLeftWidth:0,
-            borderRightWidth:0,
-        width:'75%',
-        borderColor:'#363636'
-    }}
+    style={{ borderColor: 'black',
+    backgroundColor: 'white',
+    marginTop:15,
+    width: '75%',
+    marginBottom: 10,
+    height:60,
+    borderWidth: .5,
+    borderStyle: 'solid',
+    fontSize: 15,
+    borderRadius: 25,
+    
+    color: 'white',  
+    overflow: "hidden",}}
 >
 <TextInput
       label="Mobile Number"
@@ -920,24 +1032,20 @@ const LoginScreen = ({ navigation }) => {
      
       style={{
         color: 'white',
-        width: '100%',
-        height: 60.5,
-        borderBottomColor: 'white',
-        borderBottomWidth: 0,
-        borderLeftWidth:.2,
-        borderRightWidth:.2,
-        borderTopWidth:.2,
-        backgroundColor:'white',
-        borderRadius: 20,
-        overflow:'hidden',
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
-    }}
+        backgroundColor: 'white',
+        height:60.5,
+      
+       }}
+    activeUnderlineColor="gray"
       keyboardType="phone-pad" // Use 'phone-pad' keyboard type for mobile numbers
       value={mobileNumberLogin}
-      onChangeText={setMobileNumberLogin}
+      onChangeText={(text) => {
+        // Limit the input to a maximum of 10 characters
+        if (text.length <= 10) {
+          setMobileNumberLogin(text);
+        }
+      }}
+      maxLength={10} 
       
     />
  </View>

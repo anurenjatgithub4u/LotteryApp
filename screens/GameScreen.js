@@ -1,5 +1,8 @@
 
 
+
+
+
 // import { useNavigation } from "@react-navigation/native";
 // import React, { useState, useEffect } from "react";
 // import {
@@ -40,6 +43,8 @@
 //   const [openStartDatePicker, setOpenStartDatePicker] = useState(false);
 //   const [startedDate, setStartedDate] = useState(null);
 //   const [date, setDate] = useState(new Date());
+
+  
 //   const [filteredGames, setFilteredGames] = useState([]);
 //   const [showWinners, setShowWinners] = useState(true);
 //   const [selectedDate, setSelectedDate] = useState();
@@ -146,6 +151,11 @@
 //       date !== "DD/MM/YYYY"  ? new Date(date) : null;
 //     const endDateDate =
 //       endSetDate !== "DD/MM/YYYY" ? new Date(endSetDate) : null;
+
+
+//       if (startDateDate) {
+//         startDateDate.setHours(0, 0, 0, 0);
+//       }
   
 //     if (startDateDate && endDateDate) {
 //       // If both start and end dates are selected, filter games within the date range
@@ -155,7 +165,7 @@
 //       );
 //     } else if (startDateDate) {
 //       // If only start date is selected, filter games on or after the start date
-//       return createdAtDate >= startDateDate;
+//       return createdAtDate  >= startDateDate ;
 //     } else if (endDateDate) {
 //       // If only end date is selected, filter games on or before the end date
 //       return createdAtDate <= endDateDate;
@@ -164,6 +174,8 @@
 //       return true;
 //     }
 //   };
+
+
 //   const filterGamesByWinner = (game) => {
 //     if (showWinners) {
 //       return true; // Show only winning games
@@ -177,7 +189,7 @@
 //     try {
 //       // Replace 'YOUR_BACKEND_URL' with the actual URL of your backend server.
 //       const backendURL = "https://lottery-backend-tau.vercel.app/api/v1/auth";
-
+//       const userNumber = 0;
 //       const refreshToken = await AsyncStorage.getItem("refreshToken");
 //       const accessToken = await AsyncStorage.getItem("accessToken");
 //       // Assuming you have the refreshToken stored in a variable.
@@ -197,8 +209,8 @@
 //       // Check if the logout was successful.
 //       if (response.status === 200) {
 //         console.log("Logged out successfully");
-//         navigation.navigate("ProfileLanding");
-//         // Redirect or perform any other action after successful logout.
+//         navigation.navigate("ProfileLandingTesting");
+//         await AsyncStorage.setItem('userNumber', userNumber.toString());
 //       } else {
 //         console.error("Logout failed");
 //         // Handle logout failure, e.g., display an error message.
@@ -270,25 +282,9 @@
 
 //     fetchData();
 //   }, []);
-//   useEffect(() => {
-//     // Fetch user games data when the component mounts
-//     const fetchData = async () => {
-//       try {
-//         const responseData = await getUserGames();
-//         setUserGames(responseData.message);
-//         setInitialFetchComplete(true);
-//       } catch (error) {
-//         console.error("Error fetching user games:", error.message);
-//       }
-//     };
+
   
-//     fetchData();
-//   }, []);
-  
-//   useEffect(() => {
-//     // Fetch user games when the component mounts or when the radio button is pressed
-//     getUserGames();
-//   }, [checked]);
+ 
 
  
 
@@ -353,6 +349,19 @@
 //     fetchData();
 //   }, []);  
 
+
+//   const handleClearFilters = () => {
+//     setDate(new Date());
+//     setStartedDate(null);
+//     setEndSetDate(new Date());
+//     setSelectedDate(null);
+//     setEndSelecetedDate(null);
+//     setShowAllGames(true);
+//     setLoading(false);
+//     // You may need to re-fetch the user games after clearing filters
+//     getUserGames();
+//   };
+
 //   return (
 //     <View style={{ flex:1, padding: 16 ,paddingTop:"12%"}}>
        
@@ -395,122 +404,138 @@
 
 
 //       <Text style={styles.MainheaderText}>Your Games</Text>
+
+
 //       <View
-//         style={{
-//           flexDirection: "row",
-//           alignItems: "center",
-//           justifyContent: "space-between",
-//           marginBottom:'5%'
-//         }}
-//       >
-  
-  
-//       <Pressable   onPress={toggleDatePicker}  >
+//   style={{
+//     flexDirection: "row",
+//     alignItems: "center",
+//     justifyContent: "space-between",
+//     marginBottom: '5%'
+//   }}
+// >
 
+//   <View
+//     style={{
+//       flexDirection: "column",
+//     }}
+//   >
 
-// <View style={{ borderColor: 'black',
-//       backgroundColor: '#F8F8FF',
-//       width: '100%',
-      
-//       borderWidth: 1,
-//       height:58.5,
-//       borderWidth: 0,
-//       borderStyle: 'solid',
-//       fontSize: 15,
-//       borderRadius: 15,
-      
-//       color: '#F8F8FF',  // Text color
-//       overflow: "hidden",}}>
+//     <Pressable onPress={toggleDatePicker}>
 
-// <View style={{ flexDirection: "row", alignItems: "center" }}>
-//               <AntDesign
-//                 name="calendar"
-//                 size={24}
-//                 color="black"
-//                 style={{ marginLeft:14 }}
-//               />
-//       <TextInput
+//       <View style={{
+//         borderColor: 'black',
+//         backgroundColor: '#F8F8FF',
+//         width: '100%',
+//         alignItems: 'center',
+//         borderWidth: 1,
+//         height: 58.5,
+//         borderWidth: .5,
+//         borderStyle: 'solid',
+//         fontSize: 15,
+//         borderRadius: 15,
+//         color: '#F8F8FF',
+//         overflow: "hidden",
+//       }}>
 
-//         placeholder="Start Date"
-//         value={selectedDate}
-//         onChangeText={setSelectedDate}
-//         placeholderTextColor="#11182744"
-//         editable={false}
-//         style={{
-//           color: '#F8F8FF',
-//           backgroundColor: '#F8F8FF',
-//           height:60.5,
-         
-//          }}
-
-//       ></TextInput>
-//       </View>
-//       </View>
-//       </Pressable>
-  
-//         {showPicker && (
-//           <DateTimePicker
-//             mode="date"
-//             display="spinner"
-//             value={date}
-//             onChange={onChange}
+//         <View style={{ flexDirection: "row", alignItems: "center" }}>
+//           <AntDesign
+//             name="calendar"
+//             size={24}
+//             color="black"
+//             style={{ marginLeft: 14 }}
 //           />
-//         )}
-
-
-
-
-//       <Pressable   onPress={toggleEndDatePicker}>
-
-
-// <View style={{ borderColor: 'black',
-//       backgroundColor: '#F8F8FF',
-//       width: '100%',
-      
-//       borderWidth: 1,
-//       height:58.5,
-//       borderWidth: 0,
-//       borderStyle: 'solid',
-//       fontSize: 15,
-//       borderRadius: 15,
-//       color: '#F8F8FF',  // Text color
-//       overflow: "hidden",}}>
-
-// <View style={{ flexDirection: "row", alignItems: "center" }}>
-//               <AntDesign
-//                 name="calendar"
-//                 size={24}
-//                 color="black"
-//                 style={{ marginRight: 1,marginLeft:8 }}
-//               />
-//       <TextInput
-
-//         placeholder="End Date"
-//         value={endSelecteddate}
-//         onChangeText={setEndSelecetedDate}
-//         placeholderTextColor="#11182744"
-//         editable={false}
-//         style={{
-//           color: '#F8F8FF',
-//           backgroundColor: '#F8F8FF',
-//           height:60.5,
-         
-//          }}
-
-//       ></TextInput>
+//           <TextInput
+//             placeholder="Start Date"
+//             value={selectedDate}
+//             onChangeText={setSelectedDate}
+//             placeholderTextColor="#11182744"
+//             editable={false}
+//             style={{
+//               color: '#F8F8FF',
+//               backgroundColor: '#F8F8FF',
+//               height: 60.5,
+//             }}
+//           ></TextInput>
+//         </View>
 //       </View>
+//     </Pressable>
+
+//     {showPicker && (
+//       <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+//         <DateTimePicker
+//           mode="date"
+//           display="spinner"
+//           value={date}
+//           onChange={onChange}
+//           style={{ alignSelf: 'center' }}
+//         />
 //       </View>
-//       </Pressable>
-  
-//         {endshowPicker && (
-//           <DateTimePicker
-//             mode="date"
-//             display="spinner"
-//             value={endSetDate}
-//             onChange={onEndChange}
+//     )}
+
+//   </View>
+
+//   <View
+//     style={{
+//       flexDirection: "column",
+//       alignItems: 'center'
+//     }}
+//   >
+//     <Pressable onPress={toggleEndDatePicker}>
+
+//       <View style={{
+//         borderColor: 'black',
+//         backgroundColor: '#F8F8FF',
+//         width: '100%',
+//         alignItems: 'center', // Center the content
+//         borderWidth: 1,
+//         height: 58.5,
+//         borderWidth: 0.5,
+//         borderStyle: 'solid',
+//         fontSize: 15,
+//         borderRadius: 15,
+//         color: '#F8F8FF',
+//         overflow: "hidden",
+//       }}>
+
+//         <View style={{ flexDirection: "row", alignItems: "center" }}>
+//           <AntDesign
+//             name="calendar"
+//             size={24}
+//             color="black"
+//             style={{ marginRight: 1, marginLeft: 8 }}
 //           />
-//         )}
+//           <TextInput
+//             placeholder="End Date"
+//             value={endSelecteddate}
+//             onChangeText={setEndSelecetedDate}
+//             placeholderTextColor="#11182744"
+//             editable={false}
+//             style={{
+//               color: '#F8F8FF',
+//               backgroundColor: '#F8F8FF',
+//               height: 60.5,
+//             }}
+//           ></TextInput>
+//         </View>
 //       </View>
+//     </Pressable>
+
+//     {endshowPicker && (
+//       <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+//         <DateTimePicker
+//           mode="date"
+//           display="spinner"
+//           value={endSetDate}
+//           onChange={onEndChange}
+//           style={{ alignSelf: 'center' }}
+//         />
+//       </View>
+//     )}
+
+//   </View>
+
+// </View>
 
 
 
@@ -525,7 +550,9 @@
 //   <Text>Show Only Wins</Text>
 
 //   <View style={{ marginLeft: 'auto' }}>
+//   <TouchableOpacity onPress={handleClearFilters}>
 //     <Text style={{color:"#FE555D"}}>Clear</Text>
+//     </TouchableOpacity>
 //   </View>
 // </View>
 
@@ -539,39 +566,52 @@
 
 
 
-// <ScrollView style={{ marginBottom: 10, marginTop: hp(0.01) }}>
+// <ScrollView style={{ marginBottom: 10, marginTop: hp(0.01) }}   showsVerticalScrollIndicator={false}>
 
 
 // {showAllGames && radioGames ? (
 //   <>
 
 // {showAllGames && radioGames ? (
-//       userGames.map((game, index) => (
+//       [...userGames].reverse().map((game, index) => (
 //         <LinearGradient
 //           key={index}
-//           colors={["#F0C735", "#D98F39"]}
+//           colors={game.isWinner ? ["#F0C735", "#D98F39"] : ["#BA8DF3", "#615EE2"]}
 //           style={styles.mainCard}
 //         >
 //           <TouchableOpacity
 //             key={index}
 //             onPress={() => goToGameDetails(game)}
 //           >
-//             <View
-//               style={{
-//                 flexDirection: "row",
-//                 alignItems: "center",
-//                 justifyContent: "space-between",
-//                 marginBottom: "2%",
-//               }}
-//             >
-//               <Text style={styles.createdAtText}>
-//                 {new Date(game.createdAt).toLocaleDateString("en-GB", {
-//                   day: "numeric",
-//                   month: "short",
-//                   year: "numeric",
-//                 })}
-//               </Text>
-//             </View>
+//              <View
+//                   style={{
+//                     flexDirection: "row",
+//                     alignItems: "center",
+                   
+//                     marginBottom: "2%",
+//                   }}
+//                 >
+//                    <Text style={styles.createdAtText}>
+//                     {game.gameType},
+//                   </Text>
+
+//                   <Text style={styles.createdAtLevel}>
+//                    Level {game.gameLevel},
+//                   </Text>
+//                   <Text style={styles.createdAtLevel}>
+//                     {new Date(game.createdAt).toLocaleDateString("en-GB", {
+//                       day: "numeric",
+//                       month: "short",
+//                       year: "numeric",
+//                     })},
+//                   </Text>
+
+//                   <Text  style={styles.createdAtLevel}>{new Date(game.createdAt).toLocaleTimeString("en-GB", {
+//   hour: "numeric",
+//   minute: "numeric",
+//   hour12: true, 
+// })}</Text>
+//                 </View>
 
 //             <View style={styles.container}>
 //               {game.selectedNumbers.map((number, index) => (
@@ -584,37 +624,48 @@
 //         </LinearGradient>
 //       ))
 //     ) : (
-//       userGames
+//       [...userGames].reverse()
 //         .filter(filterGamesByDateRange)
 //         .filter(filterGamesByWinner)
 //         .map((game, index) => (
 //           <LinearGradient
 //             key={index}
-//             colors={["#F0C735", "#D98F39"]}
+//             colors={game.isWinner ? ["#F0C735", "#D98F39"] : ["#BA8DF3", "#615EE2"]}
 //             style={styles.mainCard}
 //           >
 //             <TouchableOpacity
 //               key={index}
 //               onPress={() => goToGameDetails(game)}
 //             >
-//               <View
-//                 style={{
-//                   flexDirection: "row",
-//                   alignItems: "center",
-//                   justifyContent: "space-between",
-//                   marginBottom: "2%",
-//                 }}
-//               >
-//                 <Text style={styles.createdAtText}>
-//                   {new Date(game.createdAt).toLocaleDateString("en-GB", {
-//                     day: "numeric",
-//                     month: "short",
-//                     year: "numeric",
-//                   })}
-//                 </Text>
+//                <View
+//                   style={{
+//                     flexDirection: "row",
+//                     alignItems: "center",
+                   
+//                     marginBottom: "2%",
+//                   }}
+//                 >
+//                    <Text style={styles.createdAtText}>
+//                     {game.gameType},
+//                   </Text>
 
-//                 <Text style={styles.viewGame}>View Game</Text>
-//               </View>
+//                   <Text style={styles.createdAtLevel}>
+//                    Level {game.gameLevel},
+//                   </Text>
+//                   <Text style={styles.createdAtLevel}>
+//                     {new Date(game.createdAt).toLocaleDateString("en-GB", {
+//                       day: "numeric",
+//                       month: "short",
+//                       year: "numeric",
+//                     })},
+//                   </Text>
+
+//                   <Text  style={styles.createdAtLevel}>{new Date(game.createdAt).toLocaleTimeString("en-GB", {
+//   hour: "numeric",
+//   minute: "numeric",
+//   hour12: true, 
+// })}</Text>
+//                 </View>
 
 //               <View style={styles.container}>
 //                 {game.selectedNumbers.map((number, index) => (
@@ -635,10 +686,10 @@
 // ) : (
 //   <>
 //     {showAllGames && radioGames ? (
-//       userGames.map((game, index) => (
+//       [...userGames].reverse().map((game, index) => (
 //         <LinearGradient
 //           key={index}
-//           colors={["#F0C735", "#D98F39"]}
+//           colors={game.isWinner ? ["#F0C735", "#D98F39"] : ["#BA8DF3", "#615EE2"]}
 //           style={styles.mainCard}
 //         >
 //           <TouchableOpacity
@@ -646,21 +697,34 @@
 //             onPress={() => goToGameDetails(game)}
 //           >
 //             <View
-//               style={{
-//                 flexDirection: "row",
-//                 alignItems: "center",
-//                 justifyContent: "space-between",
-//                 marginBottom: "2%",
-//               }}
-//             >
-//               <Text style={styles.createdAtText}>
-//                 {new Date(game.createdAt).toLocaleDateString("en-GB", {
-//                   day: "numeric",
-//                   month: "short",
-//                   year: "numeric",
-//                 })}
-//               </Text>
-//             </View>
+//                   style={{
+//                     flexDirection: "row",
+//                     alignItems: "center",
+                   
+//                     marginBottom: "2%",
+//                   }}
+//                 >
+//                    <Text style={styles.createdAtText}>
+//                     {game.gameType},
+//                   </Text>
+
+//                   <Text style={styles.createdAtLevel}>
+//                    Level {game.gameLevel},
+//                   </Text>
+//                   <Text style={styles.createdAtLevel}>
+//                     {new Date(game.createdAt).toLocaleDateString("en-GB", {
+//                       day: "numeric",
+//                       month: "short",
+//                       year: "numeric",
+//                     })},
+//                   </Text>
+
+//                   <Text  style={styles.createdAtLevel}>{new Date(game.createdAt).toLocaleTimeString("en-GB", {
+//   hour: "numeric",
+//   minute: "numeric",
+//   hour12: true, 
+// })}</Text>
+//                 </View>
 
 //             <View style={styles.container}>
 //               {game.selectedNumbers.map((number, index) => (
@@ -673,13 +737,13 @@
 //         </LinearGradient>
 //       ))
 //     ) : (
-//       userGames
+//       [...userGames].reverse()
 //         .filter(filterGamesByDateRange)
 //         .filter(filterGamesByWinner)
 //         .map((game, index) => (
 //           <LinearGradient
 //             key={index}
-//             colors={["#F0C735", "#D98F39"]}
+//             colors={game.isWinner ? ["#F0C735", "#D98F39"] : ["#BA8DF3", "#615EE2"]}
 //             style={styles.mainCard}
 //           >
 //             <TouchableOpacity
@@ -687,23 +751,34 @@
 //               onPress={() => goToGameDetails(game)}
 //             >
 //               <View
-//                 style={{
-//                   flexDirection: "row",
-//                   alignItems: "center",
-//                   justifyContent: "space-between",
-//                   marginBottom: "2%",
-//                 }}
-//               >
-//                 <Text style={styles.createdAtText}>
-//                   {new Date(game.createdAt).toLocaleDateString("en-GB", {
-//                     day: "numeric",
-//                     month: "short",
-//                     year: "numeric",
-//                   })}
-//                 </Text>
+//                   style={{
+//                     flexDirection: "row",
+//                     alignItems: "center",
+                   
+//                     marginBottom: "2%",
+//                   }}
+//                 >
+//                    <Text style={styles.createdAtText}>
+//                     {game.gameType},
+//                   </Text>
 
-//                 <Text style={styles.viewGame}>View Game</Text>
-//               </View>
+//                   <Text style={styles.createdAtLevel}>
+//                    Level {game.gameLevel},
+//                   </Text>
+//                   <Text style={styles.createdAtLevel}>
+//                     {new Date(game.createdAt).toLocaleDateString("en-GB", {
+//                       day: "numeric",
+//                       month: "short",
+//                       year: "numeric",
+//                     })},
+//                   </Text>
+
+//                   <Text  style={styles.createdAtLevel}>{new Date(game.createdAt).toLocaleTimeString("en-GB", {
+//   hour: "numeric",
+//   minute: "numeric",
+//   hour12: true, 
+// })}</Text>
+//                 </View>
 
 //               <View style={styles.container}>
 //                 {game.selectedNumbers.map((number, index) => (
@@ -831,20 +906,33 @@
 
 //   mainCard: {
 //     width: wp("90%"),
-//     margin: wp("2%"), // Responsive margin
+//     marginTop:'2%',
+//     marginBottom:'2%', // Responsive margin
 //     padding: wp("4%"), // Responsive padding
 //     borderRadius: wp("5%"), // Responsive borderRadius
     
 //     elevation: 3,
 //     height: hp("16%"), 
 //     backgroundColor: "#F0C735",
+
+//     flex: 1,
+  
+//     alignSelf:'center'
+  
 //   },
 //   createdAtText: {
 //     fontSize: 15,
-//     marginLeft: 10,
+//     marginLeft:'2%',
 //     marginBottom: 5,
 //     color: "white",
-//     flex: 1,// Add margin left for spacing
+//     paddingRight:'2%'
+//   },
+//   createdAtLevel: {
+//     fontSize: 15,
+    
+//     marginBottom: 5,
+//     color: "white",
+//     paddingRight:'1%'
 //   },
 //   viewGame: {
 //     fontSize: 15,
@@ -889,9 +977,9 @@
 //   },
 //   container: {
 //     flexDirection: "row",
-//     alignItems: "center",
+//     alignItems: "flex-start",
 //     flexWrap: "wrap",
-//     justifyContent: "center",
+//     justifyContent: "flex-start",
     
 //   },
 //   numberBox: {
@@ -914,7 +1002,7 @@
 //     width: 24,
 //     height: 24,
 //     top: 1,
-//     marginRight: wp("1%"),
+//     marginRight: wp("3%"),
 //     marginLeft: wp("2%"),
     
 //   },
@@ -936,6 +1024,9 @@
 // });
 
 // export default GameScreen;
+
+
+
 
 
 
@@ -1073,7 +1164,9 @@ const GameScreen = () => {
   const [loading, setLoading] = useState(true);
   
   
+  const [isStartSelected, setIsStartSelected] = useState(true); // Track whether start or end date is selected
 
+ 
 
 
   const goToGameDetails = (game) => {
@@ -1089,6 +1182,11 @@ const GameScreen = () => {
       date !== "DD/MM/YYYY"  ? new Date(date) : null;
     const endDateDate =
       endSetDate !== "DD/MM/YYYY" ? new Date(endSetDate) : null;
+
+
+      if (startDateDate) {
+        startDateDate.setHours(0, 0, 0, 0);
+      }
   
     if (startDateDate && endDateDate) {
       // If both start and end dates are selected, filter games within the date range
@@ -1098,7 +1196,7 @@ const GameScreen = () => {
       );
     } else if (startDateDate) {
       // If only start date is selected, filter games on or after the start date
-      return createdAtDate >= startDateDate;
+      return createdAtDate  >= startDateDate ;
     } else if (endDateDate) {
       // If only end date is selected, filter games on or before the end date
       return createdAtDate <= endDateDate;
@@ -1117,12 +1215,24 @@ const GameScreen = () => {
     }
   };
 
+  const CommonDateTimePicker = ({ value, onChange }) => (
+    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+      <DateTimePicker
+        mode="date"
+        display="spinner"
+        value={value}
+        onChange={onChange}
+        style={{ alignSelf: 'center' }}
+      />
+    </View>
+  );
+
   
   const logout = async () => {
     try {
       // Replace 'YOUR_BACKEND_URL' with the actual URL of your backend server.
       const backendURL = "https://lottery-backend-tau.vercel.app/api/v1/auth";
-
+      const userNumber = 0;
       const refreshToken = await AsyncStorage.getItem("refreshToken");
       const accessToken = await AsyncStorage.getItem("accessToken");
       // Assuming you have the refreshToken stored in a variable.
@@ -1143,7 +1253,7 @@ const GameScreen = () => {
       if (response.status === 200) {
         console.log("Logged out successfully");
         navigation.navigate("ProfileLandingTesting");
-        // Redirect or perform any other action after successful logout.
+        await AsyncStorage.setItem('userNumber', userNumber.toString());
       } else {
         console.error("Logout failed");
         // Handle logout failure, e.g., display an error message.
@@ -1215,25 +1325,9 @@ const GameScreen = () => {
 
     fetchData();
   }, []);
-  useEffect(() => {
-    // Fetch user games data when the component mounts
-    const fetchData = async () => {
-      try {
-        const responseData = await getUserGames();
-        setUserGames(responseData.message);
-        setInitialFetchComplete(true);
-      } catch (error) {
-        console.error("Error fetching user games:", error.message);
-      }
-    };
+
   
-    fetchData();
-  }, []);
-  
-  useEffect(() => {
-    // Fetch user games when the component mounts or when the radio button is pressed
-    getUserGames();
-  }, [checked]);
+ 
 
  
 
@@ -1263,7 +1357,11 @@ const GameScreen = () => {
   } catch (error) {
     console.error("Failed to fetch user games:", error.message);
   }
- 
+  const theme = {
+    colors: {
+      primary: 'blue', // Set the primary color to blue
+    },
+  };
 
   // Function to handle radio button press
   const handleRadioButtonPress = () => {
@@ -1353,123 +1451,215 @@ const GameScreen = () => {
 
 
       <Text style={styles.MainheaderText}>Your Games</Text>
+
       <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom:'5%'
-        }}
-      >
-  
-  
-      <Pressable   onPress={toggleDatePicker}  >
+  style={{
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "space-between",
+   
+  }}
+>
 
+<View
+  style={{
+    flexDirection: "row",
+    
+    justifyContent: "space-between",
+    marginBottom: '3%'
+  }}
+>
 
-<View style={{ borderColor: 'black',
-      backgroundColor: '#F8F8FF',
-      width: '100%',
-      
-      borderWidth: 1,
-      height:58.5,
-      borderWidth: .5,
-      borderStyle: 'solid',
-      fontSize: 15,
-      borderRadius: 15,
-      
-      color: '#F8F8FF',  // Text color
-      overflow: "hidden",}}>
-
-<View style={{ flexDirection: "row", alignItems: "center" }}>
-
-              <AntDesign
-                name="calendar"
-                size={24}
-                color="black"
-                style={{ marginLeft:14 }}
-              />
-      <TextInput
-
-        placeholder="Start Date"
-        value={selectedDate}
-        onChangeText={setSelectedDate}
-        placeholderTextColor="#11182744"
-        editable={false}
-        style={{
-          color: '#F8F8FF',
-          backgroundColor: '#F8F8FF',
-          height:60.5,
-          
-         }}
-
-      ></TextInput>
-      </View>
-      </View>
-      </Pressable>
-  
-        {showPicker && (
-          <DateTimePicker
-            mode="date"
-            display="spinner"
-            value={date}
-            onChange={onChange}
+  <View style={{ flexDirection: "column",marginRight:'25%',alignSelf:'flex-start' }}>
+    <Pressable onPress={toggleDatePicker}>
+     
+      <View style={styles.datePickerContainer}>
+        <View style={styles.iconTextContainer}>
+          <AntDesign name="calendar" size={24} color="black" style={{ marginLeft: 14 }} />
+          <TextInput
+            placeholder="Start Date"
+            value={selectedDate}
+            onChangeText={setSelectedDate}
+            placeholderTextColor="#11182744"
+            editable={false}
+            style={styles.textInput}
           />
-        )}
-
-
-
-
-      <Pressable   onPress={toggleEndDatePicker}>
-
-
-<View style={{ borderColor: 'black',
-      backgroundColor: '#F8F8FF',
-      width: '100%',
-      
-      borderWidth: 1,
-      height:58.5,
-      borderWidth: 0.5,
-      borderStyle: 'solid',
-      fontSize: 15,
-      borderRadius: 15,
-      color: '#F8F8FF',  // Text color
-      overflow: "hidden",}}>
-
-<View style={{ flexDirection: "row", alignItems: "center" }}>
-              <AntDesign
-                name="calendar"
-                size={24}
-                color="black"
-                style={{ marginRight: 1,marginLeft:8 }}
-              />
-      <TextInput
-
-        placeholder="End Date"
-        value={endSelecteddate}
-        onChangeText={setEndSelecetedDate}
-        placeholderTextColor="#11182744"
-        editable={false}
-        style={{
-          color: '#F8F8FF',
-          backgroundColor: '#F8F8FF',
-          height:60.5,
-         
-         }}
-
-      ></TextInput>
+        </View>
       </View>
-      </View>
-      </Pressable>
-  
-        {endshowPicker && (
-          <DateTimePicker
-            mode="date"
-            display="spinner"
-            value={endSetDate}
-            onChange={onEndChange}
+    </Pressable>
+
+   
+  </View>
+
+  <View style={{ flexDirection: "column",
+ }}>
+    <Pressable onPress={toggleEndDatePicker}>
+      {/* End Date */}
+      <View style={styles.datePickerContainer}>
+        <View style={styles.iconTextContainer}>
+          <AntDesign name="calendar" size={24} color="black" style={{ marginRight: 1, marginLeft: 8 }} />
+          <TextInput
+            placeholder="End Date"
+            value={endSelecteddate}
+            onChangeText={setEndSelecetedDate}
+            placeholderTextColor="#11182744"
+            editable={false}
+            style={styles.textInput}
           />
-        )}
+        </View>
       </View>
+    </Pressable>
+
+   
+  </View>
+</View>
+
+{showPicker && (
+      <CommonDateTimePicker value={date} onChange={onChange} />
+    )}
+
+
+{endshowPicker && (
+      <CommonDateTimePicker value={endSetDate} onChange={onEndChange} />
+    )}
+
+
+
+</View>
+
+
+
+
+{/* <View
+  style={{
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: '5%'
+  }}
+>
+
+  <View
+    style={{
+      flexDirection: "column",
+    }}
+  >
+
+    <Pressable onPress={toggleDatePicker}>
+
+      <View style={{
+        borderColor: 'black',
+        backgroundColor: '#F8F8FF',
+        width: '100%',
+        alignItems: 'center',
+        borderWidth: 1,
+        height: 58.5,
+        borderWidth: .5,
+        borderStyle: 'solid',
+        fontSize: 15,
+        borderRadius: 15,
+        color: '#F8F8FF',
+        overflow: "hidden",
+      }}>
+
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <AntDesign
+            name="calendar"
+            size={24}
+            color="black"
+            style={{ marginLeft: 14 }}
+          />
+          <TextInput
+            placeholder="Start Date"
+            value={selectedDate}
+            onChangeText={setSelectedDate}
+            placeholderTextColor="#11182744"
+            editable={false}
+            style={{
+              color: '#F8F8FF',
+              backgroundColor: '#F8F8FF',
+              height: 60.5,
+            }}
+          ></TextInput>
+        </View>
+      </View>
+    </Pressable>
+
+    {showPicker && (
+      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <DateTimePicker
+          mode="date"
+          display="spinner"
+          value={date}
+          onChange={onChange}
+          style={{ alignSelf: 'center' }}
+        />
+      </View>
+    )}
+
+  </View>
+
+  <View
+    style={{
+      flexDirection: "column",
+      alignItems: 'center'
+    }}
+  >
+    <Pressable onPress={toggleEndDatePicker}>
+
+      <View style={{
+        borderColor: 'black',
+        backgroundColor: '#F8F8FF',
+        width: '100%',
+        alignItems: 'center', // Center the content
+        borderWidth: 1,
+        height: 58.5,
+        borderWidth: 0.5,
+        borderStyle: 'solid',
+        fontSize: 15,
+        borderRadius: 15,
+        color: '#F8F8FF',
+        overflow: "hidden",
+      }}>
+
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <AntDesign
+            name="calendar"
+            size={24}
+            color="black"
+            style={{ marginRight: 1, marginLeft: 8 }}
+          />
+          <TextInput
+            placeholder="End Date"
+            value={endSelecteddate}
+            onChangeText={setEndSelecetedDate}
+            placeholderTextColor="#11182744"
+            editable={false}
+            style={{
+              color: '#F8F8FF',
+              backgroundColor: '#F8F8FF',
+              height: 60.5,
+            }}
+          ></TextInput>
+        </View>
+      </View>
+    </Pressable>
+
+    {endshowPicker && (
+      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <DateTimePicker
+          mode="date"
+          display="spinner"
+          value={endSetDate}
+          onChange={onEndChange}
+          style={{ alignSelf: 'center' }}
+        />
+      </View>
+    )}
+
+  </View>
+
+</View> */}
 
 
 
@@ -1529,10 +1719,10 @@ const GameScreen = () => {
                     {game.gameType},
                   </Text>
 
-                  <Text style={styles.createdAtText}>
+                  <Text style={styles.createdAtLevel}>
                    Level {game.gameLevel},
                   </Text>
-                  <Text style={styles.createdAtText}>
+                  <Text style={styles.createdAtLevel}>
                     {new Date(game.createdAt).toLocaleDateString("en-GB", {
                       day: "numeric",
                       month: "short",
@@ -1540,7 +1730,7 @@ const GameScreen = () => {
                     })},
                   </Text>
 
-                  <Text  style={styles.createdAtText}>{new Date(game.createdAt).toLocaleTimeString("en-GB", {
+                  <Text  style={styles.createdAtLevel}>{new Date(game.createdAt).toLocaleTimeString("en-GB", {
   hour: "numeric",
   minute: "numeric",
   hour12: true, 
@@ -1583,10 +1773,10 @@ const GameScreen = () => {
                     {game.gameType},
                   </Text>
 
-                  <Text style={styles.createdAtText}>
+                  <Text style={styles.createdAtLevel}>
                    Level {game.gameLevel},
                   </Text>
-                  <Text style={styles.createdAtText}>
+                  <Text style={styles.createdAtLevel}>
                     {new Date(game.createdAt).toLocaleDateString("en-GB", {
                       day: "numeric",
                       month: "short",
@@ -1594,7 +1784,7 @@ const GameScreen = () => {
                     })},
                   </Text>
 
-                  <Text  style={styles.createdAtText}>{new Date(game.createdAt).toLocaleTimeString("en-GB", {
+                  <Text  style={styles.createdAtLevel}>{new Date(game.createdAt).toLocaleTimeString("en-GB", {
   hour: "numeric",
   minute: "numeric",
   hour12: true, 
@@ -1642,10 +1832,10 @@ const GameScreen = () => {
                     {game.gameType},
                   </Text>
 
-                  <Text style={styles.createdAtText}>
+                  <Text style={styles.createdAtLevel}>
                    Level {game.gameLevel},
                   </Text>
-                  <Text style={styles.createdAtText}>
+                  <Text style={styles.createdAtLevel}>
                     {new Date(game.createdAt).toLocaleDateString("en-GB", {
                       day: "numeric",
                       month: "short",
@@ -1653,7 +1843,7 @@ const GameScreen = () => {
                     })},
                   </Text>
 
-                  <Text  style={styles.createdAtText}>{new Date(game.createdAt).toLocaleTimeString("en-GB", {
+                  <Text  style={styles.createdAtLevel}>{new Date(game.createdAt).toLocaleTimeString("en-GB", {
   hour: "numeric",
   minute: "numeric",
   hour12: true, 
@@ -1696,10 +1886,10 @@ const GameScreen = () => {
                     {game.gameType},
                   </Text>
 
-                  <Text style={styles.createdAtText}>
+                  <Text style={styles.createdAtLevel}>
                    Level {game.gameLevel},
                   </Text>
-                  <Text style={styles.createdAtText}>
+                  <Text style={styles.createdAtLevel}>
                     {new Date(game.createdAt).toLocaleDateString("en-GB", {
                       day: "numeric",
                       month: "short",
@@ -1707,7 +1897,7 @@ const GameScreen = () => {
                     })},
                   </Text>
 
-                  <Text  style={styles.createdAtText}>{new Date(game.createdAt).toLocaleTimeString("en-GB", {
+                  <Text  style={styles.createdAtLevel}>{new Date(game.createdAt).toLocaleTimeString("en-GB", {
   hour: "numeric",
   minute: "numeric",
   hour12: true, 
@@ -1825,6 +2015,31 @@ const GameScreen = () => {
 };
 
 const styles = StyleSheet.create({
+
+  datePickerContainer: {
+    borderColor: 'black',
+    backgroundColor: '#F8F8FF',
+    width: '100%',
+    alignItems: 'center',
+    borderWidth: 1,
+    height: 58.5,
+    borderWidth: 0.5,
+    borderStyle: 'solid',
+    fontSize: 15,
+    borderRadius: 15,
+    color: '#F8F8FF',
+    overflow: "hidden",
+   
+  },
+  iconTextContainer: {
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  textInput: {
+    color: '#F8F8FF',
+    backgroundColor: '#F8F8FF',
+    height: 60.5,
+  },
   card: {
     margin: 10,
     marginLeft: "4%",
@@ -1856,10 +2071,17 @@ const styles = StyleSheet.create({
   },
   createdAtText: {
     fontSize: 15,
-    
+    marginLeft:'2%',
     marginBottom: 5,
     color: "white",
     paddingRight:'2%'
+  },
+  createdAtLevel: {
+    fontSize: 15,
+    
+    marginBottom: 5,
+    color: "white",
+    paddingRight:'1%'
   },
   viewGame: {
     fontSize: 15,
@@ -1904,9 +2126,9 @@ const styles = StyleSheet.create({
   },
   container: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     flexWrap: "wrap",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     
   },
   numberBox: {
@@ -1929,7 +2151,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     top: 1,
-    marginRight: wp("1%"),
+    marginRight: wp("3%"),
     marginLeft: wp("2%"),
     
   },

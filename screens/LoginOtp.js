@@ -80,6 +80,7 @@ const LoginOtp = ({ route,navigation }) => {
   style={{ borderColor: 'black',
         backgroundColor: 'white',
         width: 50,
+        justifyContent: 'center',
         borderWidth: 0.5,
         borderStyle: 'solid',
         fontSize: 15,
@@ -93,7 +94,7 @@ const LoginOtp = ({ route,navigation }) => {
             <TextInput
               key={index}
               style={{
-               
+                alignItems:'center',
                 textAlign: 'center',
                 backgroundColor:'white'
               }}

@@ -8,7 +8,11 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { TextInput as PaperTextInput } from 'react-native-paper';
 import { Alert } from 'react-native';
-import { responsiveFontSize, responsiveHeight } from "react-native-responsive-dimensions";
+import { FontAwesome } from '@expo/vector-icons';
+import { responsiveFontSize, responsiveHeight, responsiveScreenWidth, responsiveWidth } from "react-native-responsive-dimensions";
+import { KeyboardAwareScrollView } from '@codler/react-native-keyboard-aware-scroll-view';
+import { CheckBox } from 'react-native-elements';
+
 
 const CustomPicker = ({ visible, onClose, onSelect, data }) => {
   return (
@@ -50,13 +54,30 @@ const RegisterScreen = () => {
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [checked, setChecked] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+
+
+  const handleCheckBoxPress = () => {
+   
+    navigation.navigate('TermsAndConditions'); // Replace 'TermsPage' with the actual name of your terms page screen
+
+   // Alert.alert('Alert', 'Please accept the terms and conditions');
+  
+};
+
 
   const handleRegister = async () => {
     try {
       // Validate inp
       setLoading(true);
-      if (!name || !email || !password || !mobileNumber || !selectedCountry) {
-        console.log('Please fill in all fields');
+      if (!name || !email || !password || !mobileNumber || !selectedCountry || !checked) {
+        Alert.alert(
+          '',
+          'Please fill in all fields and accept the terms and conditions',
+          [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+        );
         return;
       }
   
@@ -84,19 +105,28 @@ const RegisterScreen = () => {
         });
   
         // Additional logic if needed
-      } else {
+      } else if (response.data.statusCode === 400 ) {
         console.log('Registration failed:', response.data.message);
-        console.log('Registration:', response);
         Alert.alert(
           '',
-          'Register Failed',
+          'Email is already registered. Please use a different email.',
           [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
         );
-        // Handle registration error (e.g., display an error message to the user)
+      } else {
+        console.log('Registration failed:', response.data.message);
+        Alert.alert(
+          '',
+          'Registration Failed',
+          [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+        );
       }
-    } catch (error) {
-      console.error('Error during registration:', error.message);
-      // Handle unexpected errors during registration
+    }catch (error) {
+      
+      Alert.alert(
+        '',
+        'Email is already registered. Please use a different email.',
+        [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+      );
     }finally {
       // Set loading to false regardless of whether login was successful or not
       setLoading(false);
@@ -164,69 +194,67 @@ const RegisterScreen = () => {
   };
   
   return (
-    <View style={{ flex:1,alignItems: 'center',justifyContent:'flex-start' , padding: 16 ,paddingTop:'25%'}}>
+
+
+<KeyboardAwareScrollView style={{backgroundColor:'white'}} >
+
+    <View style={{ flex:1,alignItems: 'center',justifyContent:'flex-start' , padding: 16 ,paddingTop:'25%',backgroundColor:'white',height:'100%'}}>
 
     <Text  style={styles.createaccountText}>Create an Account</Text>
     <Text  style={styles.createaccountTextTwo}>Play the game and get lucky</Text>
 
  
     <View
-   style={{
-    backgroundColor: '#B6B6B4',
-    borderRadius: 20,
-    padding: .8,
-    marginBottom: 7,
-    marginTop:2,
-    shadowColor: '#363636',
- 
-    
-    borderLeftWidth:0,
-        borderRightWidth:0,
-    width:'100%',
-    borderColor:'#363636'
-}}
+style={{ borderColor: 'black',
+backgroundColor: 'white',
+marginTop:15,
+width: '100%',
+marginBottom: 10,
+height:59.5,
+borderWidth: .5,
+borderStyle: 'solid',
+fontSize: 15,
+borderRadius: 25,
+
+color: 'white',  
+overflow: "hidden",}}
+
+accessible={true}
+accessibilityLabel="Name Input"
 >
+
     <TextInput
         label="Name"
         value={name}
         onChangeText={setName}
         style={{
           color: 'white',
-          width: '100%',
-          height: 60.5,
-          borderBottomColor: 'white',
-          borderBottomWidth: 0,
-          borderLeftWidth:.2,
-          borderRightWidth:.2,
-          borderTopWidth:.2,
-          backgroundColor:'white',
-          borderRadius: 20,
-          overflow:'hidden',
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-          borderBottomLeftRadius: 20,
-          borderBottomRightRadius: 20,
-      }}
+          backgroundColor: 'white',
+          height:60.5,
+        
+         }}
+      activeUnderlineColor="gray"
     />
 </View>
 
 
 
 <View
-    style={{
-        backgroundColor: '#B6B6B4',
-        borderRadius: 20,
-        padding: .8,
-        marginBottom: 7,
-        marginTop:2,
-        shadowColor: '#363636',
-     
-        
-        borderLeftWidth:0,
-            borderRightWidth:0,
-        width:'100%',
-        borderColor:'#363636'
-    }}
+   style={{ borderColor: 'black',
+   backgroundColor: 'white',
+   marginTop:15,
+   width: '100%',
+   marginBottom: 10,
+   height:59.5,
+   borderWidth: .5,
+   borderStyle: 'solid',
+   fontSize: 15,
+   borderRadius: 25,
+   
+   color: 'white',  
+   overflow: "hidden",}}
+   accessible={true}
+accessibilityLabel="Email"
 >
 
     <TextInput
@@ -235,21 +263,11 @@ const RegisterScreen = () => {
 
       style={{
         color: 'white',
-          width: '100%',
-          height: 60.5,
-          borderBottomColor: 'white',
-          borderBottomWidth: 0,
-          borderLeftWidth:.2,
-          borderRightWidth:.2,
-          borderTopWidth:.2,
-          backgroundColor:'white',
-          borderRadius: 20,
-          overflow:'hidden',
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-          borderBottomLeftRadius: 20,
-          borderBottomRightRadius: 20,
-    }}
+        backgroundColor: 'white',
+        height:60.5,
+      
+       }}
+    activeUnderlineColor="gray"
       keyboardType="email-address"
       autoCapitalize="none"
       value={email}
@@ -259,20 +277,22 @@ const RegisterScreen = () => {
     </View>
 
 
-<View style={{ flexDirection: 'row', alignItems: 'center',  }}>
+<View style={{ flexDirection: 'row', alignItems: 'center', }}>
 
-<View style={{ borderColor: '#B6B6B4',
-      backgroundColor: 'white',
-      width: '20%',
-      borderWidth:  0.7,
-            borderStyle: 'solid',
-      fontSize: 15,
-      height:60.5,
-      borderRadius: 25,
-      marginRight:15,
-     marginBottom:5,
-      color: 'white',  // Text color
-      overflow: "hidden",}}>
+<View style={{ borderColor: 'black',
+    backgroundColor: 'white',
+    marginTop:15,
+    width: '20%',
+    marginBottom: 10,
+    marginRight:15,
+    height:59.5,
+    borderWidth: .5,
+    borderStyle: 'solid',
+    fontSize: 15,
+    borderRadius: 25,
+    
+    color: 'white',  
+    overflow: "hidden",}}>
 <TouchableOpacity onPress={() => {setModalVisible(true);  logSelectedCountryCode()}}>
         <Text style={styles.selectedCountryText}>
           {selectedCountry || 'Est'}
@@ -288,20 +308,20 @@ const RegisterScreen = () => {
 
 
 <View
-    style={{
-        backgroundColor: '#B6B6B4',
-        borderRadius: 20,
-        padding: .8,
-        marginBottom: 7,
-        marginTop:4,
-        shadowColor: '#363636',
-     
-        
-        borderLeftWidth:0,
-            borderRightWidth:0,
-        width:'75%',
-        borderColor:'#363636'
-    }}
+   style={{ borderColor: 'black',
+   backgroundColor: 'white',
+   marginTop:15,
+   width: '75%',
+   marginBottom: 10,
+   height:60,
+   borderWidth: .5,
+   borderStyle: 'solid',
+   fontSize: 15,
+   borderRadius: 25,
+   
+   color: 'white',  
+   overflow: "hidden",}}
+
 >
 
     <TextInput
@@ -310,7 +330,13 @@ const RegisterScreen = () => {
       
       keyboardType="phone-pad"
       value={mobileNumber}
-      onChangeText={setMobileNumber}
+      onChangeText={(text) => {
+        // Limit the input to a maximum of 10 characters
+        if (text.length <= 10) {
+          setMobileNumber(text);
+        }
+      }}
+      maxLength={10} 
       right={
         <TextInput.Icon
           name={() => <Text onPress={() => setShow(true)}>{countryCode || 'Ext'}</Text>}
@@ -319,21 +345,11 @@ const RegisterScreen = () => {
 
       style={{
         color: 'white',
-        width: '100%',
-        height: 60.5,
-        borderBottomColor: 'white',
-        borderBottomWidth: 0,
-        borderLeftWidth:.2,
-        borderRightWidth:.2,
-        borderTopWidth:.2,
-        backgroundColor:'white',
-        borderRadius: 20,
-        overflow:'hidden',
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
-    }}
+        backgroundColor: 'white',
+        height:60.5,
+      
+       }}
+    activeUnderlineColor="gray"
     />
 
 </View>
@@ -343,47 +359,66 @@ const RegisterScreen = () => {
       
 
 <View
-    style={{
-        backgroundColor: '#B6B6B4',
-        borderRadius: 20,
-        padding: .8,
-        marginBottom: 10,
-        shadowColor: '#363636',
-     
+       style={{ borderColor: 'black',
+       backgroundColor: 'white',
+       marginTop:18,
+       width: '100%',
+       marginBottom: 10,
+       height:60.5,
+       borderWidth: .5,
+       borderStyle: 'solid',
+       fontSize: 15,
+       borderRadius: 25,
+       
+       color: 'white',  
+       overflow: "hidden",}}
+    >
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <TextInput
+          label="Password"
+          style={{
+            color: 'white',
+            backgroundColor: 'white',
+            height:60.5,
+          
+           }}
+          activeUnderlineColor="gray"
+          secureTextEntry={!showPassword}
+          value={password}
+          onChangeText={setPassword}
+        />
+        <TouchableOpacity
+          onPress={() => setShowPassword(!showPassword)}
+          style={{ padding: responsiveWidth(3), position: 'absolute', right: 0, zIndex: 1 }}
+        >
+          <FontAwesome
+            name={showPassword ? 'eye-slash' : 'eye'}
+            size={24}
+            color="black"
+          />
+        </TouchableOpacity>
+      </View>
+    </View>
+
+
+    <View style={{ flexDirection: 'row', alignSelf: 'flex-start', marginTop:responsiveHeight(1), marginBottom:responsiveHeight(1) }}>
+
+
+  <CheckBox
         
-        borderLeftWidth:0,
-            borderRightWidth:0,
-        width:'100%',
-        borderColor:'#363636'
-    }}
->
+        checked={checked}
+        onPress={() => setChecked(!checked)}
+        containerStyle={styles.checkboxContainer}
+        textStyle={styles.checkboxText}
+      />
 
-    <TextInput
-      label="Password"
+      <Text style={{  alignSelf: 'center', }} >I accept the  </Text>
+
+      <Text style={{ alignSelf: 'center', color: '#668BE9' }} onPress={handleCheckBoxPress}>
+        terms and conditions
+      </Text>
       
-      style={{
-        color: 'white',
-        width: '100%',
-        height: 60.5,
-        borderBottomColor: 'white',
-        borderBottomWidth: 0,
-        borderLeftWidth:.2,
-        borderRightWidth:.2,
-        borderTopWidth:.2,
-        backgroundColor:'white',
-        borderRadius: 20,
-        overflow:'hidden',
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
-    }}
-      secureTextEntry
-      value={password}
-      onChangeText={setPassword}
-    />
-
-</View>
+    </View>
  {loading ? (
     <ActivityIndicator style={{ marginTop: 15 }} color="#31A062" size="large" />
   ) : (
@@ -419,6 +454,8 @@ const RegisterScreen = () => {
 
 
   </View>
+  </KeyboardAwareScrollView>
+
   );
 };
 
@@ -459,6 +496,13 @@ const styles = StyleSheet.create({
     fontSize: 15,
     borderRadius: 25,
     color: 'white', // Add this line to set the text color to white
+  },
+  checkboxContainer: {
+    padding: 0, // Adjust the padding as needed
+    margin: 0, // Adjust the margin as needed
+    backgroundColor: 'transparent', // Set background color to transparent if needed
+    borderWidth: 0,
+    // Remove border if needed
   },
   
 

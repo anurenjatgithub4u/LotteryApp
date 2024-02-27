@@ -16,58 +16,59 @@ const PaymentMethodPage = () => {
 
 const navigation = useNavigation();
 
+const handlePaystackSuccess = async (res) => {
+  try {
+    // Retrieve userId and accessToken from AsyncStorage
+    const storedUserDetails = await AsyncStorage.getItem('userDetails');
+    console.log('Paystack Success Response:', res);
 
-  const handlePaystackSuccess = async (res) => {
-    try {
-      // Retrieve userId and accessToken from AsyncStorage
-      const storedUserDetails = await AsyncStorage.getItem('userDetails');
-  
-      // Parse the stored JSON string to get the user details object
-      const userDetails = JSON.parse(storedUserDetails);
-      const accessToken = await AsyncStorage.getItem('accessToken');
-      
-      const userId = await AsyncStorage.getItem('userId');
-      // Extract other required information
-      const transactionReference = res.transactionRef.reference; // Replace with the actual key in the response
-  
-      // Call the addCredits endpoint
-      try {
-        const response = await fetch('https://lottery-backend-tau.vercel.app/api/v1/user/add-credits', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`, // Include the access token in the headers
-          },
-          body: JSON.stringify({
-            userId,
-            transactionReference,
-          }),
-        });
-        const responseData = response.json();
-        if (response.ok) {
-          // Credits added successfully
-          console.log(responseData);
-          console.log(res)
-          navigation.navigate('MainScreen')
-        } else {
-          // Handle error
-          console.error(responseData);
-
-  
-        }
-      } catch (error) {
-        console.error(error);
-      }
-  
-      
-       
+    const transactionReference = res.transactionRef.reference;
+    console.log('Transaction Reference:', transactionReference);
+    // Parse the stored JSON string to get the user details object
+    const userDetails = JSON.parse(storedUserDetails);
+    const accessToken = await AsyncStorage.getItem('accessToken');
+    const userId = await AsyncStorage.getItem('userId');
     
+    // Extract other required information
+   
+
+    // Call the addCredits endpoint
+    try {
+      const response = await fetch('https://lottery-backend-tau.vercel.app/api/v1/user/add-credits', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          userId,
+          transactionReference,
+        }),
+      });
+
+      // Check if the response status is OK (200)
+      if (response.ok) {
+        // Parse the JSON response
+        const responseData = await response.json();
+        console.log(responseData);
+        navigation.navigate('MainScreen');
+      } else {
+        // Handle non-OK response
+        const errorData = await response.text();
+        console.error('API Error:', errorData);
+      }
     } catch (error) {
-      
-      console.error('Error adding credits:', error.message);
-      
+      console.error('Fetch Error:', error);
     }
-  };
+
+  } catch (error) {
+    console.error('Error adding credits:', error.message);
+  }
+};
+
+
+
+
   const handlePaystackSuccessBank = async (res) => {
     try {
       // Retrieve userId and accessToken from AsyncStorage

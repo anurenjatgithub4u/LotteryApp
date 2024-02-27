@@ -1,12 +1,22 @@
 
+
+
+
+
 import { useNavigation } from '@react-navigation/native';
 import React, { useRef, useState } from 'react';
-import { View, Text, StyleSheet  ,TouchableOpacity,Modal } from 'react-native';
+import { View, Text, StyleSheet  ,TouchableOpacity,Modal,ActivityIndicator } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import axios from 'axios';
 import { KeyboardAwareScrollView } from '@codler/react-native-keyboard-aware-scroll-view';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { MaterialIcons } from '@expo/vector-icons';
+import {
+  responsiveFontSize,
+  responsiveHeight,
+  responsiveWidth,
+} from "react-native-responsive-dimensions";
+
 
 const ForgotPassword = () => {
   const [emailFor, setEmailFor] = useState('');
@@ -18,6 +28,9 @@ const ForgotPassword = () => {
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [mobileNumberLogin, setMobileNumberLogin] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const [buttonPressed, setButtonPressed] = useState(false);
   
 const CustomPicker = ({ visible, onClose, onSelect, data }) => {
   return (
@@ -51,6 +64,8 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
      console.log("hello")
     try {
       // Validate email
+
+      
       if (!emailFor) {
         console.log('Please provide an email');
         return;
@@ -65,6 +80,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
         console.log('OTP sent successfully hello');
         console.log(response)
         const userId = response.data.message;
+        setButtonPressed(true); 
         console.log(emailFor)
         // Set the user data to be used in the OTPVerificationScreen
         setUserData(userId );
@@ -99,6 +115,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
   const handleVerifyOtp = async () => {
     console.log("verify otp")
     try {
+      setLoading(true);
       // Validate OTP
       // You may want to add validation for each digit in the OTP array
       if (!userData) {
@@ -193,7 +210,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
       marginTop:15,
       width: '100%',
       height:58.5,
-      borderWidth: 0,
+      borderWidth: .5,
       borderStyle: 'solid',
       fontSize: 15,
       borderRadius: 25,
@@ -227,7 +244,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
 <View style={{ borderColor: 'black',
       backgroundColor: 'white',
       width: '20%',
-      borderWidth: 0,
+      borderWidth: 0.5,
             borderStyle: 'solid',
       fontSize: 15,
       borderRadius: 25,
@@ -254,7 +271,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
       width: '75%',
       borderWidth: 1,
       height:58.5,
-      borderWidth: 0,
+      borderWidth: 0.5,
       borderStyle: 'solid',
       fontSize: 15,
       borderRadius: 25,
@@ -281,19 +298,22 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
 
 
 
-      <Button mode="contained" onPress={handleResetLink} 
-      
-      contentStyle={{
-        height: 60,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-      style={{
-        backgroundColor: '#31A062',
-        width: '100%',
-        marginVertical: 10,
-        marginTop: 15,
-      }}>
+<Button
+        mode="contained"
+        onPress={handleResetLink}
+        disabled={buttonPressed} // Disable the button when it's pressed
+        contentStyle={{
+          height: 60,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        style={{
+          backgroundColor: buttonPressed ? 'rgba(49, 160, 98, 0.33)' : '#31A062', // Change color when pressed
+          width: '100%',
+          marginVertical: 10,
+          marginTop: 15,
+        }}
+      >
         Reset Link
       </Button>
 
@@ -312,13 +332,13 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
    
     backgroundColor: 'white',
     width: 50,
-    borderWidth: 0,
+    borderWidth: 0.5,
     alignItems:'center',
     borderStyle: 'solid',
     fontSize: 15,
     height:58.5,
     borderRadius: 15,
-   margin:5,
+   margin: responsiveHeight(.4),
     marginTop:15,
     color: 'white',  // Text color
     overflow: "hidden",}}>
@@ -349,6 +369,11 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
 
 
       {/* Verify Button */}
+
+
+      {loading ? (
+    <ActivityIndicator style={{ marginTop: 15 }} color="#31A062" size="large" />
+  ) : (
       <Button mode="contained" onPress={handleVerifyOtp} contentStyle={{
     height: 60,
     justifyContent: 'center',
@@ -359,9 +384,15 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
     width: '100%',
     marginVertical: 10,
     marginTop: 15,
-  }}>
+  }}
+  disabled={loading}
+  >
+    
         Reset Password
       </Button>
+
+  )}
+
     </View>
     </KeyboardAwareScrollView>
   );
@@ -390,14 +421,14 @@ const styles = StyleSheet.create({
     width: 354,
     minHeight: hp("7%"),
   
- marginStart:'5%',
+ marginLeft:'10%',
 
     fontSize: 34, // Adjust the font size as needed
     fontWeight: 'bold',
     
   },
   forgotPasswordTwo: {
-    marginStart:'5%',
+    marginStart:'10%',
     fontSize: 17,
     width: 354,
     height: 22,

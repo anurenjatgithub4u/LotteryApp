@@ -267,8 +267,7 @@ import { StatusBar } from "expo-status-bar";
 
 
   
-
-
+  const [filteredFaqs, setFilteredFaqs] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [faqs, setFaqs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -287,7 +286,7 @@ import { StatusBar } from "expo-status-bar";
       const refreshToken = await AsyncStorage.getItem('refreshToken');
       const accessToken = await AsyncStorage.getItem('accessToken');
       // Assuming you have the refreshToken stored in a variable.
-  
+      const userNumber = 0;
       // Make a POST request to the logout endpoint with the refreshToken in the request body.
       const response = await axios.post(
         `${backendURL}/logout`,
@@ -304,6 +303,7 @@ import { StatusBar } from "expo-status-bar";
       if (response.status === 200) {
         console.log('Logged out successfully');
         navigation.navigate('ProfileLandingTesting');
+        await AsyncStorage.setItem('userNumber', userNumber.toString());
         // Redirect or perform any other action after successful logout.
       } else {
         console.error('Logout failed');
@@ -374,19 +374,21 @@ import { StatusBar } from "expo-status-bar";
 
   const handleSearch = useCallback(() => {
     // Filter faqs based on the searchQuery
-    const filteredFaqs = faqs.filter(faq =>
+    const filteredResults = faqs.filter(faq =>
       faq.heading.toLowerCase().includes(searchQuery.toLowerCase()) ||
       faq.paragraph.toLowerCase().includes(searchQuery.toLowerCase())
     );
-
+  
     // Update UI with filtered results
-    setFaqs(filteredFaqs);
+    setFilteredFaqs(filteredResults);
   }, [faqs, searchQuery]);
 
   useEffect(() => {
     fetchFaqs();
   }, []);
-
+  useEffect(() => {
+    setFilteredFaqs(faqs);
+  }, [faqs]);
 
   return (
     <View style={{ flex:1, padding: 16 ,paddingTop:"12%"}}>
@@ -447,7 +449,7 @@ import { StatusBar } from "expo-status-bar";
       ) : (
 
         <ScrollView  style={{marginBottom:'15%',marginLeft:10}}>
-        {faqs.map((faq) => (
+        {filteredFaqs.map((faq) => (
           <TouchableOpacity key={faq._id} onPress={() => navigation.navigate('HelpDetail', { faqDetails: faq })}>
             <View style={{ flexDirection: 'column' }}>
               <Text style={styles.textStyle}>{faq.heading}</Text>
@@ -548,7 +550,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     top: 1,
-    marginRight: wp("1%"),
+    marginRight: wp("3%"),
     marginLeft: wp("2%"),
     
   },

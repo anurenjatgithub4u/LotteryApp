@@ -16,20 +16,25 @@ import { AntDesign } from '@expo/vector-icons';
 import { logout } from './auth/logout';
 import { StatusBar } from "expo-status-bar";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { useFocusEffect } from "@react-navigation/native";
+import { responsiveHeight } from 'react-native-responsive-dimensions';
+import { Alert } from 'react-native';
 
 const ProfileScreen = () => {
-
+  const [credits, setCredits] = useState(0);
   const { accessToken, setAccessToken } = useAuth();
   const navigation = useNavigation();
   const [userName, setUserName] = useState(null);
 
   const [userSince, setUserSince] = useState(null);
 
+
+
   const logout = async () => {
     try {
       // Replace 'YOUR_BACKEND_URL' with the actual URL of your backend server.
       const backendURL = 'https://lottery-backend-tau.vercel.app/api/v1/auth';
-      
+      const userNumber = 0;
       const refreshToken = await AsyncStorage.getItem('refreshToken');
       const accessToken = await AsyncStorage.getItem('accessToken');
       // Assuming you have the refreshToken stored in a variable.
@@ -50,7 +55,7 @@ const ProfileScreen = () => {
       if (response.status === 200) {
         console.log('Logged out successfully');
         navigation.navigate('ProfileLandingTesting');
-        // Redirect or perform any other action after successful logout.
+        await AsyncStorage.setItem('userNumber', userNumber.toString());
       } else {
         console.error('Logout failed');
         // Handle logout failure, e.g., display an error message.
@@ -66,7 +71,50 @@ const ProfileScreen = () => {
     // Use navigation.navigate to navigate to the Notification screen
     navigation.navigate('Notification'); // Replace 'Notification' with the name of your Notification screen
   };
+  const showAlert = () => {
+    Alert.alert(
+      'Close Account',
+      'Are you sure you want to close your account?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Yes',
+          onPress: () => handleDeleteUser(),
+        },
+      ],
+      { cancelable: false }
+    );
+  };
 
+  const handleDeleteUser = async () => {
+    const user = await AsyncStorage.getItem('userId');
+    const storedAccessToken = await AsyncStorage.getItem('accessToken');
+    try {
+      const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/delete-all-user-data/${user}`;
+      
+  
+      const authToken = 'your_auth_token'; // Replace with your actual authentication token
+  
+      const response = await axios.delete(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${storedAccessToken}`,
+        },
+      });
+  
+      if (response.status === 200) {
+        Alert.alert('Success', 'User data deleted successfully');
+        navigation.navigate('Login');
+      } else {
+        Alert.alert('Error', 'Failed to delete user data');
+      }
+    } catch (error) {
+      console.error('Error deleting user data:', error);
+      Alert.alert('Error', 'An unexpected error occurred');
+    }
+  };
 
   const formattedDate = (dateString) => {
     const options = { month: 'long', year: 'numeric' };
@@ -77,27 +125,46 @@ const ProfileScreen = () => {
 
   const formattedUserSince = formattedDate(userSince);
 
-  
-  useEffect(() => {
-    // Function to retrieve userName from AsyncStorage
-    const getUserNameFromStorage = async () => {
-      try {
-        const storedUserName = await AsyncStorage.getItem('userName');
 
-        const storedUserDate = await AsyncStorage.getItem('userDate');
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchPersonalDetails = async () => {
+        const userId = await AsyncStorage.getItem("userId");
+        const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`;
+        const storedAccessToken = await AsyncStorage.getItem("accessToken");
 
-        if (storedUserName !== null) {
-          setUserName(storedUserName);
-          setUserSince(storedUserDate);
+        try {
+          const response = await fetch(apiUrl, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${storedAccessToken}`,
+            },
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`${response.status} - ${errorData.message}`);
+          }
+         
+
+          const data = await response.json();
+          setUserSince(data.message.createdAt)
+          setUserName(data.message.name);
+          setCredits(data.message.credits);
+          console.log("credits credits credits credits credits credits credits", data.message.name,data);
+          // Additional fields can be set here based on your API response
+        } catch (error) {
+          console.error("Error fetching personal details:", error.message);
         }
-      } catch (error) {
-        console.error('Error retrieving userName from AsyncStorage:', error);
-      }
-    };
+      };
 
-    // Call the function to get userName when the component mounts
-    getUserNameFromStorage();
-  }, []);
+      fetchPersonalDetails();
+    }, []) // Empty dependency array means this effect will only run once when the component mounts
+  );
+
+  
+ 
 
  
 return(
@@ -243,6 +310,10 @@ return(
   </Card>
 
 
+  <Text onPress={ showAlert} style={{alignSelf:'center', color:'#FE555D',marginTop:responsiveHeight(3)}}>Close Account</Text>
+
+  <Text  style={{alignSelf:'center', marginTop:responsiveHeight(1)}}>Privacy Policy</Text>
+
 
   </View>
 )
@@ -302,7 +373,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     top: 1,
-    marginRight: wp("1%"),
+    marginRight: wp("3%"),
     marginLeft: wp("2%"),
     
   },

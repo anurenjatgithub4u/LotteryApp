@@ -18,6 +18,8 @@ import { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+
+
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -262,7 +264,7 @@ const styles = StyleSheet.create({
   },
   dateTextTwo: {
     fontSize: 32,
-    marginLeft:responsiveWidth(1),
+  
     
     marginTop:5,
    
@@ -327,7 +329,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
     borderColor: "white",
-    margin: 5,
+    margin: responsiveWidth(1.8),
     alignItems: "center",
     justifyContent: "center",
   },

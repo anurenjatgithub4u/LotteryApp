@@ -1,14 +1,18 @@
 import React, { useState,useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet,TouchableOpacity } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import { responsiveFontSize, responsiveHeight, responsiveScreenWidth, responsiveWidth } from "react-native-responsive-dimensions";
+import { FontAwesome } from '@expo/vector-icons';
+
 const ResetPassword = ({route}) => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const userData = route.params;
   console.log(userData)
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [newshowPassword, setNewShowPassword] = useState(false);
   const navigation = useNavigation();
   const userId = userData;
   // useEffect(() => {
@@ -48,12 +52,12 @@ console.log(userId);
   };
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', padding: 16 }}>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', padding: 16 , backgroundColor:'white' }}>
        <Text  style={styles.createaccountText}>Reset Password</Text>
     <Text  style={styles.createaccountTextTwo}>Enter Your Password and Confirm</Text>
 
       {/* Enter New Password */}
-
+{/* 
       <View style={{ borderColor: 'black',
 marginTop:15,
       backgroundColor: 'white',
@@ -78,10 +82,68 @@ marginTop:15,
         value={newPassword}
         onChangeText={setNewPassword}
       />
+      </View> */}
+
+
+<View
+     style={{ borderColor: 'black',
+     backgroundColor: 'white',
+     marginTop:15,
+     width: '100%',
+     marginBottom: 10,
+     height:59.5,
+     borderWidth: .5,
+     borderStyle: 'solid',
+     fontSize: 15,
+     borderRadius: 25,
+     
+     color: 'white',  
+     overflow: "hidden",}}
+    >
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <TextInput
+          label="New Password"
+          style={{
+            color: 'white',
+            width: '90%', // Adjust the width as needed
+            height: 60.5,
+            borderBottomColor: 'white',
+            borderBottomWidth: 0,
+            borderLeftWidth: 0,
+            borderRightWidth: 0,
+            borderTopWidth: 0,
+            backgroundColor: 'white',
+            borderRadius: 20,
+            marginTop: 0.2,
+            overflow: 'hidden',
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            borderBottomLeftRadius: 20,
+            borderBottomRightRadius: 20,
+          }}
+          activeUnderlineColor="gray"
+          secureTextEntry={!showPassword}
+          value={newPassword}
+          onChangeText={setNewPassword}
+        />
+        <TouchableOpacity
+          onPress={() => setShowPassword(!showPassword)}
+          style={{ padding: responsiveWidth(3), position: 'absolute', right: 0, zIndex: 1 }}
+        >
+          <FontAwesome
+            name={showPassword ? 'eye-slash' : 'eye'}
+            size={24}
+            color="black"
+          />
+        </TouchableOpacity>
       </View>
+    </View>
+
+
+
 
       {/* Re-enter New Password */}
-      <View style={{ borderColor: 'black',
+      {/* <View style={{ borderColor: 'black',
 marginTop:15,
       backgroundColor: 'white',
       width: '100%',
@@ -105,7 +167,62 @@ marginTop:15,
         value={confirmNewPassword}
         onChangeText={setConfirmNewPassword}
       />
+      </View> */}
+
+
+<View
+      style={{ borderColor: 'black',
+      backgroundColor: 'white',
+      marginTop:15,
+      width: '100%',
+      marginBottom: 10,
+      height:60,
+      borderWidth: .5,
+      borderStyle: 'solid',
+      fontSize: 15,
+      borderRadius: 25,
+      
+      color: 'white',  
+      overflow: "hidden",}}
+    >
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <TextInput
+          label="Reset New Password"
+          style={{
+            color: 'white',
+            width: '90%', // Adjust the width as needed
+            height: 60.5,
+            borderBottomColor: 'white',
+            borderBottomWidth: 0,
+            borderLeftWidth: 0,
+            borderRightWidth: 0,
+            borderTopWidth: 0,
+            backgroundColor: 'white',
+            borderRadius: 20,
+            marginTop: 0.2,
+            overflow: 'hidden',
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            borderBottomLeftRadius: 20,
+            borderBottomRightRadius: 20,
+          }}
+          activeUnderlineColor="gray"
+          secureTextEntry={!newshowPassword}
+          value={confirmNewPassword}
+          onChangeText={setConfirmNewPassword}
+        />
+        <TouchableOpacity
+          onPress={() => setNewShowPassword(!newshowPassword)}
+          style={{ padding: responsiveWidth(3), position: 'absolute', right: 0, zIndex: 1 }}
+        >
+          <FontAwesome
+            name={newshowPassword ? 'eye-slash' : 'eye'}
+            size={24}
+            color="black"
+          />
+        </TouchableOpacity>
       </View>
+    </View>
 
       {/* Submit Button */}
       <Button mode="contained" onPress={handleResetPassword} contentStyle={{
