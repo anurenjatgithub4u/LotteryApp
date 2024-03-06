@@ -1,6 +1,4 @@
 
-
-
 import { useNavigation } from '@react-navigation/native';
 import   React  , {useEffect,useState} from 'react';
 import { View ,StyleSheet,TouchableHighlight,Dimensions} from 'react-native';
@@ -372,10 +370,12 @@ useEffect(() => {
     setCommonLevel(1);
 
     if(commonArea === 2){
-
+      setDollar(CountryWinningAmount/4)
       setPlayingCredits(creditsForCountryLevelOne)
     }else if(commonArea === 1) {
       setPlayingCredits(creditsForContinentLevelOne)
+      setDollar(ContinentWinningAmount/4)
+
     }
     
   };
@@ -405,10 +405,12 @@ useEffect(() => {
     }
 
     if(commonArea === 2){
-
+      setDollar(CountryWinningAmount/2)
       setPlayingCredits(creditsForCountryLevelTwo)
     }else if(commonArea === 1) {
       setPlayingCredits(creditsForContinentLevelTwo)
+      setDollar(ContinentWinningAmount/2)
+
     }
     setCommonLevel(2);
   };
@@ -422,10 +424,12 @@ useEffect(() => {
     }
 
     if(commonArea === 2){
-
+      setDollar(CountryWinningAmount)
       setPlayingCredits(creditsForCountryLevelThree)
     }else if(commonArea === 1) {
       setPlayingCredits(creditsForContinentLevelThree)
+      setDollar(ContinentWinningAmount)
+
     }
     setCommonLevel(3);
   };

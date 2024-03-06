@@ -216,10 +216,9 @@ return(
       />
     </View>
 
-    {/* User Name */}
+ 
     <Text style={styles.userName}> {userName || 'Guest'}</Text>
 
-    {/* Member Since */}
     <Text style={styles.memberSince}>Member since {formattedUserSince}</Text>
 
 
@@ -312,7 +311,7 @@ return(
 
   <Text onPress={ showAlert} style={{alignSelf:'center', color:'#FE555D',marginTop:responsiveHeight(3)}}>Close Account</Text>
 
-  <Text  style={{alignSelf:'center', marginTop:responsiveHeight(1)}}>Privacy Policy</Text>
+  <Text onPress={()=>  navigation.navigate('TermsAndConditions')} style={{alignSelf:'center', marginTop:responsiveHeight(1)}}>Privacy Policy</Text>
 
 
   </View>

@@ -539,6 +539,7 @@ const handleNumberClick = (number) => {
         color="white"
         style={{
           marginLeft: 10,
+          marginBottom:'2%'
         }}
       />
     </TouchableOpacity>
@@ -552,7 +553,7 @@ const handleNumberClick = (number) => {
     >
       <Text style={styles.title}>Play Game</Text>
 
-      <EvilIcons name="bell" size={30} style={styles.bell} color="white" />
+      <EvilIcons name="bell" size={30} style={styles.bell} color="white" onPress={()=> navigation.navigate('Notification') }/>
       <AntDesign
         name="logout"
         size={19}
@@ -573,7 +574,7 @@ const handleNumberClick = (number) => {
         style={{
           flexDirection: "row",
           
-          
+         
           alignItems: "center",
         }}
       >
@@ -602,7 +603,7 @@ const handleNumberClick = (number) => {
         ))}
       </View>
 
-      <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: 'center', alignItems: 'center', paddingTop:10 }}>
   {[...Array(60).keys()].map((number, index) => (
     <TouchableOpacity
       key={number + 1}
@@ -657,6 +658,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#BA8DF3",
     alignItems: "center",
     justifyContent:'flex-start',
+    paddingTop:16
     
   },
   title: {

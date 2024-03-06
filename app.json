@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "ALS",
-    "slug": "afroalsapp",
+    "name": "Afro Lottery System",
+    "slug": "afrikalottery",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/lottery-android-icon.png",
@@ -17,7 +17,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.neurosphere.lotteryapp"
+      "bundleIdentifier": "com.neurosphere.lottery_app"
     },
     "android": {
       "adaptiveIcon": {
@@ -26,16 +26,16 @@
       },
       "package": "com.neurosphere.lottery_app",
       "googleServicesFile": "./google-services.json",
-      "useNextNotificationsApi": true
+      "useNextNotificationsApi":true
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "0bb3470e-2599-49f1-be08-9b6def18edc2"
+        "projectId": "28ee1909-a4f9-48c6-9992-0571adb39059"
       }
     },
-    "owner": "sreya_111"
+    "owner": "neurospherepvtltd"
   }
 }

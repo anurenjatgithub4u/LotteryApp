@@ -76,6 +76,8 @@ const GameDetailsPage = ({ route }) => {
     year: 'numeric',
   });
 
+  console.log("game details",game.gameType,game.prizeMoney)
+
   const fetchPreviousGameWinningNumbers = async () => {
     const storedAccessToken = await AsyncStorage.getItem("accessToken");
     const userId = await AsyncStorage.getItem("userId");
@@ -114,7 +116,7 @@ const GameDetailsPage = ({ route }) => {
         const data = await fetchPreviousGameWinningNumbers();
 
 
-        if(game.gameType === "Continent"){
+        if(game.gameType === "Africa"){
           if(game.isDrawPerformed === true){
             setPreviousWinningNumbers(data.message.continent || []);
           }
@@ -218,14 +220,14 @@ const GameDetailsPage = ({ route }) => {
    <>
  <Text style={styles.matchedNumberText}>
         {" "}
-        You have matched {matchNumbers} Numbers{" "}
+        You have matched {game.matchingNumbers} Numbers{" "}
       </Text>
 
       <Text style={styles.matchedNumberText}> You have Won </Text>
 
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Text style={styles.priceText}>
-          {game.gameType === "Continent" ? ContinentSymbol : CountrySymbol}
+          {game.gameType === "Africa" ? ContinentSymbol : CountrySymbol}
           {game.prizeMoney}
         </Text>
       </View>
@@ -329,7 +331,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
     borderColor: "white",
-    margin: responsiveWidth(1.8),
+    margin: responsiveWidth(1.25),
     alignItems: "center",
     justifyContent: "center",
   },
@@ -345,6 +347,7 @@ const styles = StyleSheet.create({
 
     marginStart: 10,
   },
+  
   YourNumber: {
     fontSize: 16,
     fontWeight: "500",

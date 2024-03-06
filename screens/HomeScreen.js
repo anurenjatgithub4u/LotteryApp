@@ -138,10 +138,10 @@ const HomeScreen = ({goToGameScreen }) => {
       }
 
       const responseData = await response.json();
-      console.log("User games data:", responseData);
+     // console.log("User games data:", responseData);
       responseData.message.forEach((game) => {
         // Log the selectedNumbers array for each game
-        console.log("Selected numbers for game:", game.selectedNumbers);
+       // console.log("Selected numbers for game:", game.selectedNumbers);
       });
       // Log the successful response data
       return responseData;
@@ -318,6 +318,7 @@ const HomeScreen = ({goToGameScreen }) => {
       }
 
       const data = await response.json();
+      console.log("dataaaaaaaaaaaaa",data)
       return data;
     } catch (error) {
       console.error(
@@ -377,7 +378,7 @@ const HomeScreen = ({goToGameScreen }) => {
   }, [navigation]);
 
   const navigateToGameScreen = () => {
-    navigation.navigate('Game'); // 'Gam' is the name of the screen in GameNavigator
+    navigation.navigate('Game', { screen: 'Gam' })
   };
 
   return (

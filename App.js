@@ -401,6 +401,49 @@ async function registerForPushNotificationsAsync() {
 
 const App = () => {
 
+
+
+
+  // async function registerForPushNotificationsAsync() {
+
+  //   Notifications.setNotificationHandler({
+  //     handleNotification: async () => ({
+  //       shouldShowAlert: true
+  //     }),
+  //   });
+  //   let token;
+  
+  //   const { status: existingStatus } = await Notifications.getPermissionsAsync();
+  //   let finalStatus = existingStatus;
+  
+  //   if (existingStatus !== 'granted') {
+  //     const { status } = await Notifications.requestPermissionsAsync();
+  //     finalStatus = status;
+  //   }
+  //   if (finalStatus !== 'granted') {
+  //     alert('Failed to get push token for push notification!');
+  //     return;
+  //   }
+  
+  //   // Get the projectId from app.json
+   
+  //   const projectId = "28ee1909-a4f9-48c6-9992-0571adb39059";
+  
+  //   // Pass the projectId to getExpoPushTokenAsync
+  //   token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
+  //   console.log(token);
+  //   alert(`Push Token: ${token}`);
+  //   return token;
+  // }
+  
+  // useEffect(() => {
+  //   registerForPushNotificationsAsync();
+  // }, []);
+
+
+
+
+
   return (
 
 
@@ -410,10 +453,14 @@ const App = () => {
       <Stack.Navigator initialRouteName="Splash"  screenOptions={{
     headerShown: false
   }}>
+
         <Stack.Screen name="Splash" component={Splash} options={{ headerShown: false }}/>
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false  }}/>
         <Stack.Screen name="LoginTesting" component={LoginTesting} options={{ headerShown: false  }}/>
         <Stack.Screen name="Register" component={RegisterScreen}options={{ headerShown: false }} />
+
+
+
 
         <Stack.Screen name="ProfileLandingTesting" component={ProfileLandingTesting}options={{ headerShown: false  }} />
         <Stack.Screen name="ProfileLanding" component={ProfileLandingScreen}options={{ headerShown: false  }} />
@@ -459,20 +506,7 @@ const App = () => {
 
         <Stack.Screen name='TermsAndConditions' component={TermsAndConditions} options={{ headerShown: false }}/>
 
-        {/* <Stack.Screen
-  name='LocalAuthenticationScreen'
-  options={{ headerShown: false }}
->
-  {(props) => (
-    <>
-    {isAuthenticated
- ? <MainScreen {...props} />
- : <LocalAuthenticationScreenWrapper {...props}  />
-    }
-     
-    </>
-  )}
-</Stack.Screen> */}
+       
         <Stack.Screen name='LocalAuthenticationScreen' component={LocalAuthenticationScreenWrapper} options={{ headerShown: false }}/>
 
 

@@ -12,6 +12,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { responsiveFontSize, responsiveHeight, responsiveScreenWidth, responsiveWidth } from "react-native-responsive-dimensions";
 import { KeyboardAwareScrollView } from '@codler/react-native-keyboard-aware-scroll-view';
 import { CheckBox } from 'react-native-elements';
+import { MaterialIcons } from '@expo/vector-icons';
 
 
 const CustomPicker = ({ visible, onClose, onSelect, data }) => {
@@ -135,43 +136,7 @@ const RegisterScreen = () => {
   
 
 
-  //   try {
-  //     // Validate input fields (you may want to add more validation)
-  //     if (!name || !email || !password || !mobileNumber || !selectedCountry) {
-  //       console.log('Please fill in all fields');
-  //       return;
-  //     }
-  //     const mobileWithCountry = `${selectedCountry}${mobileNumber}`;
-  //     console.log('Selected Country :', mobileWithCountry);
-  //     // Make API request to register user using Axios
-  //     const response = await axios.post('https://lottery-backend-tau.vercel.app/api/v1/user/register', {  email,
-  //     mobileNumber: mobileWithCountry });
-  //     console.log('Registration successful:', response.data.message);
-  //     if (response.status === 200) {
-  //       console.log('Registration successful:', response.data.message);
-  
-  //       // Additional data for navigation
-        
-  
-  //       // Navigate to OTP screen with additional information
-  //       navigation.navigate('OTP', {
-  //         email,
-  //         name,
-  //         password,
-  //         mobileNumber: mobileWithCountry,
-  //         selectedCountry
-  //       });
-  //       console.log('checking :', selectedCountry,mobileNumber);
-  //       // You may want to perform additional logic here
-  //     } else {
-  //       console.log('Registration failed:', response.data.message);
-  //       // Handle registration error (e.g., display an error message to the user)
-  //     }
-  //   } catch (error) {
-  //     console.error('Error during registration:', error.message);
-  //     // Handle unexpected errors during registration
-  //   }
-  // };
+
   
   const navigation = useNavigation();
   useEffect(() => {
@@ -200,6 +165,12 @@ const RegisterScreen = () => {
 
     <View style={{ flex:1,alignItems: 'center',justifyContent:'flex-start' , padding: 16 ,paddingTop:'25%',backgroundColor:'white',height:'100%'}}>
 
+
+
+    <MaterialIcons name="keyboard-arrow-left" size={35} color="black" style={{
+     
+     alignSelf:'flex-start'
+   }}/>
     <Text  style={styles.createaccountText}>Create an Account</Text>
     <Text  style={styles.createaccountTextTwo}>Play the game and get lucky</Text>
 
@@ -214,7 +185,7 @@ height:59.5,
 borderWidth: .5,
 borderStyle: 'solid',
 fontSize: 15,
-borderRadius: 25,
+borderRadius: 20,
 
 color: 'white',  
 overflow: "hidden",}}
@@ -249,7 +220,7 @@ accessibilityLabel="Name Input"
    borderWidth: .5,
    borderStyle: 'solid',
    fontSize: 15,
-   borderRadius: 25,
+   borderRadius: 20,
    
    color: 'white',  
    overflow: "hidden",}}
@@ -289,7 +260,7 @@ accessibilityLabel="Email"
     borderWidth: .5,
     borderStyle: 'solid',
     fontSize: 15,
-    borderRadius: 25,
+    borderRadius: 20,
     
     color: 'white',  
     overflow: "hidden",}}>
@@ -317,7 +288,7 @@ accessibilityLabel="Email"
    borderWidth: .5,
    borderStyle: 'solid',
    fontSize: 15,
-   borderRadius: 25,
+   borderRadius: 20,
    
    color: 'white',  
    overflow: "hidden",}}
@@ -358,38 +329,42 @@ accessibilityLabel="Email"
 </View>
       
 
+   
 <View
-       style={{ borderColor: 'black',
-       backgroundColor: 'white',
-       marginTop:18,
-       width: '100%',
-       marginBottom: 10,
-       height:60.5,
-       borderWidth: .5,
-       borderStyle: 'solid',
-       fontSize: 15,
-       borderRadius: 25,
-       
-       color: 'white',  
-       overflow: "hidden",}}
-    >
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <TextInput
-          label="Password"
-          style={{
-            color: 'white',
-            backgroundColor: 'white',
-            height:60.5,
-          
-           }}
-          activeUnderlineColor="gray"
-          secureTextEntry={!showPassword}
-          value={password}
-          onChangeText={setPassword}
-        />
-        <TouchableOpacity
+
+style={{ borderColor: 'black',
+      backgroundColor: 'white',
+      marginTop:15,
+      width: '100%',
+      marginBottom: 10,
+      height:60,
+      borderWidth: .5,
+      borderStyle: 'solid',
+      fontSize: 15,
+      borderRadius: 20,
+      
+      color: 'white',  
+      overflow: "hidden",}}
+      
+      
+      >
+      <TextInput
+        label="Password"
+        
+        style={{
+          color: 'white',
+          backgroundColor: 'white',
+          height:60.5,
+        
+         }}
+         activeUnderlineColor="gray"
+         secureTextEntry={!showPassword}
+         value={password}
+         onChangeText={setPassword}
+      />
+  <TouchableOpacity
           onPress={() => setShowPassword(!showPassword)}
-          style={{ padding: responsiveWidth(3), position: 'absolute', right: 0, zIndex: 1 }}
+          style={{ padding: responsiveWidth(3.7), position: 'absolute', right: 0, }}
         >
           <FontAwesome
             name={showPassword ? 'eye-slash' : 'eye'}
@@ -397,8 +372,10 @@ accessibilityLabel="Email"
             color="black"
           />
         </TouchableOpacity>
+
+
       </View>
-    </View>
+
 
 
     <View style={{ flexDirection: 'row', alignSelf: 'flex-start', marginTop:responsiveHeight(1), marginBottom:responsiveHeight(1) }}>

@@ -431,7 +431,7 @@ const GameDetailsPageTwo = ({ route }) => {
         const data = await fetchPreviousGameWinningNumbers();
 
      
-        if(game.gameType === "Continent"){
+        if(game.gameType === "Africa"){
           if(game.isDrawPerformed === true){
             setPreviousWinningNumbers(data.message.continent || []);
           }
@@ -529,14 +529,14 @@ const GameDetailsPageTwo = ({ route }) => {
    <>
  <Text style={styles.matchedNumberText}>
         {" "}
-        You have matched {matchNumbers} Numbers{" "}
+        You have matched {game.matchingNumbers} Numbers{" "}
       </Text>
 
       <Text style={styles.matchedNumberText}> You have Won </Text>
 
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Text style={styles.priceText}>
-          {game.gameType === "Continent" ? ContinentSymbol : CountrySymbol}
+          {game.gameType === "Africa" ? ContinentSymbol : CountrySymbol}
           {game.prizeMoney}
         </Text>
       </View>
@@ -635,7 +635,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
     borderColor: "white",
-    margin: responsiveWidth(1.8),
+    margin: responsiveWidth(1.25),
     alignItems: "center",
     justifyContent: "center",
   },
