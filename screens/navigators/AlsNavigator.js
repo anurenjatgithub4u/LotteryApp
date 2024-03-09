@@ -52,7 +52,6 @@ function ALSNaviagator() {
 
       
       <Stack.Screen name="GameDetailsPageTwo" component={GameDetailsPageTwo} />
-      <Stack.Screen name="ALScreen" component={MyCardComponent} />
 
       
      

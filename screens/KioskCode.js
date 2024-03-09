@@ -65,6 +65,7 @@ const KioskCode = () => {
             name="keyboard-arrow-left"
             size={35}
             color="black"
+           
           />
         </TouchableOpacity>
       </View>
@@ -120,6 +121,6 @@ const styles = StyleSheet.create({
     top: 10, // Adjust this value to change the distance from the top
     left: 10,
     zIndex: 1,
-    marginTop:'5%'
+    marginTop:'10%'
   },
 });

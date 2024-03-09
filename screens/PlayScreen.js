@@ -539,7 +539,7 @@ const handleNumberClick = (number) => {
         color="white"
         style={{
           marginLeft: 10,
-          marginBottom:'2%'
+         bottom:'5%'
         }}
       />
     </TouchableOpacity>
@@ -553,7 +553,7 @@ const handleNumberClick = (number) => {
     >
       <Text style={styles.title}>Play Game</Text>
 
-      <EvilIcons name="bell" size={30} style={styles.bell} color="white" onPress={()=> navigation.navigate('Notification') }/>
+      <EvilIcons name="bell" size={30} style={styles.bell} color="white" onPress={()=> navigation.navigate('NotificationScreen') }/>
       <AntDesign
         name="logout"
         size={19}
@@ -664,7 +664,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: SCREEN_WIDTH * 0.06, // Adjust font size based on screen width
     fontWeight: "bold",
-
+   left:'120%',
     color: "white",
   },
   bell: {
@@ -687,8 +687,10 @@ const styles = StyleSheet.create({
     marginBottom: SCREEN_WIDTH * 0.05,
     color: "white",
     marginRight: SCREEN_WIDTH * 0.2,
-    marginBottom:'6%',
+    marginBottom:'2%',
+    marginTop:'3%',
     alignSelf: "flex-start",
+    marginLeft:'2%'
   },
   selectedNumbersContainer: {
     flexDirection: "row",

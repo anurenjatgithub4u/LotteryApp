@@ -13,6 +13,13 @@
     "production": {}
   },
   "submit": {
-    "production": {}
+    "production": {
+
+      "ios":{
+        "appleId":"admin@crowdafrik.com",
+        "ascAppId":"6478978244",
+        "appleTeamId":"5GZR5485ZN"
+      }
+    }
   }
 }

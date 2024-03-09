@@ -233,7 +233,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
       />
       </View>
 
-      <Text style={{ marginVertical: 10, color: '#31A062' }}>Or</Text>
+      <Text style={{ marginVertical: 10, color: '#31A062' }}>OR</Text>
 
 
       

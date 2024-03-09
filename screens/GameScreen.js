@@ -632,7 +632,7 @@ const GameScreen = () => {
 
 
 
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: '2%' }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: '0%' }}>
   <RadioButton
     value="all"
     status={showWinners ? 'unchecked' : 'checked'}

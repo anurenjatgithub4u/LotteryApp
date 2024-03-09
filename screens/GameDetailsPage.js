@@ -172,7 +172,7 @@ const GameDetailsPage = ({ route }) => {
           name="keyboard-arrow-left"
           size={35}
           color="black"
-          style={{}}
+          style={{right:'3%'}}
         />
       </TouchableOpacity>
       <Text style={styles.yourGameText}>Your Game</Text>
@@ -324,9 +324,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: 10,
+    alignSelf:'flex-start'
+    
   },
   numberBox: {
-    width: 45,
+    width: 42,
     height: 35,
     borderRadius: 10,
     borderWidth: 2,
@@ -334,6 +336,7 @@ const styles = StyleSheet.create({
     margin: responsiveWidth(1.25),
     alignItems: "center",
     justifyContent: "center",
+    alignSelf:'flex-start'
   },
   numberText: {
     fontSize: 12,

@@ -12,6 +12,7 @@
       "backgroundColor": "#ffffff"
     },
     "useNextNotificationsApi": true,
+   
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -24,7 +25,9 @@
         "foregroundImage": "./assets/lottery-android-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.neurosphere.lottery_app"
+      "package": "com.neurospherepvtltd.afrikalottery",
+      "googleServicesFile": "./google-services.json",
+      "useNextNotificationsApi": true
     },
     "web": {
       "favicon": "./assets/favicon.png"

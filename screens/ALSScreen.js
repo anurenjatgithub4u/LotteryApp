@@ -504,17 +504,18 @@ useEffect(() => {
 
   return (
 
-    <View  style={{  flex: 1,paddingLeft:16,paddingRight:16 ,paddingTop:"12%",height:hp(100)}}  >
+    <View  style={{ backgroundColor: "#BA8DF3", flex: 1,paddingLeft:16,paddingRight:16 ,paddingTop:"12%",height:hp(100)}}  >
 
 <StatusBar backgroundColor={"transparent"} translucent />
 
+<View style={{flexDirection:'row',marginBottom:'8%'}}>
 <TouchableOpacity onPress={() => navigation.navigate('Hom')}>
     <View style={{ alignItems: 'flex-start', alignSelf: 'flex-start' }}>
       <MaterialIcons
         name="keyboard-arrow-left"
         size={35}
-        color="black"
-        style={{ marginLeft: 10 }}
+        color="white"
+        style={{ right:'13%'}}
       />
     </View>
   </TouchableOpacity>
@@ -522,21 +523,22 @@ useEffect(() => {
 
 
      <Text  style={styles.welcomeText}>Choose game </Text>
+</View>
      
 
      <TouchableHighlight
         style={[
-          styles.buttonContainer,
+          styles.buttonContainerMain,
           { backgroundColor: commonArea==1 ? '#31A062' : 'rgba(49, 160, 98, 0.33)' },
         ]}
         onPress={ handlePress}
         underlayColor="#31A062" // This sets the color when the button is pressed
       >
-        <Text style={[styles.buttonText,{color:commonArea==1 ? 'white' : 'black'}]}>
+        <Text style={[styles.buttonText,{color:commonArea==1 ? 'white' : 'white'}]}>
           Continental
           {'\n'}
-          <Text style={[ styles.buttonTextSmallTwo,{color:commonArea==1 ? 'white' : 'black'} ] }>
-          Play for your continent : {ContinentSymbol}{ContinentWinningAmount}
+          <Text style={[ styles.buttonTextSmallTwo,{color:commonArea==1 ? 'white' : 'white'} ] }>
+          Win up to : {ContinentSymbol}{ContinentWinningAmount}
     </Text>
         </Text>
       </TouchableHighlight>
@@ -545,17 +547,17 @@ useEffect(() => {
      
       <TouchableHighlight
         style={[
-          styles.buttonContainer,
+          styles.buttonContainerMain,
           { backgroundColor: commonArea === 2 || areaType === 2 ? '#31A062' : 'rgba(49, 160, 98, 0.33)' },
         ]}
         onPress={handlePressNational}
         underlayColor="#31A062" // This sets the color when the button is pressed
       >
-        <Text style={[styles.buttonText, {color:commonArea==2 ? 'white' : 'black'}]}>
+        <Text style={[styles.buttonText, {color:commonArea==2 ? 'white' : 'white'}]}>
           National
           {'\n'}
-          <Text style={[styles.buttonTextSmallTwo, {color:commonArea==2 ? 'white' : 'black'}]}>
-      Play for your country : {CountrySymbol}{CountryWinningAmount}
+          <Text style={[styles.buttonTextSmallTwo, {color:commonArea==2 ? 'white' : 'white'}]}>
+      Win up to : {CountrySymbol}{CountryWinningAmount}
     </Text>
         </Text>
       </TouchableHighlight>
@@ -566,64 +568,89 @@ useEffect(() => {
       <TouchableHighlight
   style={[
     styles.buttonContainer,
-    { backgroundColor: commonLevel==1? '#31A062' : 'rgba(49, 160, 98, 0.33)' },
+    { backgroundColor: commonLevel === 1 ? '#31A062' : 'rgba(49, 160, 98, 0.33)' },
   ]}
   onPress={handlePressLevelOne}
   underlayColor="#31A062"
 >
-  <Text style={[styles.buttonText, { color: commonLevel==1 ? 'white' : 'black' }]}>
+  <Text style={[styles.buttonText, { color: commonLevel === 3 ? 'white' : 'white' }]}>
     Level 1
     {'\n'}
-    <Text style={[styles.buttonTextSmallTwo, { color: commonLevel==1 ? 'white' : 'black' }]}>
-      Play for 25% of JackPot
-    </Text>
+   
+    
+    {commonArea === 0 ? null : (
+      <Text style={[
+        styles.buttonTextLevelThree,
+        { color: commonArea === 0 ? 'white' : 'white' },
+      ]}>
+        {commonArea === 1
+          ? `${creditsForCountryLevelOne } Credits Win Upto ${ContinentWinningAmount}`
+          : `${creditsForContinentLevelOne } Credits Win Upto ${CountryWinningAmount}`}
+      </Text>
+    )}
   </Text>
 </TouchableHighlight>
+
 
       
      
 
 
-      <TouchableHighlight
-        style={[
-          styles.buttonContainer,
-          { backgroundColor: commonLevel==2 ? '#31A062' : 'rgba(49, 160, 98, 0.33)' },
-        ]}
-        onPress={handlePressLevelTwo}
-        underlayColor="#31A062" // This sets the color when the button is pressed
-      >
-        <Text style={[styles.buttonText, { color: commonLevel==2 ? 'white' : 'black' }]}>
-          Level 2
-          {'\n'}
-          <Text style={[styles.buttonTextSmallTwo, { color: commonLevel==2 ? 'white' : 'black' }]}>
-          Play for 50% of JackPot
-    </Text>
-        </Text>
-      </TouchableHighlight>
+<TouchableHighlight
+  style={[
+    styles.buttonContainer,
+    { backgroundColor: commonLevel === 2 ? '#31A062' : 'rgba(49, 160, 98, 0.33)' },
+  ]}
+  onPress={handlePressLevelTwo}
+  underlayColor="#31A062"
+>
+  <Text style={[styles.buttonText, { color: commonLevel === 3 ? 'white' : 'white' }]}>
+    Level 2
+    {'\n'}
+    {commonArea === 0 ? null : (
+      <Text style={[
+        styles.buttonTextLevelThree,
+        { color: commonArea === 0 ? 'white' : 'white' },
+      ]}>
+        {commonArea === 1
+          ? `${creditsForCountryLevelTwo } Credits Win Upto ${ContinentWinningAmount/4}`
+          : `${creditsForContinentLevelTwo } Credits Win Upto ${CountryWinningAmount/4}`}
+      </Text>
+    )}
+  </Text>
+</TouchableHighlight>
+
       
   
  
       <TouchableHighlight
-        style={[
-          styles.buttonContainer,
-          { backgroundColor: commonLevel==3 ? '#31A062' : 'rgba(49, 160, 98, 0.33)' },
-        ]}
-        onPress={handlePressLevelThree}
-        underlayColor="#31A062" // This sets the color when the button is pressed
-      >
-        <Text style={[styles.buttonText, { color: commonLevel==3 ? 'white' : 'black' }]}>
-          Level 3
-          {'\n'}
-          <Text style={[styles.buttonTextLevelThree, { color: commonLevel==3 ? 'white' : 'black' }]}>
-          Play for the JackPot
-    </Text>
-        </Text>
-      </TouchableHighlight>
+  style={[
+    styles.buttonContainer,
+    { backgroundColor: commonLevel === 3 ? '#31A062' : 'rgba(49, 160, 98, 0.33)' },
+  ]}
+  onPress={handlePressLevelThree}
+  underlayColor="#31A062"
+>
+  <Text style={[styles.buttonText, { color: commonLevel === 3 ? 'white' : 'white' }]}>
+    Level 3
+    {'\n'}
+    {commonArea === 0 ? null : (
+      <Text style={[
+        styles.buttonTextLevelThree,
+        { color: commonArea === 0 ? 'white' : 'white' },
+      ]}>
+        {commonArea === 1
+          ? `${creditsForCountryLevelThree } Credits Win Upto ${ContinentWinningAmount/4}`
+          : `${creditsForContinentLevelThree} Credits Win Upto ${CountryWinningAmount/4}`}
+      </Text>
+    )}
+  </Text>
+</TouchableHighlight>
 
 
-      <Text  style={{alignSelf:'center'}}>You are Playing For: {dollar}</Text>
 
-      <Text  style={{alignSelf:'center'}}>{playingCredits} credits will be used</Text>
+
+     
       
       <TouchableOpacity  style={{ 
     width: '100%',
@@ -668,12 +695,12 @@ const styles = StyleSheet.create({
   welcomeText: {
     width: 354,
     height: 41,
+    color:'white',
    
-    marginLeft: responsiveWidth(7),
   
     fontSize: 30, // Adjust the font size as needed
     fontWeight: 'bold',
-    marginBottom:responsiveHeight(2)
+   
    
   },
   buycreditscard: {
@@ -699,6 +726,20 @@ const styles = StyleSheet.create({
     padding: '2%', // Adjust padding as needed
     alignItems: 'center',
     borderRadius: 20,
+    height:'8%',
+    alignSelf:'center',
+    
+  },
+
+
+  buttonContainerMain: {
+    backgroundColor: '#31A062',
+    width: '90%',
+    marginVertical: '2%', // Adjust margin as needed
+    padding: '2%', // Adjust padding as needed
+    alignItems: 'center',
+    borderRadius: 20,
+    height:'8%',
     alignSelf:'center',
     
   },
@@ -737,14 +778,11 @@ const styles = StyleSheet.create({
     color: 'black',
     textAlign: 'center',
     fontSize: 20,
-    fontWeight:'700'
+    fontWeight:'700',
+    alignSelf:'center',
+    textAlignVertical:'center'
   },
-  buttonText: {
-    color: 'black',
-    textAlign: 'center',
-    fontSize: 20,
-    fontWeight:'700'
-  },
+
   buttonTextSmallTwo: {
    
     textAlign: 'center',
@@ -762,12 +800,12 @@ const styles = StyleSheet.create({
     width: 354,
     height: 41,
     top: 10,
-    left: 20,
-  
+    left: 30,
+    color:'white',
     fontSize: 30, // Adjust the font size as needed
     fontWeight: 'bold',
     alignSelf:'center',
-    marginBottom:10,
+    marginBottom:'5%',
     marginTop:10
    
   },

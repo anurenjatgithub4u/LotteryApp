@@ -68,6 +68,7 @@ import TermsAndConditions from './screens/TermsAndConditions';
 
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
+import MyCardComponent from './screens/ALSScreen';
 
 
 // Sentry.init({
@@ -377,69 +378,58 @@ const MainStackNavigator = () => (
   </MainStack.Navigator>
  
 );
-async function registerForPushNotificationsAsync() {
-  let token;
-
-  const { status: existingStatus } = await Notifications.getPermissionsAsync();
-  let finalStatus = existingStatus;
-
-  if (existingStatus !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
-  }
-  if (finalStatus !== 'granted') {
-      alert('Failed to get push token for push notification!');
-      return;
-  }
-  token = (await Notifications.getExpoPushTokenAsync()).data;
-  console.log(token);
-
-  return token;
-}
 
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 const App = () => {
 
+ // const [expoPushToken, setExpoPushToken] = useState("");
 
+ useEffect(() => {
+  // Set up notification handler
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+    }),
+  });
 
+  async function setupNotifications() {
+    // Request permissions
+    const { status } = await Notifications.requestPermissionsAsync();
+    if (status !== 'granted') {
+      console.log('Notification permissions were not granted');
+      return;
+    }
 
-  // async function registerForPushNotificationsAsync() {
+    // Add listener for received notifications
+    const notificationListener = Notifications.addNotificationReceivedListener(notification => {
+      console.log('Notification received:', notification);
+      // Debug: Check if we're in a loop
+      // Consider adding a condition to prevent re-scheduling notifications immediately
+    });
 
-  //   Notifications.setNotificationHandler({
-  //     handleNotification: async () => ({
-  //       shouldShowAlert: true
-  //     }),
-  //   });
-  //   let token;
-  
-  //   const { status: existingStatus } = await Notifications.getPermissionsAsync();
-  //   let finalStatus = existingStatus;
-  
-  //   if (existingStatus !== 'granted') {
-  //     const { status } = await Notifications.requestPermissionsAsync();
-  //     finalStatus = status;
-  //   }
-  //   if (finalStatus !== 'granted') {
-  //     alert('Failed to get push token for push notification!');
-  //     return;
-  //   }
-  
-  //   // Get the projectId from app.json
-   
-  //   const projectId = "28ee1909-a4f9-48c6-9992-0571adb39059";
-  
-  //   // Pass the projectId to getExpoPushTokenAsync
-  //   token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
-  //   console.log(token);
-  //   alert(`Push Token: ${token}`);
-  //   return token;
-  // }
-  
-  // useEffect(() => {
-  //   registerForPushNotificationsAsync();
-  // }, []);
+    // Add listener for notification responses
+    Notifications.addNotificationResponseReceivedListener(response => {
+      console.log('Notification response:', response);
+    });
 
+    return () => {
+      // Cleanup listeners
+      Notifications.removeNotificationSubscription(notificationListener);
+    };
+  }
+
+  setupNotifications();
+}, []);
 
 
 
@@ -466,7 +456,8 @@ const App = () => {
         <Stack.Screen name="ProfileLanding" component={ProfileLandingScreen}options={{ headerShown: false  }} />
         <Stack.Screen name="Play" component={PlayScreen} options={{ headerShown: false ,header:null}} />
         <Stack.Screen name="OTP" component={OTPVerificationScreen} options={{ headerShown: false }}/>
-       
+        <Stack.Screen name="ALScreen" component={MyCardComponent} options={{ headerShown: false ,header:null}} />
+
         <Stack.Screen name="ForgotPasswordTwo" component={ForgotPasswordTwo}options={{ gestureEnabled: false , headerShown: false }}  />
 
         <Stack.Screen name="MainScreen" component={MainScreen} options={{ headerShown: false }} />

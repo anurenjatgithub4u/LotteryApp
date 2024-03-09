@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useCallback,createRef } from 'react';
-import { View, Text,StyleSheet,TouchableOpacity,Modal,ActivityIndicator  } from 'react-native';
+import { View, Text,StyleSheet,TouchableOpacity,Modal,ActivityIndicator,Platform  } from 'react-native';
 import * as Font from 'expo-font';
 import { Entypo } from '@expo/vector-icons';
 import * as SplashScreen from 'expo-splash-screen';
@@ -23,6 +23,8 @@ import {
 } from "react-native-responsive-screen";
 import { StatusBar } from "expo-status-bar";
 import { FontAwesome } from '@expo/vector-icons';
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
 
 const CustomPicker = ({ visible, onClose, onSelect, data }) => {
   return (
@@ -158,12 +160,112 @@ const LoginScreen = ({ navigation }) => {
   }, [navigation]);
  
   const [fcmToken, setFcmToken] = useState(null);
+
+
+  useEffect(() => {
+    // Retrieve email from AsyncStorage
+    const getRegisteredEmail = async () => {
+      try {
+        const registeredEmail = await AsyncStorage.getItem('registeredEmail');
+        if (registeredEmail) {
+          setEmail(registeredEmail);
+        }
+      } catch (error) {
+        console.error('Error retrieving email:', error);
+      }
+    };
+
+    getRegisteredEmail();
+  }, []);
     
   const handleLogin = async () => {
+
+    // const token = await registerForPushNotificationsAsync();
+    // async function registerForPushNotificationsAsync() {
+    //   let token;
+    //   if (Platform.OS === 'android') {
+    //     Notifications.setNotificationChannelAsync('default', {
+    //       name: 'default',
+    //       importance: Notifications.AndroidImportance.MAX,
+    //       vibrationPattern: [0, 250, 250, 250],
+    //       lightColor: '#FF231F7C',
+    //       sound: 'default', // Make sure you have a valid sound file for the notification or use 'default'
+    //     });
+    //   }
+    //   if (Device.isDevice) {
+    //     const { status: existingStatus } =
+    //       await Notifications.getPermissionsAsync();
+    //     let finalStatus = existingStatus;
+    //     if (existingStatus !== "granted") {
+    //       const { status } = await Notifications.requestPermissionsAsync();
+    //       finalStatus = status;
+    //     }
+    //     if (finalStatus !== "granted") {
+    //       alert("Failed to get push token for push notification!");
+    //       return;
+    //     }
+    //     // Learn more about projectId:
+    //     // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
+    //     token = (
+    //       await Notifications.getExpoPushTokenAsync({
+    //         projectId: "28ee1909-a4f9-48c6-9992-0571adb39059",
+    //       })
+    //     ).data;
+    //   } else {
+    //     console.log("Must use physical device for Push Notifications");
+    //   }
+    //   return token;
+    // }
+    //const token = await AsyncStorage.getItem('token');
+
+
+    const token = await registerForPushNotificationsAsync();
+    
+    async function registerForPushNotificationsAsync() {
+      let token;
+  
+      if (Platform.OS === 'android') {
+        Notifications.setNotificationChannelAsync('default', {
+          name: 'default',
+          importance: Notifications.AndroidImportance.MAX,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: '#FF231F7C',
+          sound: 'default', // Make sure you have a valid sound file for the notification or use 'default'
+        });
+      }
+  
+      if (Device.isDevice) {
+        const { status: existingStatus } =
+          await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+        if (existingStatus !== "granted") {
+          const { status } = await Notifications.requestPermissionsAsync();
+          finalStatus = status;
+        }
+        if (finalStatus !== "granted") {
+          alert("Failed to get push token for push notification!");
+          return;
+        }
+        // Learn more about projectId:
+        // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
+        token = (
+          await Notifications.getExpoPushTokenAsync({
+            projectId: "28ee1909-a4f9-48c6-9992-0571adb39059",
+          })
+        ).data;
+      } else {
+        console.log("Must use physical device for Push Notifications");
+      }
+  
+  
+  
+  
+      return token;
+    }
+
     try {
       setLoading(true);
-      const storedPushToken = await AsyncStorage.getItem('ExpoPushToken');
-  
+     
       if (!email || !password) {
         Alert.alert(
           '',
@@ -176,7 +278,7 @@ const LoginScreen = ({ navigation }) => {
       const response = await axios.post('https://lottery-backend-tau.vercel.app/api/v1/user/login', {
         email,
         password,
-        pushNotificationToken: storedPushToken,
+        pushNotificationToken: token,
       });
   
       console.log("response", response);
@@ -184,7 +286,7 @@ const LoginScreen = ({ navigation }) => {
       if (response.status === 200) {
         const result = response.data;
   
-        console.log('User logged in successfully:', result);
+        //console.log('User logged in successfully:', result);
   
         const accessToken = result.data.accessToken;
         const refreshToken = result.data.refreshToken;
@@ -195,12 +297,12 @@ const LoginScreen = ({ navigation }) => {
         const userNumber = 1;
         // Setting the value for 'loginId' key
         
-        console.log('User Details:', result.message.user);
-        console.log('Access Token:', accessToken);
-        console.log('Credits:', credits);
-        console.log('UserId', userId);
-        console.log('UserName..', userName);
-        console.log('Refresh Token:', result.message.refreshToken);
+        // console.log('User Details:', result.message.user);
+        // console.log('Access Token:', accessToken);
+        // console.log('Credits:', credits);
+        // console.log('UserId', userId);
+        // console.log('UserName..', userName);
+        // console.log('Refresh Token:', result.message.refreshToken);
   
         await AsyncStorage.setItem('accessToken', accessToken);
         await AsyncStorage.setItem('refreshToken', refreshToken);
@@ -306,13 +408,13 @@ const LoginScreen = ({ navigation }) => {
 
   return (
 
-    <View style={{ flex:1,alignItems: 'center',justifyContent:'flex-start' , padding: 16,paddingTop:'25%',backgroundColor:"white" }}>
+    <View style={{ flex:1,alignItems: 'center',justifyContent:'flex-start' , paddingTop: 16,paddingTop:'25%',backgroundColor:"white",paddingLeft:'6%',paddingRight:'6%',paddingBottom:16 }}>
 
 <StatusBar backgroundColor={"transparent"} translucent />
 
-<MaterialIcons name="keyboard-arrow-left" size={35} color="black" style={{
+<MaterialIcons name="keyboard-arrow-left" onPress={()=>navigation.navigate('ProfileLandingTesting')} size={35} color="black" style={{
      
-     alignSelf:'flex-start'
+     alignSelf:'flex-start',right:'5%',bottom:'5%'
    }}/>
          <Text  style={styles.createaccountText}>Login</Text>
     <Text  style={styles.createaccountTextTwo}>Play and manage your games</Text>
@@ -350,7 +452,7 @@ style={{ borderColor: 'black',
         keyboardType="email-address"
         autoCapitalize="none"
         value={email}
-        onChangeText={setEmail}
+        onChangeText={(text) => setEmail(text)}
       />
       </View>
 
@@ -561,6 +663,7 @@ const styles = StyleSheet.create({
      minHeight: hp("7%"),
     fontSize: 34, // Adjust the font size as needed
     fontWeight: 'bold',
+    bottom:'6%'
    
   },
 
@@ -569,11 +672,11 @@ const styles = StyleSheet.create({
     fontSize: 17,
     width: 354,
     height: 22,
-    
+    bottom:'6%',
     left: 33,
   
     fontSize: 13,
-    marginBottom: 40,
+    
     textAlign: 'left', // Add this line to align text to the left
   },
   modalContent: {

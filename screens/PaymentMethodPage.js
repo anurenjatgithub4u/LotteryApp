@@ -1,3 +1,7 @@
+
+
+
+
 // import { useNavigation } from '@react-navigation/native';
 // import React ,{useState,useRef}from 'react';
 // import axios from 'axios';
@@ -6,11 +10,11 @@
 // import { MaterialIcons } from '@expo/vector-icons';
 
 // import  { Paystack , paystackProps}  from 'react-native-paystack-webview';
-// import { View, TouchableOpacity,Text } from 'react-native';
+// import { View, TouchableOpacity,Text ,TextInput } from 'react-native';
 
 
 // const PaymentMethodPage = () => {
-
+//   const [amount, setAmount] = useState('');
   
 
 
@@ -197,13 +201,30 @@
 //             }}
 //           />
 //         </TouchableOpacity>
+//         <Text style={styles.title}>Enter Amount</Text>
+
+// <TextInput
+//   placeholder="Enter amount"
+//   style={{
+//     height: 50,
+//     borderColor: 'gray',
+//     borderWidth: 1,
+//     marginBottom: 15,
+//     padding: 10,
+//     borderRadius:20
+//   }}
+//   keyboardType="numeric"
+//   value={amount}
+//   onChangeText={(text) => setAmount(text)}
+// />
+
 
 // <Paystack
 //         paystackKey="pk_test_e7ac28433b9441b06eadb58383119e23cbb98d6d"
 //         paystackSecretKey="sk_test_812d541223297ccb59de49c57fbc7a941adee742"
 //         billingEmail="paystackwebview@something.com"
 //         channels={["card"]}
-//         amount={'25000.00'}
+//         amount={amount}
         
 //         onCancel={(e) => {
 //           // handle response here
@@ -370,6 +391,10 @@
 
 
 
+
+
+
+
 import { useNavigation } from '@react-navigation/native';
 import React ,{useState,useRef}from 'react';
 import axios from 'axios';
@@ -390,6 +415,13 @@ const navigation = useNavigation();
 
 const handlePaystackSuccess = async (res) => {
   try {
+
+
+    if (!amount) {
+      // Display an alert message
+      alert('Please enter an amount');
+      return;
+    }
     // Retrieve userId and accessToken from AsyncStorage
     const storedUserDetails = await AsyncStorage.getItem('userDetails');
     console.log('Paystack Success Response:', res);
@@ -406,6 +438,8 @@ const handlePaystackSuccess = async (res) => {
 
     // Call the addCredits endpoint
     try {
+
+  
       const response = await fetch('https://lottery-backend-tau.vercel.app/api/v1/user/add-credits', {
         method: 'POST',
         headers: {
@@ -648,7 +682,17 @@ const handlePaystackSuccess = async (res) => {
           marginTop: 15,
         }}
         mode="contained"
-        onPress={()=> paystackWebViewRef.current.startTransaction()}
+        onPress={() => {
+          // Check if the amount is null or empty
+          if (!amount) {
+            // Display an alert message
+            alert('Please enter an amount');
+            return;
+          }
+      
+          // Start the transaction if the amount is valid
+          paystackWebViewRef.current.startTransaction();
+        }}
       >
         Credit/Debit Card
       </Button>
@@ -666,7 +710,19 @@ const handlePaystackSuccess = async (res) => {
         marginTop: 15,
       }}
         mode="contained"
-        onPress={()=> paystackWebViewRefBank.current.startTransaction()}
+
+        onPress={() => {
+          // Check if the amount is null or empty
+          if (!amount) {
+            // Display an alert message
+            alert('Please enter an amount');
+            return;
+          }
+      
+          // Start the transaction if the amount is valid
+          paystackWebViewRefBank.current.startTransaction()
+        }}
+       
       >
         Bank Transfer
       </Button>
@@ -684,7 +740,20 @@ const handlePaystackSuccess = async (res) => {
           marginTop: 15,
         }}
         mode="contained"
-        onPress={()=> paystackWebViewRefUSSD.current.startTransaction()}
+     
+
+
+        onPress={() => {
+          // Check if the amount is null or empty
+          if (!amount) {
+            // Display an alert message
+            alert('Please enter an amount');
+            return;
+          }
+      
+          // Start the transaction if the amount is valid
+          paystackWebViewRefUSSD.current.startTransaction()
+        }}
       >
         Ussd
       </Button>

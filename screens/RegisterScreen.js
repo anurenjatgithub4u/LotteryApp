@@ -13,6 +13,7 @@ import { responsiveFontSize, responsiveHeight, responsiveScreenWidth, responsive
 import { KeyboardAwareScrollView } from '@codler/react-native-keyboard-aware-scroll-view';
 import { CheckBox } from 'react-native-elements';
 import { MaterialIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const CustomPicker = ({ visible, onClose, onSelect, data }) => {
@@ -73,6 +74,7 @@ const RegisterScreen = () => {
     try {
       // Validate inp
       setLoading(true);
+      await AsyncStorage.setItem('registeredEmail', email);
       if (!name || !email || !password || !mobileNumber || !selectedCountry || !checked) {
         Alert.alert(
           '',
@@ -163,13 +165,13 @@ const RegisterScreen = () => {
 
 <KeyboardAwareScrollView style={{backgroundColor:'white'}} >
 
-    <View style={{ flex:1,alignItems: 'center',justifyContent:'flex-start' , padding: 16 ,paddingTop:'25%',backgroundColor:'white',height:'100%'}}>
+    <View style={{ flex:1,alignItems: 'center',justifyContent:'flex-start' , paddingTop: '24%' ,paddingLeft:'6%',paddingRight:'6%',paddingBottom:16,backgroundColor:'white',height:'100%'}}>
 
 
 
-    <MaterialIcons name="keyboard-arrow-left" size={35} color="black" style={{
+    <MaterialIcons name="keyboard-arrow-left" size={35} onPress={()=>navigation.navigate('ProfileLandingTesting')} color="black" style={{
      
-     alignSelf:'flex-start'
+     alignSelf:'flex-start',right:'5%',bottom:'5%'
    }}/>
     <Text  style={styles.createaccountText}>Create an Account</Text>
     <Text  style={styles.createaccountTextTwo}>Play the game and get lucky</Text>
@@ -443,7 +445,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     
     borderColor: 'gray',
-    
+   
     backgroundColor: 'white',
     height: 51,
     marginTop: 7,
@@ -456,9 +458,9 @@ const styles = StyleSheet.create({
     // Add this line to align text to the left
     width: 354,
     height: 41,
-    
+    bottom:'6%',
     left: 30,
-    
+    marginBottom:10,
     fontSize: 34, // Adjust the font size as needed
     fontWeight: 'bold',
    
@@ -488,11 +490,11 @@ const styles = StyleSheet.create({
     fontSize: 17,
     width: 354,
     height: 22,
-    top: 10,
+   
     left: 38,
-  
+    bottom:'6%',
     fontSize: 13,
-    marginBottom: 40,
+   
     textAlign: 'left', // Add this line to align text to the left
   },
   
