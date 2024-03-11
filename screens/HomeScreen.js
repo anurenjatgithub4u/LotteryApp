@@ -587,11 +587,13 @@ const HomeScreen = ({goToGameScreen }) => {
       <View>
         <Text style={styles.yohaveText}> You have</Text>
 
+        <Text style={styles.creditsText}>{credits} Credits</Text>
+{/* 
         {loading ? (
           <ActivityIndicator size="large" color="#0000ff" />
         ) : (
-          <Text style={styles.creditsText}>{credits} Credits</Text>
-        )}
+          
+        )} */}
       </View>
 
       <View

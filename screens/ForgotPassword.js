@@ -213,7 +213,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
       borderWidth: .5,
       borderStyle: 'solid',
       fontSize: 15,
-      borderRadius: 25,
+      borderRadius: 20,
       
       color: 'white',  
       overflow: "hidden",}}>
@@ -247,7 +247,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
       borderWidth: 0.5,
             borderStyle: 'solid',
       fontSize: 15,
-      borderRadius: 25,
+      borderRadius: 20,
       marginRight:15,
       color: 'white',  // Text color
       overflow: "hidden",}}>
@@ -274,7 +274,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
       borderWidth: 0.5,
       borderStyle: 'solid',
       fontSize: 15,
-      borderRadius: 25,
+      borderRadius: 20,
       color: 'white',  // Text color
       overflow: "hidden",}}>
 <TextInput

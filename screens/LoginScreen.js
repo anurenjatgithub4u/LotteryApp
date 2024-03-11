@@ -250,7 +250,7 @@ const LoginScreen = ({ navigation }) => {
         // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
         token = (
           await Notifications.getExpoPushTokenAsync({
-            projectId: "28ee1909-a4f9-48c6-9992-0571adb39059",
+            projectId: "e048e5c7-3d85-4af8-ba30-e4a64c538475",
           })
         ).data;
       } else {
