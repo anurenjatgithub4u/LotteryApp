@@ -174,6 +174,7 @@ const HomeScreen = ({goToGameScreen }) => {
 
           const data = await response.json();
           setCredits(data.message.credits);
+          setUserName(data.message.name);
           console.log("credits credits credits credits credits credits credits", data.message.credits);
           // Additional fields can be set here based on your API response
         } catch (error) {
@@ -191,7 +192,7 @@ const HomeScreen = ({goToGameScreen }) => {
       try {
         const storedUserName = await AsyncStorage.getItem("userName");
         if (storedUserName !== null) {
-          setUserName(storedUserName);
+          // setUserName(storedUserName);
         }
       } catch (error) {
         console.error("Error retrieving userName from AsyncStorage:", error);
@@ -335,15 +336,15 @@ const HomeScreen = ({goToGameScreen }) => {
     const fetchData = async () => {
       try {
         const data = await fetchPreviousGameWinningNumbers();
-        setPreviousWinningNumbers(data.message.country || []); 
-        setPreviousWinningContinentNumbers(data.message.continent || [])
+        // setPreviousWinningNumbers(data.message.country || []); 
+        // setPreviousWinningContinentNumbers(data.message.continent || [])
         setcountryName(data.message.countryName);
         setContinentWinningAmount(data.message.ContinentWinningAmount);
         setCountryWinningAmount(data.message.CountryWinningAmount)
         setCountrySymbol(data.message.countrySymbol);
         setContinentSymbol(data.message.ContinentCurrencySymbol)
        
-        console.log("country winning numbers country winning numbers  country winning numbers country winning numbers",data.message )// Assuming "country" is an array
+        console.log("country winning numbers country winning numbers  country winning numbers country winning numbers",data.message.continent )// Assuming "country" is an array
       } catch (error) {
         console.error(error.message);
         // Handle the error
@@ -352,6 +353,42 @@ const HomeScreen = ({goToGameScreen }) => {
 
     fetchData(); // Invoke the fetchData function when the component mounts
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchPersonalDetails = async () => {
+        const userId = await AsyncStorage.getItem("userId");
+        const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+        const storedAccessToken = await AsyncStorage.getItem("accessToken");
+
+        try {
+          const response = await fetch(apiUrl, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${storedAccessToken}`,
+            },
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`${response.status} - ${errorData.message}`);
+          }
+
+          const data = await response.json();
+         
+          setPreviousWinningNumbers(data.message.country || []); 
+          setPreviousWinningContinentNumbers(data.message.continent || [])
+          console.log("credits credits credits credits credits credits credits", data.message.continent);
+          // Additional fields can be set here based on your API response
+        } catch (error) {
+          console.error("Error fetching personal details:", error.message);
+        }
+      };
+
+      fetchPersonalDetails();
+    }, []) // Empty dependency array means this effect will only run once when the component mounts
+  );
 
   useEffect(() => {
     // Add event listener for hardware back button press

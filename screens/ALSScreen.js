@@ -613,8 +613,8 @@ useEffect(() => {
         { color: commonArea === 0 ? 'white' : 'white' },
       ]}>
         {commonArea === 1
-          ? `${creditsForCountryLevelTwo } Credits Win Upto ${ContinentWinningAmount/4}`
-          : `${creditsForContinentLevelTwo } Credits Win Upto ${CountryWinningAmount/4}`}
+          ? `${creditsForCountryLevelTwo } Credits Win Upto ${ContinentWinningAmount/2}`
+          : `${creditsForContinentLevelTwo } Credits Win Upto ${CountryWinningAmount/2}`}
       </Text>
     )}
   </Text>
