@@ -359,7 +359,7 @@ const updateDetails = async () => {
     });
 
     const responseData = await response.json();
-    const countryCode = "+917356380659"
+    //const countryCode = "+917356380659"
     if (response.ok) {
       // Check the response data to determine success or OTP sent
       if (responseData.message === 'Name updated') {
@@ -372,7 +372,7 @@ const updateDetails = async () => {
           email : accountHolderEmail,
           name : accountHolderName,
           
-          mobileNumber: countryCode
+          mobileNumber: accountHolderPhone
         });
       }
     } else {
