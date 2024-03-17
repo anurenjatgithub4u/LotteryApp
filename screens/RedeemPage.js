@@ -73,6 +73,22 @@ const RedeemPage = () => {
         <Text style={{ marginTop: 6, marginLeft: 90 }}> Bank Accounts </Text>
       </View>
 
+      <Card  style={styles.cardThree}>
+              <View style={{ flexDirection: 'row' }}>
+                <FontAwesome name="credit-card-alt" size={24} color="black" />
+                <View
+                  style={{
+                    flexDirection: 'column',
+                  }}
+                >
+                   <Text style={{ marginLeft: 20 }}>Redeem</Text>
+                 
+                 
+                  
+                </View>
+              </View>
+            </Card>
+
       <ScrollView style={{ marginTop: 20, marginBottom: 100 }}>
         {loading ? (
           <ActivityIndicator size="large" color="#31A062" style={{ marginTop: 20 }} />
@@ -147,6 +163,18 @@ const styles = StyleSheet.create({
     width: 350,
     alignSelf: "center",
     height: 121,
+  },
+  cardThree: {
+   margin:10,
+   padding:15,
+    alignSelf: "center",
+    marginTop: 1,
+    borderRadius: 20,
+    backgroundColor: "#f0f0f0",
+    elevation: 3,
+    width: 350,
+    alignSelf: "center",
+    height: 50,
   },
 
   cardTwo: {

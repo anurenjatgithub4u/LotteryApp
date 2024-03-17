@@ -280,7 +280,7 @@ console.log(userId);
       setLoading(true);
       if (newPassword !== confirmNewPassword) {
         alert('Passwords do not match');
-        // You may want to show an error message to the user
+        setLoading(false);
         return;
       }
       
@@ -302,7 +302,7 @@ console.log(userId);
       }
     } catch (error) {
       console.error('Error updating password:', error.message);
-      // Handle unexpected errors during password update
+      setLoading(false);
     }
   };
 

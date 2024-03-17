@@ -92,8 +92,8 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
         // Handle failure, you may want to show an error message
       }
     } catch (error) {
-      console.error('Error sending OTP:', error.message);
-      // Handle unexpected errors during OTP sending
+      console.log('Error sending OTP:', error.response.data.message);
+      alert(error.response.data.message)
     }
   };
 
@@ -145,9 +145,8 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
         // Handle failure, you may want to show an error message
       }
     } catch (error) {
-      console.error('Error verifying OTP:', error.message);
-      // Handle unexpected errors during OTP verification
-      console.log(response.data);
+      setLoading(false);
+      alert(error.response.data.message)
     }
   };
   
