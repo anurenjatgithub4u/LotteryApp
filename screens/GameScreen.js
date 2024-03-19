@@ -907,7 +907,9 @@ const GameScreen = () => {
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
-          <View style={{ width: "80%", padding: 20 }}>
+          <View style={{ width: "80%", padding: 20 ,}}>
+
+
             <DatePicker
               mode="calendar"
               selected={startedDate}
@@ -991,7 +993,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     height: 58.5,
-    borderWidth: 0.5,
+    
     borderStyle: 'solid',
     fontSize: 15,
     borderRadius: 15,
@@ -1001,12 +1003,14 @@ const styles = StyleSheet.create({
   },
   iconTextContainer: {
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
+    
   },
   textInput: {
     color: '#F8F8FF',
     backgroundColor: '#F8F8FF',
     height: 60.5,
+   
   },
   card: {
     margin: 10,

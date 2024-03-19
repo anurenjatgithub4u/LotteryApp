@@ -681,9 +681,10 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
       <View style={{ borderColor: 'black',
       backgroundColor: 'white',
       marginTop:15,
+    
       width: '100%',
       height:58.5,
-      borderWidth: .5,
+      borderWidth: 1,
       borderStyle: 'solid',
       fontSize: 15,
       borderRadius: 20,
@@ -697,7 +698,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
           color: 'white',
           backgroundColor: 'white',
           height:60.5,
-        
+         
          }}
         keyboardType="email-address"
         autoCapitalize="none"
@@ -717,7 +718,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
 <View style={{ borderColor: 'black',
       backgroundColor: 'white',
       width: '20%',
-      borderWidth: 0.5,
+      borderWidth: 1,
             borderStyle: 'solid',
       fontSize: 15,
       borderRadius: 20,
@@ -744,7 +745,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
       width: '75%',
       borderWidth: 1,
       height:58.5,
-      borderWidth: 0.5,
+      
       borderStyle: 'solid',
       fontSize: 15,
       borderRadius: 20,
@@ -792,7 +793,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
 
       <Text style={{ marginVertical: 30, fontSize: 18,}}>ENTER OTP</Text>
 
-      {/* OTP Input Box */}
+    
 
       
 
@@ -804,8 +805,8 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
     style={{ borderColor: 'black',
    
     backgroundColor: 'white',
-    width: 50,
-    borderWidth: 0.5,
+    width: responsiveWidth(13),
+    borderWidth: 1,
     alignItems:'center',
     borderStyle: 'solid',
     fontSize: 15,
@@ -841,7 +842,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
 </View>
 
 
-      {/* Verify Button */}
+      
 
 
       {loading ? (

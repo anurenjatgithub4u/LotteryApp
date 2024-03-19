@@ -496,10 +496,24 @@ const handleNumberClick = (number) => {
         let winningAmount = "";
 
         if (areaValue === "1") {
-          winningAmount = ContinentWinningAmount;
+          if (levelValue === "1") {
+            winningAmount = ContinentWinningAmount/4;
+          } else if(levelValue === "2") {
+            winningAmount = ContinentWinningAmount/2;
+          } else {
+            winningAmount = ContinentWinningAmount;
+          }
         } else{
-          winningAmount = CountryWinningAmount;
+          if (levelValue === "1") {
+            winningAmount = CountryWinningAmount/4;
+          } else if(levelValue === "2") {
+            winningAmount = CountryWinningAmount/2;
+          } else {
+            winningAmount = CountryWinningAmount;
+          }
         } 
+
+       
 
         // Update state variables
         setwinningAmt(winningAmount);

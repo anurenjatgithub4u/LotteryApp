@@ -584,8 +584,8 @@ useEffect(() => {
         { color: commonArea === 0 ? 'white' : 'white' },
       ]}>
         {commonArea === 1
-          ? `${creditsForCountryLevelOne } Credits Win Upto ${ContinentWinningAmount}`
-          : `${creditsForContinentLevelOne } Credits Win Upto ${CountryWinningAmount}`}
+          ? `${creditsForCountryLevelOne } Credits Win Upto ${ContinentWinningAmount/4}`
+          : `${creditsForContinentLevelOne } Credits Win Upto ${CountryWinningAmount/4}`}
       </Text>
     )}
   </Text>
@@ -640,8 +640,8 @@ useEffect(() => {
         { color: commonArea === 0 ? 'white' : 'white' },
       ]}>
         {commonArea === 1
-          ? `${creditsForCountryLevelThree } Credits Win Upto ${ContinentWinningAmount/4}`
-          : `${creditsForContinentLevelThree} Credits Win Upto ${CountryWinningAmount/4}`}
+          ? `${creditsForCountryLevelThree } Credits Win Upto ${ContinentWinningAmount}`
+          : `${creditsForContinentLevelThree} Credits Win Upto ${CountryWinningAmount}`}
       </Text>
     )}
   </Text>

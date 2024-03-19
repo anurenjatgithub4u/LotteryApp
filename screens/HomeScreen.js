@@ -52,11 +52,126 @@ const HomeScreen = ({goToGameScreen }) => {
 
   const [previousWinningNumbers, setPreviousWinningNumbers] = useState([]);
   const [countryName, setcountryName] = useState([]);
-  const [ContinentWinningAmount, setContinentWinningAmount] = useState([]);
-  const [CountryWinningAmount, setCountryWinningAmount] = useState([]);
+  const [ContinentWinningAmount, setContinentWinningAmount] = useState("");
+  const [CountryWinningAmount, setCountryWinningAmount] = useState("");
   const [CountrySymbol, setCountrySymbol] = useState([]);
   const [ContinentSymbol,setContinentSymbol] = useState();
   const [previousWinningContinentNumbers, setPreviousWinningContinentNumbers] = useState([]);
+
+
+
+
+    
+  const fetchPreviousGameWinningNumbers = async () => {
+    const storedAccessToken = await AsyncStorage.getItem("accessToken");
+    const userId = await AsyncStorage.getItem("userId");
+
+    const url = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${storedAccessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("dataaaaaaaaaaaaa",data)
+      return data;
+    } catch (error) {
+      console.error(
+        "Error fetching previous game winning numbers:",
+        error.message
+      );
+      throw new Error(
+        "Something went wrong while fetching previous game winning numbers"
+      );
+    }
+  };
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const data = await fetchPreviousGameWinningNumbers();
+  //       // setPreviousWinningNumbers(data.message.country || []); 
+  //       // setPreviousWinningContinentNumbers(data.message.continent || [])
+  //       setcountryName(data.message.countryName);
+  //       setContinentWinningAmount(data.message.ContinentWinningAmount);
+  //       setCountryWinningAmount(data.message.CountryWinningAmount)
+  //       setCountrySymbol(data.message.countrySymbol);
+  //       setContinentSymbol(data.message.ContinentCurrencySymbol)
+  //       setPreviousWinningNumbers(data.message.country || []); 
+  //       setPreviousWinningContinentNumbers(data.message.continent || [])
+          
+  //       setPreviousWinningNumbers(data.message.country || []); 
+  //       setPreviousWinningContinentNumbers(data.message.continent || [])
+  //       console.log("country winning numbers country winning numbers  country winning numbers country winning numbers",data.message.continent )
+  //       console.log("credits credits credits credits credits credits credits", data.message.country);
+  //       console.log("credits credits credits credits credits credits credits", data.message.ContinentWinningAmount);
+        
+  //       // Assuming "country" is an array
+  //     } catch (error) {
+  //       console.error(error.message);
+  //       // Handle the error
+  //     }
+  //   };
+
+  //   fetchData(); // Invoke the fetchData function when the component mounts
+  // }, []);
+
+
+  
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchPersonalDetails = async () => {
+        const userId = await AsyncStorage.getItem("userId");
+        const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+        const storedAccessToken = await AsyncStorage.getItem("accessToken");
+
+        try {
+          const response = await fetch(apiUrl, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${storedAccessToken}`,
+            },
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`${response.status} - ${errorData.message}`);
+          }
+
+          const data = await response.json();
+         
+          setcountryName(data.message.countryName);
+          setContinentWinningAmount(data.message.ContinentWinningAmount);
+          setCountryWinningAmount(data.message.CountryWinningAmount)
+          setCountrySymbol(data.message.countrySymbol);
+          setContinentSymbol(data.message.ContinentCurrencySymbol)
+          setPreviousWinningNumbers(data.message.country || []); 
+          setPreviousWinningContinentNumbers(data.message.continent || [])
+            
+          setPreviousWinningNumbers(data.message.country || []); 
+          setPreviousWinningContinentNumbers(data.message.continent || [])
+          console.log("country winning numbers country winning numbers  country winning numbers country winning numbers",data.message.continent )
+          console.log("credits credits credits credits credits credits credits", data.message.country);
+          console.log("credits credits credits credits credits credits credits", data.message.ContinentWinningAmount);
+          // Additional fields can be set here based on your API response
+        } catch (error) {
+          console.error("Error fetching personal details:", error.message);
+        }
+      };
+
+      fetchPersonalDetails();
+    }, []) // Empty dependency array means this effect will only run once when the component mounts
+  );
 
   const logout = async () => {
     try {
@@ -296,99 +411,49 @@ const HomeScreen = ({goToGameScreen }) => {
       navigation.navigate('ALScreen');
     }
   };
-  
 
-  
-  const fetchPreviousGameWinningNumbers = async () => {
-    const storedAccessToken = await AsyncStorage.getItem("accessToken");
-    const userId = await AsyncStorage.getItem("userId");
 
-    const url = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
 
-    try {
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${storedAccessToken}`,
-        },
-      });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
 
-      const data = await response.json();
-      console.log("dataaaaaaaaaaaaa",data)
-      return data;
-    } catch (error) {
-      console.error(
-        "Error fetching previous game winning numbers:",
-        error.message
-      );
-      throw new Error(
-        "Something went wrong while fetching previous game winning numbers"
-      );
-    }
-  };
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     const fetchPersonalDetails = async () => {
+  //       const userId = await AsyncStorage.getItem("userId");
+  //       const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+  //       const storedAccessToken = await AsyncStorage.getItem("accessToken");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await fetchPreviousGameWinningNumbers();
-        // setPreviousWinningNumbers(data.message.country || []); 
-        // setPreviousWinningContinentNumbers(data.message.continent || [])
-        setcountryName(data.message.countryName);
-        setContinentWinningAmount(data.message.ContinentWinningAmount);
-        setCountryWinningAmount(data.message.CountryWinningAmount)
-        setCountrySymbol(data.message.countrySymbol);
-        setContinentSymbol(data.message.ContinentCurrencySymbol)
-       
-        console.log("country winning numbers country winning numbers  country winning numbers country winning numbers",data.message.continent )// Assuming "country" is an array
-      } catch (error) {
-        console.error(error.message);
-        // Handle the error
-      }
-    };
+  //       try {
+  //         const response = await fetch(apiUrl, {
+  //           method: "GET",
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //             Authorization: `Bearer ${storedAccessToken}`,
+  //           },
+  //         });
 
-    fetchData(); // Invoke the fetchData function when the component mounts
-  }, []);
+  //         if (!response.ok) {
+  //           const errorData = await response.json();
+  //           throw new Error(`${response.status} - ${errorData.message}`);
+  //         }
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const fetchPersonalDetails = async () => {
-        const userId = await AsyncStorage.getItem("userId");
-        const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
-        const storedAccessToken = await AsyncStorage.getItem("accessToken");
-
-        try {
-          const response = await fetch(apiUrl, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${storedAccessToken}`,
-            },
-          });
-
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(`${response.status} - ${errorData.message}`);
-          }
-
-          const data = await response.json();
+  //         const data = await response.json();
          
-          setPreviousWinningNumbers(data.message.country || []); 
-          setPreviousWinningContinentNumbers(data.message.continent || [])
-          console.log("credits credits credits credits credits credits credits", data.message.continent);
-          // Additional fields can be set here based on your API response
-        } catch (error) {
-          console.error("Error fetching personal details:", error.message);
-        }
-      };
+  //         setPreviousWinningNumbers(data.message.country || []); 
+  //         setPreviousWinningContinentNumbers(data.message.continent || [])
+  //         console.log("credits credits credits credits credits credits credits", data.message.continent);
+  //         console.log("credits credits credits credits credits credits credits", data.message.country);
+  //         console.log("credits credits credits credits credits credits credits", data.message.ContinentWinningAmount);
+  //         console.log("credits credits credits credits credits credits credits", data.message.CountryWinningAmount);
+  //         // Additional fields can be set here based on your API response
+  //       } catch (error) {
+  //         console.error("Error fetching personal details:", error.message);
+  //       }
+  //     };
 
-      fetchPersonalDetails();
-    }, []) // Empty dependency array means this effect will only run once when the component mounts
-  );
+  //     fetchPersonalDetails();
+  //   }, []) // Empty dependency array means this effect will only run once when the component mounts
+  // );
 
   useEffect(() => {
     // Add event listener for hardware back button press
