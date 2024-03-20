@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView,TouchableOpacity ,ActivityIndicator } from "react-native";
+import { StyleSheet, Text, View, ScrollView,TouchableOpacity ,ActivityIndicator , TextInput } from "react-native";
 import React, { useState, useEffect,useCallback  } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Card, Button } from "react-native-paper";
@@ -9,10 +9,15 @@ import { useFocusEffect } from "@react-navigation/native";
 import { responsiveFontSize, responsiveHeight ,responsiveWidth} from "react-native-responsive-dimensions";
 
 
+
+
+
+
 const RedeemPage = () => {
   const navigation = useNavigation();
   const [bankAccounts, setBankAccounts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [redeemAmt, setredeemAmt] = useState('');
 
   const fetchBankAccounts = async () => {
     const user = await AsyncStorage.getItem('userId');
@@ -43,6 +48,55 @@ const RedeemPage = () => {
     }
   };
 
+
+  const redeemCredits = async () => {
+    try {
+      const user = await AsyncStorage.getItem('userId');
+      const storedAccessToken = await AsyncStorage.getItem('accessToken');
+      console.log('checking', storedAccessToken);
+      // Check if there are any bank accounts
+      if (bankAccounts.length === 0) {
+        alert('Add Bank Account', 'Please add a bank account to redeem credits.');
+        return; // Stop further execution
+      }
+  
+      // Assuming redeemAmt is a valid number entered by the user
+      const redeemAmount = parseFloat(redeemAmt); // Parse the redeemAmt to a float
+      
+      // Check if redeemAmount is valid
+      if (isNaN(redeemAmount) || redeemAmount <= 0) {
+        alert('Invalid Amount', 'Please enter a valid redeem amount.');
+        return; // Stop further execution
+      }
+  
+      const response = await fetch(`https://lottery-backend-tau.vercel.app/api/v1/user/redeem-credit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${storedAccessToken}`, // Include storedAccessToken in the header
+        },
+        body: JSON.stringify({
+          userId: user,
+          redeemAmount,
+        }),
+      });
+  
+      const responseData = await response.json();
+  
+      if (response.ok) {
+        alert("Your redeem request has been forwarded to ALS admin successfully! We will be in touch soon.")
+      } else {
+        throw new Error(responseData.message || 'Failed to redeem credits');
+      }
+    } catch (error) {
+      console.log('Error', error.message);
+    }
+  };
+  
+
+
+
+
   useFocusEffect(
     useCallback(() => {
       setLoading(true);
@@ -51,13 +105,13 @@ const RedeemPage = () => {
   );
 
   return (
-    <View  style={{padding:responsiveHeight(4)}}>
+    <View  style={{padding:responsiveHeight(4) }}>
       <View
         style={{
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'flex-start',
-         
+         marginBottom:20
         }}
       >
         <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
@@ -73,21 +127,10 @@ const RedeemPage = () => {
         <Text style={{ marginTop: 6, marginLeft: 90 }}> Bank Accounts </Text>
       </View>
 
-      <Card  style={styles.cardThree}>
-              <View style={{ flexDirection: 'row' }}>
-                <FontAwesome name="credit-card-alt" size={24} color="black" />
-                <View
-                  style={{
-                    flexDirection: 'column',
-                  }}
-                >
-                   <Text style={{ marginLeft: 20 }}>Redeem</Text>
-                 
-                 
-                  
-                </View>
-              </View>
-            </Card>
+    
+
+
+    
 
       <ScrollView style={{ marginTop: 20, marginBottom: 100 }}>
         {loading ? (
@@ -138,6 +181,7 @@ const RedeemPage = () => {
 };
 
 
+
 const styles = StyleSheet.create({
   arrowStyle: {
     top: 69,
@@ -160,7 +204,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: "#f0f0f0",
     elevation: 3,
-    width: 350,
+    width: responsiveWidth(82),
     alignSelf: "center",
     height: 121,
   },
@@ -172,9 +216,20 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: "#f0f0f0",
     elevation: 3,
-    width: 350,
+    width: responsiveWidth(82),
     alignSelf: "center",
     height: 50,
+  },
+
+  inputField: {
+    borderWidth: 1,
+    borderColor: 'gray',
+    padding: 10,
+   
+    width: '100%',
+    borderRadius:20,
+    alignSelf:'center',
+    marginTop:10
   },
 
   cardTwo: {

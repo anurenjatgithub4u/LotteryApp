@@ -69,6 +69,7 @@ import TermsAndConditions from './screens/TermsAndConditions';
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import MyCardComponent from './screens/ALSScreen';
+import RedeemAmountAccessPage from './screens/RedeemAccessPage';
 
 
 // Sentry.init({
@@ -242,10 +243,13 @@ const OTPVerificationScreen = ({ route,navigation }) => {
         navigation.navigate('Login');
       } else {
         // If verification fails, handle the error (show an alert, etc.)
-        console.error('OTP verification failed');
+        const errorMessage = await response.message.text(); // Extract error message from response body
+      console.error(errorMessage);
+      alert(errorMessage);
       }
     } catch (error) {
-      console.error('Error during OTP verification:', error);
+      console.error("Error during OTP verification:", error);
+      alert("An error occurred during OTP verification. Please try again later.");
     }
   };
   
@@ -489,6 +493,8 @@ const App = () => {
 
 
         <Stack.Screen name='LoginOtp' component={LoginOtp} options={{ headerShown: false }}/>
+        <Stack.Screen name='RedeemAmountAccessPage' component={RedeemAmountAccessPage} options={{ headerShown: false }}/>
+        
 
         <Stack.Screen name='TermsAndConditions' component={TermsAndConditions} options={{ headerShown: false }}/>
 

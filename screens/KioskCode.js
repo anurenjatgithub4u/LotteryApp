@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { Alert } from 'react-native';
+import {  Button } from "react-native-paper";
 
 const KioskCode = () => {
   const [couponCodee, setCouponCode] = useState('');
@@ -79,12 +80,26 @@ const KioskCode = () => {
         onChangeText={(text) => setCouponCode(text)}
       />
 
-      <TouchableOpacity
-        style={styles.addButton}
-        onPress={addCreditsUsingCoupon}
-      >
-        <Text style={styles.buttonText}>Add Credits</Text>
-      </TouchableOpacity>
+
+
+      <Button
+          mode="contained"
+          onPress={addCreditsUsingCoupon}
+          contentStyle={{
+            height: 60,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          style={{
+            backgroundColor: '#31A062',
+            width: '90%',
+            marginVertical: 10,
+            marginTop: 15,
+            alignSelf: 'center',
+          }}
+        >
+          Add Credits
+        </Button>
     </View>
   );
 };
@@ -102,7 +117,7 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     padding: 10,
     margin: 10,
-    width: 200,
+    width: '90%',
     borderRadius:20
   },
   addButton: {

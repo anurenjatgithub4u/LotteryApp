@@ -20,6 +20,8 @@ import { useFocusEffect } from "@react-navigation/native";
 import { responsiveHeight } from 'react-native-responsive-dimensions';
 import { Alert } from 'react-native';
 
+
+
 const ProfileScreen = () => {
   const [credits, setCredits] = useState(0);
   const { accessToken, setAccessToken } = useAuth();
@@ -250,6 +252,9 @@ return(
 
 
   <Card style={styles.card}>
+
+
+
     <Card.Content>
       
      
@@ -266,6 +271,8 @@ return(
 
 
     </Card.Content>
+
+
   </Card>
 
 
@@ -295,6 +302,26 @@ return(
      
 
     <View style={styles.personalInfoContainer}>
+    <FontAwesome name="credit-card-alt" size={24} color="black" />
+  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+    <Paragraph style={{...styles.personalInfoText,flex:.9}}  >Redeem</Paragraph>
+    <TouchableOpacity  onPress={() => navigation.navigate('RedeemAmountAccessPage')}>
+    <MaterialIcons name="arrow-forward-ios" size={24} color="black" />
+    </TouchableOpacity>
+  </View>
+</View>
+
+
+    </Card.Content>
+  </Card>
+
+
+  <Card style={styles.card}>
+    <Card.Content>
+      
+     
+
+    <View style={styles.personalInfoContainer}>
     <Ionicons name="settings" size={24} color="black" />
   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
     <Paragraph style={{...styles.personalInfoText,flex:.9}}  >Password</Paragraph>
@@ -307,6 +334,7 @@ return(
 
     </Card.Content>
   </Card>
+
 
 
   <Text onPress={ showAlert} style={{alignSelf:'center', color:'#FE555D',marginTop:responsiveHeight(3)}}>Close Account</Text>

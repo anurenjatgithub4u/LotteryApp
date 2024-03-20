@@ -28,7 +28,7 @@
       "package": "com.neurospherepvtltd.afrikalottery",
       "googleServicesFile": "./google-services.json",
       "useNextNotificationsApi": true,
-      "versionCode": 4 
+      "versionCode": 5 
     },
     "web": {
       "favicon": "./assets/favicon.png"
