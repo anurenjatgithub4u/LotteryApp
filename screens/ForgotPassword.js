@@ -684,7 +684,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
     
       width: '100%',
       height:58.5,
-      borderWidth: .8,
+      borderWidth: 1,
       borderStyle: 'solid',
       fontSize: 15,
       borderRadius: 20,
@@ -718,7 +718,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
 <View style={{ borderColor: 'black',
       backgroundColor: 'white',
       width: '20%',
-      borderWidth: .8,
+      borderWidth: 1,
             borderStyle: 'solid',
       fontSize: 15,
       borderRadius: 20,
@@ -743,7 +743,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
 <View style={{ borderColor: 'black',
       backgroundColor: 'white',
       width: '75%',
-      borderWidth: .8,
+      borderWidth: 1,
       height:58.5,
       
       borderStyle: 'solid',
@@ -806,7 +806,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
    
     backgroundColor: 'white',
     width: responsiveWidth(13),
-    borderWidth: .8,
+    borderWidth: 1,
     alignItems:'center',
     borderStyle: 'solid',
     fontSize: 15,
