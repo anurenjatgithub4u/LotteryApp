@@ -9,6 +9,11 @@ import { useFocusEffect } from "@react-navigation/native";
 import { responsiveFontSize, responsiveHeight ,responsiveWidth} from "react-native-responsive-dimensions";
 import { RadioButton } from 'react-native-paper';
 import { CheckBox } from 'react-native-elements';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+
 
 const RedeemAmountAccessPage = () => {
 
@@ -17,49 +22,49 @@ const RedeemAmountAccessPage = () => {
    
     const [bankAccounts, setBankAccounts] = useState([]);
     const [loading, setLoading] = useState(true);
-   
+    const [credits, setCredits] = useState(0);
     const [selectedAccountIndex, setSelectedAccountIndex] = useState(null);
-
+    const [CountrySymbol, setCountrySymbol] = useState([]);
     const fetchBankAccounts = async () => {
-        const user = await AsyncStorage.getItem('userId');
-        const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/get-bank-account/${user}`;
-        const storedAccessToken = await AsyncStorage.getItem('accessToken');
-    
-        try {
-          const response = await fetch(apiUrl, {
-            method: 'GET',
-            headers: {
-              Authorization: `Bearer ${storedAccessToken}`,
-              'Content-Type': 'application/json',
-            },
-          });
-    
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Request failed');
-          }
-    
-          const responseData = await response.json();
-          console.log('data....', responseData);
-          setBankAccounts(responseData.bankAccount);
-        } catch (error) {
-          console.error('Error fetching bank accounts:', error.message);
-        } finally {
-          setLoading(false);
+      const user = await AsyncStorage.getItem('userId');
+      const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/get-bank-account/${user}`;
+      const storedAccessToken = await AsyncStorage.getItem('accessToken');
+  
+      try {
+        const response = await fetch(apiUrl, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${storedAccessToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Request failed');
         }
-      };
+  
+        const responseData = await response.json();
+        console.log('data....', responseData);
+        setBankAccounts(responseData.bankAccount);
+      } catch (error) {
+        console.error('Error fetching bank accounts:', error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
       
-  const redeemCredits = async () => {
-    try {
-      const user = await AsyncStorage.getItem('userId');
-      const storedAccessToken = await AsyncStorage.getItem('accessToken');
-      console.log('checking', storedAccessToken);
-      // Check if there are any bank accounts
-      if (bankAccounts.length === 0) {
-        Alert.alert(
-            'Add Bank Account',
-            'Please add a bank account to redeem credits.',
+    const redeemCredits = async () => {
+      try {
+        const user = await AsyncStorage.getItem('userId');
+        const storedAccessToken = await AsyncStorage.getItem('accessToken');
+        console.log('checking', storedAccessToken);
+        // Check if there are any bank accounts
+        if (bankAccounts.length === 0) {
+          Alert.alert(
+            'No bank account found',
+            'Please add a bank account before redeeming',
             [
               {
                 text: 'OK',
@@ -67,51 +72,156 @@ const RedeemAmountAccessPage = () => {
               },
             ]
           );
-        return; // Stop further execution
+          return; // Stop further execution
+        }
+
+        if(credits<redeemAmt){
+          Alert.alert(
+            'You dont have  enough credits!',
+            'To redeem this amount ',
+            [
+              {
+                text: 'OK',
+               // Navigate to AddAccount screen
+              },
+            ]
+          );
+          return; // Stop further execution
+        }
+    
+        // Check if any account is selected
+        if (selectedAccountIndex === null) {
+          Alert.alert(
+            'Select Account',
+            'Please select a bank account to redeem credits.'
+          );
+          return; // Stop further execution
+        }
+    
+        // Get the selected bank account's details
+        const selectedAccount = bankAccounts[selectedAccountIndex];
+    
+        const redeemAmount = parseFloat(redeemAmt); // Parse the redeemAmt to a float
+          
+        // Check if redeemAmount is valid
+        if (isNaN(redeemAmount) || redeemAmount <= 0) {
+          alert('Invalid Amount', 'Please enter a valid redeem amount.');
+          return; // Stop further execution
+        }
+        console.log("checking testing", selectedAccount.accountNumber)
+        const response = await fetch(`https://lottery-backend-tau.vercel.app/api/v1/user/redeem-credit`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${storedAccessToken}`, 
+          },
+          body: JSON.stringify({
+            userId: user,
+            redeemAmount,
+            accountNumber: selectedAccount.accountNumber, 
+          }),
+        });
+    
+        const responseData = await response.json();
+    
+        if (response.ok) {
+          alert("Your redeem request has been forwarded to ALS admin successfully! We will be in touch soon.")
+        } else {
+          throw new Error(responseData.message || 'Failed to redeem credits');
+        }
+      } catch (error) {
+        console.log('Error', error.message);
       }
-  
-      // Assuming redeemAmt is a valid number entered by the user
-      const redeemAmount = parseFloat(redeemAmt); // Parse the redeemAmt to a float
+    };
+    const handleAmountChange = (text) => {
+      // Remove the currency symbol from the input
+      const valueWithoutSymbol = text.replace(CountrySymbol, '');
+      setredeemAmt(valueWithoutSymbol);
+    };
+    
+useFocusEffect(
+  React.useCallback(() => {
+    const fetchPersonalDetails = async () => {
+      const userId = await AsyncStorage.getItem("userId");
+      const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+      const storedAccessToken = await AsyncStorage.getItem("accessToken");
+
+      try {
+        const response = await fetch(apiUrl, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${storedAccessToken}`,
+          },
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(`${response.status} - ${errorData.message}`);
+        }
+
+        const data = await response.json();
+       
+        
+        setCountrySymbol(data.message.countrySymbol);
+        
+          
+       
       
-      // Check if redeemAmount is valid
-      if (isNaN(redeemAmount) || redeemAmount <= 0) {
-        alert('Invalid Amount', 'Please enter a valid redeem amount.');
-        return; // Stop further execution
+        console.log("credits credits credits credits credits credits credits", data.message.countrySymbol);
+        // Additional fields can be set here based on your API response
+      } catch (error) {
+        console.error("Error fetching personal details:", error.message);
       }
-  
-      const response = await fetch(`https://lottery-backend-tau.vercel.app/api/v1/user/redeem-credit`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${storedAccessToken}`, // Include storedAccessToken in the header
-        },
-        body: JSON.stringify({
-          userId: user,
-          redeemAmount,
-        }),
-      });
-  
-      const responseData = await response.json();
-  
-      if (response.ok) {
-        alert("Your redeem request has been forwarded to ALS admin successfully! We will be in touch soon.")
-      } else {
-        throw new Error(responseData.message || 'Failed to redeem credits');
+    };
+
+    fetchPersonalDetails();
+  }, []) // Empty dependency array means this effect will only run once when the component mounts
+);
+
+useFocusEffect(
+  React.useCallback(() => {
+    const fetchPersonalDetails = async () => {
+      const userId = await AsyncStorage.getItem("userId");
+      const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`;
+      const storedAccessToken = await AsyncStorage.getItem("accessToken");
+
+      try {
+        const response = await fetch(apiUrl, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${storedAccessToken}`,
+          },
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(`${response.status} - ${errorData.message}`);
+        }
+
+        const data = await response.json();
+        setCredits(data.message.credits);
+        console.log("credits credits credits credits credits credits credits", data.message.credits);
+        // Additional fields can be set here based on your API response
+      } catch (error) {
+        console.error("Error fetching personal details:", error.message);
       }
-    } catch (error) {
-      console.log('Error', error.message);
+    };
+
+    fetchPersonalDetails();
+  }, []) // Empty dependency array means this effect will only run once when the component mounts
+);
+    
+  const toggleAccountSelection = (index) => {
+    if (selectedAccountIndex === index) {
+      // If the same item is pressed again, deselect it
+      setSelectedAccountIndex(null);
+    } else {
+      // Otherwise, select the new item
+      setSelectedAccountIndex(index);
     }
   };
-    
-      const toggleAccountSelection = (index) => {
-        if (selectedAccountIndex === index) {
-          // If the same item is pressed again, deselect it
-          setSelectedAccountIndex(null);
-        } else {
-          // Otherwise, select the new item
-          setSelectedAccountIndex(index);
-        }
-      };
       
   useFocusEffect(
     useCallback(() => {
@@ -122,25 +232,40 @@ const RedeemAmountAccessPage = () => {
 
   return (
     <View style={styles.container}>
+ <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+         
+          paddingTop:'15%',
+        }}
+      >
 
-    <View style={styles.backButtonContainer}>
-            <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
-              <MaterialIcons
-                name="keyboard-arrow-left"
-                size={35}
-                color="black"
-               
-              />
-            </TouchableOpacity>
-          </View>
-    
-          <Text  style={{alignSelf:'center'}}>Redeem Amount</Text>
+        <TouchableOpacity  style={{alignSelf:'flex-start',right:responsiveWidth(28),paddingLeft:'2%'}}
+        
+        onPress={() => navigation.navigate('Profile')}>
+          <MaterialIcons
+            name="keyboard-arrow-left"
+            size={35}
+            color="black"
+            style={{
+               // Add marginLeft to push the icon to the left
+            }}
+          />
+        </TouchableOpacity>
+        <Text style={{ fontWeight: '700', fontSize: 17 }}>Redeem Amount</Text>
+      </View>
+
+      
+
+   
     
           <TextInput
             style={styles.inputField}
             placeholder="Enter the amount you want to redeem"
-            value={redeemAmt}
-            onChangeText={(text) => setredeemAmt(text)}
+            value={CountrySymbol +redeemAmt}
+            onChangeText={handleAmountChange}
           />
 
 {bankAccounts.length === 0 ? (
@@ -206,9 +331,22 @@ export default RedeemAmountAccessPage
 
 const styles = StyleSheet.create({
     container: {
-      padding:16,
-      paddingTop:100
+      paddingLeft:16,
+      paddingRight:16,
+      paddingBottom:16
       
+      
+    },
+
+    forgotpasswordText: {
+      // Add this line to align text to the left
+      width: 354,
+      minHeight: hp("7%"),
+  
+      marginLeft: "5%",
+  
+      fontSize: 34, // Adjust the font size as needed
+      fontWeight: "bold",
     },
     card: {
         margin: 10,

@@ -5,6 +5,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from "expo-status-bar";
+import { responsiveFontSize, responsiveHeight ,responsiveWidth} from "react-native-responsive-dimensions";
 
 const PurchaseScreen = () => {
 
@@ -74,17 +75,31 @@ const PurchaseScreen = () => {
 
   return (
     <View style={{ flex:1, paddingLeft: 16 , paddingRight:16 }}>
-    <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-      <MaterialIcons
-        name="keyboard-arrow-left"
-        size={35}
-        color="black"
-        style={{  paddingTop: '12%' }}
-      />
-    </TouchableOpacity>
+<View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+         
+          paddingTop:'15%',
+        }}
+      >
 
+        <TouchableOpacity  style={{alignSelf:'flex-start',right:responsiveWidth(28)}}
+        
+        onPress={() => navigation.navigate('Profile')}>
+          <MaterialIcons
+            name="keyboard-arrow-left"
+            size={35}
+            color="black"
+            style={{
+               // Add marginLeft to push the icon to the left
+            }}
+          />
+        </TouchableOpacity>
+        <Text style={{ fontWeight: '700', fontSize: 17 }}>My Purchases</Text>
+      </View>
 
-    <Text style={styles.myPurchase}>My Purchases</Text>
 
     {loading ? (
       <ActivityIndicator size="large" color="#0000ff" style={{ marginTop: 20 }} />
@@ -131,7 +146,7 @@ const styles = StyleSheet.create({
       myPurchase: {
         fontSize: 34,
         fontWeight: '700',
-        
+        marginLeft:'5%'
         
       },
       

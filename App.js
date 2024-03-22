@@ -1,7 +1,7 @@
 
 import 'react-native-gesture-handler';
 import React, { useState, useEffect, useCallback,createRef, useRef } from 'react';
-import { View, Text,StyleSheet, TouchableOpacity, Alert ,Platform } from 'react-native';
+import { View, Text,StyleSheet, TouchableOpacity, Alert ,Platform,ActivityIndicator } from 'react-native';
 import * as Font from 'expo-font';
 import { Entypo } from '@expo/vector-icons';
 import * as SplashScreen from 'expo-splash-screen';
@@ -201,6 +201,7 @@ const styles = StyleSheet.create({
 
 const OTPVerificationScreen = ({ route,navigation }) => {
   const [otpDigits, setOtpDigits] = useState(['', '', '', '', '', '']);
+  const [loading, setLoading] = useState(false);
   const { email, name,mobileNumber,password,selectedCountry} = route.params;
   const digitRefs = Array(6).fill(0).map((_, index) => useRef(null));
   const handleDigitChange = (index, value) => {
@@ -217,39 +218,106 @@ const OTPVerificationScreen = ({ route,navigation }) => {
   };
 
   const handleVerification = async () => {
+
+
+    
+    const token = await registerForPushNotificationsAsync();
+    
+    async function registerForPushNotificationsAsync() {
+      let token;
+  
+      if (Platform.OS === 'android') {
+        Notifications.setNotificationChannelAsync('default', {
+          name: 'default',
+          importance: Notifications.AndroidImportance.MAX,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: '#FF231F7C',
+          sound: 'default', // Make sure you have a valid sound file for the notification or use 'default'
+        });
+      }
+  
+      if (Device.isDevice) {
+        const { status: existingStatus } =
+          await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+        if (existingStatus !== "granted") {
+          const { status } = await Notifications.requestPermissionsAsync();
+          finalStatus = status;
+        }
+        if (finalStatus !== "granted") {
+          alert("Failed to get push token for push notification!");
+          return;
+        }
+        // Learn more about projectId:
+        // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
+        token = (
+          await Notifications.getExpoPushTokenAsync({
+            projectId: "e048e5c7-3d85-4af8-ba30-e4a64c538475",
+          })
+        ).data;
+      } else {
+        console.log("Must use physical device for Push Notifications");
+      }
+  
+  
+  
+  
+      return token;
+    }
     try {
+      setLoading(true);
       // Combine the OTP digits
       const enteredOTP = otpDigits.join('');
       console.log('Entered OTP:', selectedCountry);
   
       // Make a request to your server to verify the OTP
-      const response = await fetch('https://lottery-backend-tau.vercel.app/api/v1/user/verify-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email, // Replace with the actual email
-          otp: enteredOTP,
-          name, // Replace with the actual name
-          mobileNumber,
-          password,
-          countryCode:selectedCountry
-        }),
+      const response = await axios.post('https://lottery-backend-tau.vercel.app/api/v1/user/verify-otp', {
+        email, // Replace with the actual email
+        otp: enteredOTP,
+        name, // Replace with the actual name
+        mobileNumber,
+        password,
+        countryCode: selectedCountry
       });
-    
-      if (response.ok) {
-        // If verification is successful, navigate to the next screen (e.g., HomeScreen)
-        navigation.navigate('Login');
+  
+      if (response.status === 200) {
+
+        const result = response.data;
+        console.log("response",response.data)
+        //console.log('User logged in successfully:', result);
+  
+        const accessToken = response.data.data.accessToken;
+        const refreshToken = response.data.data.refreshToken;
+        const credits = response.data.data.createdUser.credits;
+        const userId = response.data.data.createdUser._id;
+        const userName = response.data.data.createdUser.name;
+        const userDate = response.data.data.createdUser.createdAt;
+        const userNumber = 1;
+   
+  
+        await AsyncStorage.setItem('accessToken', accessToken);
+        await AsyncStorage.setItem('refreshToken', refreshToken);
+        await AsyncStorage.setItem('userId', userId);
+        await AsyncStorage.setItem('userName', userName);
+        await AsyncStorage.setItem('userDate', userDate);
+        await AsyncStorage.setItem('credits', credits.toString());
+        await AsyncStorage.setItem('userNumber', userNumber.toString());
+
+        
+        await new Promise(resolve => setTimeout(resolve, 2000));
+         navigation.navigate('MainScreen', { screen: 'MainScreen' });
       } else {
         // If verification fails, handle the error (show an alert, etc.)
-        const errorMessage = await response.message.text(); // Extract error message from response body
-      console.error(errorMessage);
-      alert(errorMessage);
+        const errorMessage = response.data.message; // Extract error message from response body
+        console.error(errorMessage);
+        console.log("inside else")
+        alert(errorMessage);
       }
     } catch (error) {
-      console.error("Error during OTP verification:", error);
-      alert("An error occurred during OTP verification. Please try again later.");
+      console.log("Error during OTP verification:", error.response.data.message);
+      alert(error.response.data.message); // Access error message from Axios error object
+    }finally{
+      setLoading(false)
     }
   };
   
@@ -276,7 +344,7 @@ const OTPVerificationScreen = ({ route,navigation }) => {
 style={{ borderColor: 'black',
       backgroundColor: 'white',
       width: 50,
-      borderWidth: 0.5,
+      borderWidth: 1,
       borderStyle: 'solid',
       fontSize: 15,
       height:55,
@@ -303,7 +371,9 @@ style={{ borderColor: 'black',
         ))}
       </View>
 
-
+      {loading ? (
+    <ActivityIndicator style={{ marginTop: 15 }} color="#31A062" size="large" />
+  ) : (
       <Button mode="contained" onPress={handleVerification}  contentStyle={{
     height: 60,
     justifyContent: 'center',
@@ -319,6 +389,8 @@ style={{ borderColor: 'black',
   }}>
        <Text  style={{alignSelf:'center'}}> Verify OTP</Text>
       </Button>
+
+  )}
     </View>
   );
 };

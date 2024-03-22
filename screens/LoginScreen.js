@@ -54,6 +54,7 @@ const CustomPicker = ({ visible, onClose, onSelect, data }) => {
   );
 };
 
+
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -66,13 +67,25 @@ const LoginScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  
+  const [alertMessage, setAlertMessage] = useState('');
 
   useEffect(() => {
     fetchCountries();
   }, []);
   const logSelectedCountryCode = () => {
     console.log('Selected Country Code:', selectedCountry,mobileNumber);
+  };
+
+
+
+  const [showAlert, setShowAlert] = useState(false);
+
+  const handleAlert = () => {
+    setShowAlert(true);
+  };
+
+  const handleCloseAlert = () => {
+    setShowAlert(false);
   };
   
   const fetchCountries = async () => {
@@ -160,7 +173,11 @@ const LoginScreen = ({ navigation }) => {
   }, [navigation]);
  
   const [fcmToken, setFcmToken] = useState(null);
-
+  const alertStyles = StyleSheet.create({
+    alertText: {
+      color: 'green', // Change text color to green
+    },
+  });
 
   useEffect(() => {
     // Retrieve email from AsyncStorage
@@ -180,43 +197,7 @@ const LoginScreen = ({ navigation }) => {
     
   const handleLogin = async () => {
 
-    // const token = await registerForPushNotificationsAsync();
-    // async function registerForPushNotificationsAsync() {
-    //   let token;
-    //   if (Platform.OS === 'android') {
-    //     Notifications.setNotificationChannelAsync('default', {
-    //       name: 'default',
-    //       importance: Notifications.AndroidImportance.MAX,
-    //       vibrationPattern: [0, 250, 250, 250],
-    //       lightColor: '#FF231F7C',
-    //       sound: 'default', // Make sure you have a valid sound file for the notification or use 'default'
-    //     });
-    //   }
-    //   if (Device.isDevice) {
-    //     const { status: existingStatus } =
-    //       await Notifications.getPermissionsAsync();
-    //     let finalStatus = existingStatus;
-    //     if (existingStatus !== "granted") {
-    //       const { status } = await Notifications.requestPermissionsAsync();
-    //       finalStatus = status;
-    //     }
-    //     if (finalStatus !== "granted") {
-    //       alert("Failed to get push token for push notification!");
-    //       return;
-    //     }
-    //     // Learn more about projectId:
-    //     // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
-    //     token = (
-    //       await Notifications.getExpoPushTokenAsync({
-    //         projectId: "28ee1909-a4f9-48c6-9992-0571adb39059",
-    //       })
-    //     ).data;
-    //   } else {
-    //     console.log("Must use physical device for Push Notifications");
-    //   }
-    //   return token;
-    // }
-    //const token = await AsyncStorage.getItem('token');
+
 
 
     const token = await registerForPushNotificationsAsync();
@@ -262,7 +243,7 @@ const LoginScreen = ({ navigation }) => {
   
       return token;
     }
-
+console.log("password",password)
     try {
       setLoading(true);
      
@@ -281,11 +262,11 @@ const LoginScreen = ({ navigation }) => {
         pushNotificationToken: token,
       });
   
-      console.log("response", response);
+     // console.log("response", response);
   
       if (response.status === 200) {
         const result = response.data;
-  
+        console.log("response", result);
         //console.log('User logged in successfully:', result);
   
         const accessToken = result.data.accessToken;
@@ -295,14 +276,7 @@ const LoginScreen = ({ navigation }) => {
         const userName = result.data.user.name;
         const userDate = result.data.user.createdAt;
         const userNumber = 1;
-        // Setting the value for 'loginId' key
         
-        // console.log('User Details:', result.message.user);
-        // console.log('Access Token:', accessToken);
-        // console.log('Credits:', credits);
-        // console.log('UserId', userId);
-        // console.log('UserName..', userName);
-        // console.log('Refresh Token:', result.message.refreshToken);
   
         await AsyncStorage.setItem('accessToken', accessToken);
         await AsyncStorage.setItem('refreshToken', refreshToken);
@@ -327,11 +301,12 @@ const LoginScreen = ({ navigation }) => {
         );
       }
     } catch (error) {
-      
+      console.log("Login error",error.response.data.message)
       Alert.alert(
         '',
         'Login Failed',
-        [{ text: error.response.data.message, onPress: () => console.log('OK Pressed') }]
+        [{ text: error.response.data.message, onPress: () => console.log('OK Pressed') }],
+        {  color: 'green', } 
       );
     } finally {
       setLoading(false);
@@ -419,7 +394,7 @@ const LoginScreen = ({ navigation }) => {
          <Text  style={styles.createaccountText}>Login</Text>
     <Text  style={styles.createaccountTextTwo}>Play and manage your games</Text>
 
-
+   
 
 
 <View

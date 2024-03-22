@@ -45,6 +45,8 @@ const HomeScreen = ({goToGameScreen }) => {
   const navigation = useNavigation();
   const [userGames, setUserGames] = useState([]);
   const [userName, setUserName] = useState(null);
+
+
   const [credits, setCredits] = useState(0);
   const [fetchCount, setFetchCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -57,7 +59,7 @@ const HomeScreen = ({goToGameScreen }) => {
   const [CountrySymbol, setCountrySymbol] = useState([]);
   const [ContinentSymbol,setContinentSymbol] = useState();
   const [previousWinningContinentNumbers, setPreviousWinningContinentNumbers] = useState([]);
-
+  
 
 
 
@@ -95,35 +97,7 @@ const HomeScreen = ({goToGameScreen }) => {
     }
   };
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const data = await fetchPreviousGameWinningNumbers();
-  //       // setPreviousWinningNumbers(data.message.country || []); 
-  //       // setPreviousWinningContinentNumbers(data.message.continent || [])
-  //       setcountryName(data.message.countryName);
-  //       setContinentWinningAmount(data.message.ContinentWinningAmount);
-  //       setCountryWinningAmount(data.message.CountryWinningAmount)
-  //       setCountrySymbol(data.message.countrySymbol);
-  //       setContinentSymbol(data.message.ContinentCurrencySymbol)
-  //       setPreviousWinningNumbers(data.message.country || []); 
-  //       setPreviousWinningContinentNumbers(data.message.continent || [])
-          
-  //       setPreviousWinningNumbers(data.message.country || []); 
-  //       setPreviousWinningContinentNumbers(data.message.continent || [])
-  //       console.log("country winning numbers country winning numbers  country winning numbers country winning numbers",data.message.continent )
-  //       console.log("credits credits credits credits credits credits credits", data.message.country);
-  //       console.log("credits credits credits credits credits credits credits", data.message.ContinentWinningAmount);
-        
-  //       // Assuming "country" is an array
-  //     } catch (error) {
-  //       console.error(error.message);
-  //       // Handle the error
-  //     }
-  //   };
-
-  //   fetchData(); // Invoke the fetchData function when the component mounts
-  // }, []);
+  
 
 
   
@@ -272,7 +246,7 @@ const HomeScreen = ({goToGameScreen }) => {
         const userId = await AsyncStorage.getItem("userId");
         const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`;
         const storedAccessToken = await AsyncStorage.getItem("accessToken");
-
+        
         try {
           const response = await fetch(apiUrl, {
             method: "GET",
@@ -288,8 +262,10 @@ const HomeScreen = ({goToGameScreen }) => {
           }
 
           const data = await response.json();
+          await AsyncStorage.setItem('userEmail', data.message.email);
           setCredits(data.message.credits);
           setUserName(data.message.name);
+          
           console.log("credits credits credits credits credits credits credits", data.message.credits);
           // Additional fields can be set here based on your API response
         } catch (error) {
@@ -412,51 +388,8 @@ const HomeScreen = ({goToGameScreen }) => {
     }
   };
 
-
-
-
-
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     const fetchPersonalDetails = async () => {
-  //       const userId = await AsyncStorage.getItem("userId");
-  //       const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
-  //       const storedAccessToken = await AsyncStorage.getItem("accessToken");
-
-  //       try {
-  //         const response = await fetch(apiUrl, {
-  //           method: "GET",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //             Authorization: `Bearer ${storedAccessToken}`,
-  //           },
-  //         });
-
-  //         if (!response.ok) {
-  //           const errorData = await response.json();
-  //           throw new Error(`${response.status} - ${errorData.message}`);
-  //         }
-
-  //         const data = await response.json();
-         
-  //         setPreviousWinningNumbers(data.message.country || []); 
-  //         setPreviousWinningContinentNumbers(data.message.continent || [])
-  //         console.log("credits credits credits credits credits credits credits", data.message.continent);
-  //         console.log("credits credits credits credits credits credits credits", data.message.country);
-  //         console.log("credits credits credits credits credits credits credits", data.message.ContinentWinningAmount);
-  //         console.log("credits credits credits credits credits credits credits", data.message.CountryWinningAmount);
-  //         // Additional fields can be set here based on your API response
-  //       } catch (error) {
-  //         console.error("Error fetching personal details:", error.message);
-  //       }
-  //     };
-
-  //     fetchPersonalDetails();
-  //   }, []) // Empty dependency array means this effect will only run once when the component mounts
-  // );
-
   useEffect(() => {
-    // Add event listener for hardware back button press
+    
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
       () => {
@@ -573,64 +506,7 @@ const HomeScreen = ({goToGameScreen }) => {
     
 </LinearGradient>
 
-{/* 
-      <LinearGradient
-        colors={["#31A078", "#31A05F"]} // Example colors, replace with your desired gradient colors
-        style={styles.card}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-           
-          }}
-        >
-           {loading ? (
-          <ActivityIndicator   style={{marginLeft:20,alignSelf:'center'}}size="small" color="white" />
-        ) : (
-            <Text  style={{color:'white',marginBottom:responsiveFontSize(1),marginLeft:'2%'}}>Winning Amount : {CountrySymbol}{CountryWinningAmount}</Text>
-            )}
-         
-        </View>
 
-
-        {previousWinningNumbers && previousWinningNumbers.length > 0 ? (
-  <>
-    <Text style={styles.createdAtText}>{countryName} winning numbers</Text>
-    {loading ? (
-      <ActivityIndicator style={{ marginLeft: 20, alignSelf: 'center' }} size="small" color="white" />
-    ) : (
-      <NumberRow numbers={previousWinningNumbers} />
-    )}
-  </>
-) : (
-  <>
-    {loading ? (
-      <ActivityIndicator style={{ marginLeft: 20, alignSelf: 'center' }} size="small" color="white" />
-    ) : (
-      <LinearGradient
-        colors={["#F0C735", "#D98F39"]} // Example colors, replace with your desired gradient colors
-        style={styles.buycreditscardTwo}
-      >
-        <TouchableOpacity onPress={resetTwo}>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Text style={{ color: "white", alignSelf: "center", fontSize: 10 }}>Play Now</Text>
-          </View>
-        </TouchableOpacity>
-      </LinearGradient>
-    )}
-  </>
-)}
-
-
-      </LinearGradient> */}
 
 <LinearGradient
   colors={["#31A078", "#31A05F"]} // Example colors, replace with your desired gradient colors
@@ -690,12 +566,7 @@ const HomeScreen = ({goToGameScreen }) => {
         <Text style={styles.yohaveText}> You have</Text>
 
         <Text style={styles.creditsText}>{credits} Credits</Text>
-{/* 
-        {loading ? (
-          <ActivityIndicator size="large" color="#0000ff" />
-        ) : (
-          
-        )} */}
+
       </View>
 
       <View

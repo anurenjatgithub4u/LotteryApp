@@ -8,7 +8,10 @@ import { useNavigation } from "@react-navigation/native";
 import { useFocusEffect } from "@react-navigation/native";
 import { responsiveFontSize, responsiveHeight ,responsiveWidth} from "react-native-responsive-dimensions";
 
-
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 
 
 
@@ -105,16 +108,20 @@ const RedeemPage = () => {
   );
 
   return (
-    <View  style={{padding:responsiveHeight(4) }}>
+    <View  style={{paddingLeft:16,paddingRight:16 }}>
       <View
         style={{
           flexDirection: 'row',
           alignItems: 'center',
-          justifyContent: 'flex-start',
-         marginBottom:20
+          justifyContent: 'center',
+         
+          paddingTop:'15%',
         }}
       >
-        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+
+        <TouchableOpacity  style={{alignSelf:'flex-start',right:responsiveWidth(28)}}
+        
+        onPress={() => navigation.navigate('Profile')}>
           <MaterialIcons
             name="keyboard-arrow-left"
             size={35}
@@ -124,10 +131,12 @@ const RedeemPage = () => {
             }}
           />
         </TouchableOpacity>
-        <Text style={{ marginTop: 6, marginLeft: 90 }}> Bank Accounts </Text>
+        <Text style={{ fontWeight: '700', fontSize: 17 }}>Bank Accounts</Text>
       </View>
 
-    
+      
+
+     
 
 
     
@@ -220,7 +229,16 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     height: 50,
   },
+  forgotpasswordText: {
+    // Add this line to align text to the left
+    width: 354,
+    minHeight: hp("7%"),
 
+    marginLeft: "5%",
+
+    fontSize: 34, // Adjust the font size as needed
+    fontWeight: "bold",
+  },
   inputField: {
     borderWidth: 1,
     borderColor: 'gray',

@@ -17,6 +17,7 @@ import {
 import { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+const SCREEN_WIDTH = width < height ? width : height;
 
 
 
@@ -69,6 +70,13 @@ const GameDetailsPage = ({ route }) => {
     month: "long",
     year: "numeric",
   });
+
+  const formattedDateTime = new Date(game.createdAt).toLocaleString("en-GB", {
+    
+    hour: "numeric",
+    minute: "numeric",
+    
+});
 
   const formattedAnnouncementDate = new Date(game.announcementDate).toLocaleDateString('en-GB', {
     day: 'numeric',
@@ -177,7 +185,7 @@ const GameDetailsPage = ({ route }) => {
       </TouchableOpacity>
       <Text style={styles.yourGameText}>Your Game</Text>
 
-      <Text style={styles.dateText}> {formattedDate}</Text>
+      <Text style={styles.dateText}> {formattedDate} , {formattedDateTime}</Text>
 
       {/* Display the game data in your UI */}
 
@@ -232,6 +240,16 @@ const GameDetailsPage = ({ route }) => {
         </Text>
       </View>
 
+      <LinearGradient colors={["#F0C735", "#D98F39"]} style={styles.doneButtonTwo}>
+        <TouchableOpacity onPress={()=> navigation.navigate('RedeemAmountAccessPage')}>
+          <Text style={styles.doneButtonText}>Redeem</Text>
+        </TouchableOpacity>
+      </LinearGradient>
+
+
+
+
+
   </>
    ):(
 
@@ -263,6 +281,17 @@ const styles = StyleSheet.create({
     marginLeft: "1%",
 
     // Add any other styles for yourGameText if needed
+  },
+
+  
+  doneButtonTwo: {
+    backgroundColor: "#F0C735",
+    
+    alignSelf:'center',
+    width: "100%",
+    height:'4%',
+    marginTop:'5%'
+    
   },
   dateTextTwo: {
     fontSize: 32,

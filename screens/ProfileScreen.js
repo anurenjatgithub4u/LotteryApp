@@ -23,11 +23,14 @@ import { Alert } from 'react-native';
 
 
 const ProfileScreen = () => {
+
+
+
+
   const [credits, setCredits] = useState(0);
   const { accessToken, setAccessToken } = useAuth();
   const navigation = useNavigation();
   const [userName, setUserName] = useState(null);
-
   const [userSince, setUserSince] = useState(null);
 
 
@@ -93,6 +96,7 @@ const ProfileScreen = () => {
 
   const handleDeleteUser = async () => {
     const user = await AsyncStorage.getItem('userId');
+    const userNumber = 0;
     const storedAccessToken = await AsyncStorage.getItem('accessToken');
     try {
       const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/delete-all-user-data/${user}`;
@@ -108,6 +112,7 @@ const ProfileScreen = () => {
   
       if (response.status === 200) {
         Alert.alert('Success', 'User data deleted successfully');
+        await AsyncStorage.setItem('userNumber', userNumber.toString());
         navigation.navigate('Login');
       } else {
         Alert.alert('Error', 'Failed to delete user data');
@@ -226,7 +231,7 @@ return(
 
     
 
-    <Card style={styles.card}>
+    <Card style={styles.card}  onPress={() => navigation.navigate('ContactInfo')}>
     <Card.Content>
       
      
@@ -251,7 +256,7 @@ return(
 
 
 
-  <Card style={styles.card}>
+  <Card style={styles.card}  onPress={() => navigation.navigate('Redeem')} >
 
 
 
@@ -276,7 +281,7 @@ return(
   </Card>
 
 
-  <Card style={styles.card}>
+  <Card style={styles.card} onPress={() => navigation.navigate('PurchaseScreen')}>
     <Card.Content>
       
      
@@ -296,13 +301,14 @@ return(
   </Card>
 
 
-  <Card style={styles.card}>
+  <Card style={styles.card} onPress={() => navigation.navigate('RedeemAmountAccessPage')} >
     <Card.Content>
       
      
 
     <View style={styles.personalInfoContainer}>
-    <FontAwesome name="credit-card-alt" size={24} color="black" />
+    <FontAwesome name="money" size={24} color="black" />
+
   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
     <Paragraph style={{...styles.personalInfoText,flex:.9}}  >Redeem</Paragraph>
     <TouchableOpacity  onPress={() => navigation.navigate('RedeemAmountAccessPage')}>
@@ -316,7 +322,7 @@ return(
   </Card>
 
 
-  <Card style={styles.card}>
+  <Card style={styles.card}  onPress={() => navigation.navigate('ForgotPasswordTwo')}>
     <Card.Content>
       
      

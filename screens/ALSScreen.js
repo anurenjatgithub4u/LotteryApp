@@ -241,18 +241,111 @@ const areaType = route.params;
     return () => backHandler.remove();
   }, [navigation]);
 
+
   const checkCreditsAndNavigate =  async () => {
 
-    console.log("last winning ...." , winningAmt)
+    console.log("last winning winning...." , commonLevel ,credits,creditsForContinentLevelThree)
    
     // Replace 0 with the actual condition to check if credits are 0
-    if (credits === 0) {
-      Alert.alert(
-        'Insufficient Credits',
-        'You don\'t have enough credits. Please add credits to continue.',
-        [{ text: 'OK', onPress: () => navigation.navigate("PaymentMethodPage") }]
-      );
-    } else {
+    if (commonLevel === 3 && commonLevel === 2 && commonLevel === 1  ) {
+
+      if(credits===0){
+        Alert.alert(
+          'Insufficient Credits',
+          'You don\'t have enough credits. Please add credits to continue.',
+          [{ text: 'OK', onPress: () => navigation.navigate("PaymentMethodPage") }]
+        );
+      }
+    
+    }else if(commonArea === 1){ 
+      
+      if(commonLevel === 3){
+      if( credits< creditsForContinentLevelThree){
+
+       
+        Alert.alert(
+          'Insufficient Credits',
+          'You don\'t have enough credits. Please add credits to continue.',
+          [{ text: 'OK', onPress: () => navigation.navigate("PaymentMethodPage") }]
+        );
+      }else{
+        navigation.navigate('Play', { countryName,CountrySymbol,creditsForContinentLevelOne,creditsForContinentLevelTwo,
+          creditsForContinentLevelThree,creditsForCountryLevelOne,creditsForCountryLevelTwo,creditsForCountryLevelThree ,ContinentWinningAmount,CountryWinningAmount});
+      }
+    } else if(commonLevel === 2){
+      if( credits< creditsForContinentLevelTwo){
+
+       
+        Alert.alert(
+          'Insufficient Credits',
+          'You don\'t have enough credits. Please add credits to continue.',
+          [{ text: 'OK', onPress: () => navigation.navigate("PaymentMethodPage") }]
+        );
+      }else{
+        navigation.navigate('Play', { countryName,CountrySymbol,creditsForContinentLevelOne,creditsForContinentLevelTwo,
+          creditsForContinentLevelThree,creditsForCountryLevelOne,creditsForCountryLevelTwo,creditsForCountryLevelThree ,ContinentWinningAmount,CountryWinningAmount});
+      }
+    } else if(commonLevel === 1){
+      if( credits< creditsForContinentLevelOne){
+
+
+        Alert.alert(
+          'Insufficient Credits',
+          'You don\'t have enough credits. Please add credits to continue.',
+          [{ text: 'OK', onPress: () => navigation.navigate("PaymentMethodPage") }]
+        );
+      }else{
+        navigation.navigate('Play', { countryName,CountrySymbol,creditsForContinentLevelOne,creditsForContinentLevelTwo,
+          creditsForContinentLevelThree,creditsForCountryLevelOne,creditsForCountryLevelTwo,creditsForCountryLevelThree ,ContinentWinningAmount,CountryWinningAmount});
+      }
+    }
+
+    }else if(commonArea === 2){ 
+      
+      if(commonLevel === 3){
+      if( credits< creditsForCountryLevelThree){
+
+       console.log("navigate to redeem")
+        Alert.alert(
+          'Insufficient Credits',
+          'You don\'t have enough credits. Please add credits to continue.',
+          [{ text: 'OK', onPress: () => navigation.navigate("PaymentMethodPage") }]
+        );
+      }else{
+        navigation.navigate('Play', { countryName,CountrySymbol,creditsForContinentLevelOne,creditsForContinentLevelTwo,
+          creditsForContinentLevelThree,creditsForCountryLevelOne,creditsForCountryLevelTwo,creditsForCountryLevelThree ,ContinentWinningAmount,CountryWinningAmount});
+      }
+    } else if(commonLevel === 2){
+      if( credits< creditsForCountryLevelTwo){
+
+       console.log("navigate to redeem")
+        Alert.alert(
+          'Insufficient Credits',
+          'You don\'t have enough credits. Please add credits to continue.',
+          [{ text: 'OK', onPress: () => navigation.navigate("PaymentMethodPage") }]
+        );
+      }else{
+        navigation.navigate('Play', { countryName,CountrySymbol,creditsForContinentLevelOne,creditsForContinentLevelTwo,
+          creditsForContinentLevelThree,creditsForCountryLevelOne,creditsForCountryLevelTwo,creditsForCountryLevelThree ,ContinentWinningAmount,CountryWinningAmount});
+      }
+    } else if(commonLevel === 1){
+      if( credits< creditsForCountryLevelOne){
+
+       console.log("navigate to redeem")
+        Alert.alert(
+          'Insufficient Credits',
+          'You don\'t have enough credits. Please add credits to continue.',
+          [{ text: 'OK', onPress: () => navigation.navigate("PaymentMethodPage") }]
+        );
+      }else{
+        navigation.navigate('Play', { countryName,CountrySymbol,creditsForContinentLevelOne,creditsForContinentLevelTwo,
+          creditsForContinentLevelThree,creditsForCountryLevelOne,creditsForCountryLevelTwo,creditsForCountryLevelThree ,ContinentWinningAmount,CountryWinningAmount});
+      }
+    }
+
+    }
+    
+    else {
       // Navigate to ALScreen (replace 'ALScreen' with your actual screen name)
       try {
         // Retrieve 'area' and 'level' values from AsyncStorage
@@ -289,6 +382,9 @@ const areaType = route.params;
     }
   };
 
+
+
+
   useEffect(() => {
     const fetchDataWinnigAmt = async () => {
 
@@ -321,11 +417,7 @@ const areaType = route.params;
   }, []);
 
 
-  const checking = async() => {
-    console.log("area ?....." ,commonArea)
-    console.log("credits ?....." ,creditsForContinentLevelOne)
-
-  }
+ 
   
   const handlePress = async () => {
     if (!pressed) {
@@ -434,41 +526,10 @@ useEffect(() => {
     setCommonLevel(3);
   };
   
-  const checkUserIdAndReference = async () => {
-    try {
-      // Retrieve userId and accessToken from AsyncStorage
-      const storedUserDetails = await AsyncStorage.getItem('userDetails');
-      const accessToken = await AsyncStorage.getItem('accessToken');
-  
-      // Parse the stored JSON string to get the user details object
-      const userDetails = JSON.parse(storedUserDetails);
-  
-      // Check if userDetails exists and has _id property
-      if (!userDetails || !userDetails._id) {
-        console.log('User details not found in AsyncStorage');
-        return;
-      }
-  
-      // Extract userId
-      const userId = userDetails._id;
-       console.log("id",userId)
-       console.log("token",accessToken)
-      // Make API request to check user details
-   
-  
-     
-    } catch (error) {
-      console.error('Error checking user details:', error.message);
-    }
-  };
+
   
 
-  const checkCondition = async () => {
-
-
-
-   
-  };
+ 
 
 
   function interpolateColor(color1, color2, factor) {
@@ -584,8 +645,8 @@ useEffect(() => {
         { color: commonArea === 0 ? 'white' : 'white' },
       ]}>
         {commonArea === 1
-          ? `${creditsForCountryLevelOne } Credits Win Upto ${ContinentWinningAmount/4}`
-          : `${creditsForContinentLevelOne } Credits Win Upto ${CountryWinningAmount/4}`}
+          ? `${creditsForContinentLevelOne } Credits Win Upto , ${ContinentSymbol}${ContinentWinningAmount/4}`
+          : `${ creditsForCountryLevelOne} Credits Win Upto , ${CountrySymbol}${CountryWinningAmount/4}`}
       </Text>
     )}
   </Text>
@@ -613,8 +674,8 @@ useEffect(() => {
         { color: commonArea === 0 ? 'white' : 'white' },
       ]}>
         {commonArea === 1
-          ? `${creditsForCountryLevelTwo } Credits Win Upto ${ContinentWinningAmount/2}`
-          : `${creditsForContinentLevelTwo } Credits Win Upto ${CountryWinningAmount/2}`}
+          ? `${ creditsForContinentLevelTwo} Credits Win Upto , ${ContinentSymbol}${ContinentWinningAmount/2}`
+          : `${creditsForCountryLevelTwo } Credits Win Upto , ${CountrySymbol}${CountryWinningAmount/2}`}
       </Text>
     )}
   </Text>
@@ -640,8 +701,8 @@ useEffect(() => {
         { color: commonArea === 0 ? 'white' : 'white' },
       ]}>
         {commonArea === 1
-          ? `${creditsForCountryLevelThree } Credits Win Upto ${ContinentWinningAmount}`
-          : `${creditsForContinentLevelThree} Credits Win Upto ${CountryWinningAmount}`}
+          ? `${creditsForContinentLevelThree } Credits Win Upto , ${ContinentSymbol}${ContinentWinningAmount}`
+          : `${creditsForCountryLevelThree} Credits Win Upto , ${CountrySymbol}${CountryWinningAmount}`}
       </Text>
     )}
   </Text>

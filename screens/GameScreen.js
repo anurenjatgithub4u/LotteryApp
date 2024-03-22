@@ -28,7 +28,7 @@ import DatePicker from "react-native-modern-datepicker";
 import { RadioButton } from 'react-native-paper';
 import axios from "axios";
 import { StatusBar } from "expo-status-bar";
-
+import { CheckBox } from 'react-native-elements';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -425,6 +425,7 @@ const GameScreen = () => {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "space-between",
+    paddingLeft:'10%',paddingRight:'10%'
    
   }}
 >
@@ -438,7 +439,7 @@ const GameScreen = () => {
   }}
 >
 
-  <View style={{ flexDirection: "column",marginRight:'25%',alignSelf:'flex-start' }}>
+  <View style={{ flexDirection: "column",marginRight:'25%',alignSelf:'flex-start',}}>
     <Pressable onPress={toggleDatePicker}>
      
       <View style={styles.datePickerContainer}>
@@ -498,150 +499,27 @@ const GameScreen = () => {
 
 
 
-{/* <View
-  style={{
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: '5%'
-  }}
->
-
-  <View
-    style={{
-      flexDirection: "column",
-    }}
-  >
-
-    <Pressable onPress={toggleDatePicker}>
-
-      <View style={{
-        borderColor: 'black',
-        backgroundColor: '#F8F8FF',
-        width: '100%',
-        alignItems: 'center',
-        borderWidth: 1,
-        height: 58.5,
-        borderWidth: .5,
-        borderStyle: 'solid',
-        fontSize: 15,
-        borderRadius: 15,
-        color: '#F8F8FF',
-        overflow: "hidden",
-      }}>
-
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <AntDesign
-            name="calendar"
-            size={24}
-            color="black"
-            style={{ marginLeft: 14 }}
-          />
-          <TextInput
-            placeholder="Start Date"
-            value={selectedDate}
-            onChangeText={setSelectedDate}
-            placeholderTextColor="#11182744"
-            editable={false}
-            style={{
-              color: '#F8F8FF',
-              backgroundColor: '#F8F8FF',
-              height: 60.5,
-            }}
-          ></TextInput>
-        </View>
-      </View>
-    </Pressable>
-
-    {showPicker && (
-      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <DateTimePicker
-          mode="date"
-          display="spinner"
-          value={date}
-          onChange={onChange}
-          style={{ alignSelf: 'center' }}
-        />
-      </View>
-    )}
-
-  </View>
-
-  <View
-    style={{
-      flexDirection: "column",
-      alignItems: 'center'
-    }}
-  >
-    <Pressable onPress={toggleEndDatePicker}>
-
-      <View style={{
-        borderColor: 'black',
-        backgroundColor: '#F8F8FF',
-        width: '100%',
-        alignItems: 'center', // Center the content
-        borderWidth: 1,
-        height: 58.5,
-        borderWidth: 0.5,
-        borderStyle: 'solid',
-        fontSize: 15,
-        borderRadius: 15,
-        color: '#F8F8FF',
-        overflow: "hidden",
-      }}>
-
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <AntDesign
-            name="calendar"
-            size={24}
-            color="black"
-            style={{ marginRight: 1, marginLeft: 8 }}
-          />
-          <TextInput
-            placeholder="End Date"
-            value={endSelecteddate}
-            onChangeText={setEndSelecetedDate}
-            placeholderTextColor="#11182744"
-            editable={false}
-            style={{
-              color: '#F8F8FF',
-              backgroundColor: '#F8F8FF',
-              height: 60.5,
-            }}
-          ></TextInput>
-        </View>
-      </View>
-    </Pressable>
-
-    {endshowPicker && (
-      <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <DateTimePicker
-          mode="date"
-          display="spinner"
-          value={endSetDate}
-          onChange={onEndChange}
-          style={{ alignSelf: 'center' }}
-        />
-      </View>
-    )}
-
-  </View>
-
-</View> */}
 
 
 
 
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: '0%' }}>
-  <RadioButton
-    value="all"
-    status={showWinners ? 'unchecked' : 'checked'}
-    onPress={handleRadioButtonPress}
-  />
+      <View style={{ flexDirection: 'row', alignItems: 'center',justifyContent:'flex-start' }}>
+ <View  style={{right:'28%'}}>
 
-  <Text>Show Only Wins</Text>
+ <CheckBox
+              
+              checked={!showWinners }
+              onPress={handleRadioButtonPress} // Call toggle function
+              checkedColor="#31A062"
+            />
 
-  <View style={{ marginLeft: 'auto' }}>
+ </View>
+
+
+
+  <Text style={{right:25}}>Show Only Wins</Text>
+
+  <View style={{ marginLeft: 'auto' ,marginRight:'5%'}}>
   <TouchableOpacity onPress={handleClearFilters}>
     <Text style={{color:"#FE555D"}}>Clear</Text>
     </TouchableOpacity>
@@ -987,13 +865,13 @@ const GameScreen = () => {
 const styles = StyleSheet.create({
 
   datePickerContainer: {
-    borderColor: 'black',
+    borderColor: '#828282',
     backgroundColor: '#F8F8FF',
     width: '100%',
     alignItems: 'center',
     borderWidth: 1,
     height: 58.5,
-    
+    backgroundColor:'#828282' ,
     borderStyle: 'solid',
     fontSize: 15,
     borderRadius: 15,
@@ -1004,13 +882,13 @@ const styles = StyleSheet.create({
   iconTextContainer: {
     flexDirection: "row",
     alignItems: "center",
-    
+    backgroundColor:'#D9D9D9' 
   },
   textInput: {
     color: '#F8F8FF',
-    backgroundColor: '#F8F8FF',
-    height: 60.5,
    
+    height: 60.5,
+    backgroundColor:'#D9D9D9' 
   },
   card: {
     margin: 10,

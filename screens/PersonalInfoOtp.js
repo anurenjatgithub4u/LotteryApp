@@ -3,44 +3,51 @@ import { View, Text, TextInput, Button, Alert , StyleSheet,TouchableOpacity } fr
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
+import axios from 'axios';
+
 
 const PersonalInfoOtp = ({ route, navigation }) => {
   const { email, name, mobileNumber } = route.params;
   const [otp, setOtp] = useState('');
    console.log("mob num", mobileNumber)
 
-  const handleVerifyOtp = async () => {
+   const handleVerifyOtp = async () => {
     try {
       const enteredOTP = otpDigits.join('');
       const userId = await AsyncStorage.getItem('userId');
-      const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`; // Replace with your actual API endpoint
+      const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`;
       const storedAccessToken = await AsyncStorage.getItem('accessToken');
-      const countryCode = "+917356380659"
-      const response = await fetch(apiUrl, {
-        method: 'PATCH', // Use PATCH method for updating
+      const countryCode = "+917356380659";
+
+
+      await AsyncStorage.setItem('userEmail', email);
+
+      
+      const response = await axios.patch(apiUrl, {
+        email,
+        otp: enteredOTP,
+        name,
+        mobileNumber
+      }, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${storedAccessToken}`,
-        },
-        body: JSON.stringify({ email, otp:enteredOTP, name, mobileNumber }),
+        }
       });
-      const responseData = await response.json();
-     
   
-      if (responseData.message==='Success') {
-        // Check the response data to determine success
-        
-
-        Alert.alert('Error', `Error: ${responseData.message}`);
-        console.log("msssg", responseData.message)
-      } else {
-        console.log('Success', email,otp,name,mobileNumber);
-        console.log('otp', JSON.stringify(mobileNumber));
-        console.log("msssg", responseData.message)
+      const responseData = response.data;
+  
+      if (response.status === 200) {
         navigation.navigate('ContactInfo');
+        console.log("msssg", responseData.message);
+      } else {
+        console.log('Success', email, otp, name, mobileNumber);
+        console.log('otp', JSON.stringify(mobileNumber));
+        console.log("msssg", responseData.message);
+        alert(responseData.message);
       }
     } catch (error) {
-      console.error('Error verifying OTP:', responseData.message);
+      console.error('Error verifying OTP:', error.message);
       Alert.alert('Error', 'An error occurred while verifying OTP');
     }
   };
@@ -69,7 +76,7 @@ const PersonalInfoOtp = ({ route, navigation }) => {
 
   return (
 
-    <View  style={{marginTop:0}}>
+    <View  >
 
 
 <TouchableOpacity onPress={()=> navigation.navigate('ContactInfo')} >
@@ -86,7 +93,9 @@ const PersonalInfoOtp = ({ route, navigation }) => {
   OTP Verification 
 </Text>
 
-<View    style={{ flexDirection: 'row', marginTop: 40 ,alignItems:'center',paddingLeft:'6%',paddingRight:'6%'}}>
+<View  
+
+style={{ flexDirection: 'row', marginTop: 10,alignItems:'center',padding:'4%'}}>
    
       {otpDigits.map((digit, index) => (
         <View key={index}
@@ -94,7 +103,7 @@ const PersonalInfoOtp = ({ route, navigation }) => {
         style={{ borderColor: 'black',
         backgroundColor: 'white',
         width: 50,
-        borderWidth: 0.5,
+        borderWidth: 1,
         borderStyle: 'solid',
         fontSize: 15,
         height:55,
@@ -107,11 +116,11 @@ const PersonalInfoOtp = ({ route, navigation }) => {
           <TextInput
             key={index}
             style={{
-              alignSelf:'center',
-              textAlign:'center',
-              marginTop:'2%',
-              textAlign: 'center',
-              backgroundColor:'white'
+              
+              margin:'30%',
+              backgroundColor:'white',
+              
+             
             }}
             keyboardType="numeric"
             maxLength={1}
@@ -121,6 +130,8 @@ const PersonalInfoOtp = ({ route, navigation }) => {
           />
         </View>
       ))}
+
+
 
 
 

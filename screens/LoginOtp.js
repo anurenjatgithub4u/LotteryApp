@@ -5,6 +5,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
+import axios from 'axios'; // Import Axios library
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
+
 
 const LoginOtp = ({ route,navigation }) => {
 
@@ -26,36 +30,115 @@ const LoginOtp = ({ route,navigation }) => {
     };
   
     const handleVerification = async () => {
-        try {
-            const storedPushToken = await AsyncStorage.getItem('ExpoPushToken');
-          // Combine the OTP digits
-          const enteredOTP = otpDigits.join('');
-          
-      
-          // Make a request to your server to verify the OTP
-          const response = await fetch('https://lottery-backend-tau.vercel.app/api/v1/auth/login-with-number', {
-            method: 'POST',
+
+
+
+      const token = await registerForPushNotificationsAsync();
+    
+      async function registerForPushNotificationsAsync() {
+        let token;
+    
+        if (Platform.OS === 'android') {
+          Notifications.setNotificationChannelAsync('default', {
+            name: 'default',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: '#FF231F7C',
+            sound: 'default', // Make sure you have a valid sound file for the notification or use 'default'
+          });
+        }
+    
+        if (Device.isDevice) {
+          const { status: existingStatus } =
+            await Notifications.getPermissionsAsync();
+          let finalStatus = existingStatus;
+          if (existingStatus !== "granted") {
+            const { status } = await Notifications.requestPermissionsAsync();
+            finalStatus = status;
+          }
+          if (finalStatus !== "granted") {
+            alert("Failed to get push token for push notification!");
+            return;
+          }
+          // Learn more about projectId:
+          // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
+          token = (
+            await Notifications.getExpoPushTokenAsync({
+              projectId: "e048e5c7-3d85-4af8-ba30-e4a64c538475",
+            })
+          ).data;
+        } else {
+          console.log("Must use physical device for Push Notifications");
+        }
+    
+    
+    
+    
+        return token;
+      }
+
+     
+      try {
+       
+        // Combine the OTP digits
+        const enteredOTP = otpDigits.join('');
+    
+        // Make a request to your server to verify the OTP using Axios
+        const response = await axios.post(
+          'https://lottery-backend-tau.vercel.app/api/v1/auth/verify-login-with-number',
+          {
+            mobileNumber,
+            otp: enteredOTP,
+            pushNotificationToken: token,
+          },
+          {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-             mobileNumber,
-             otp:enteredOTP,
-             pushNotificationToken:storedPushToken
-            }),
-          });
-        
-          if (response.ok) {
-            // If verification is successful, navigate to the next screen (e.g., HomeScreen)
-            navigation.navigate('MainScreen');
-          } else {
-            // If verification fails, handle the error (show an alert, etc.)
-            console.error('OTP verification failed');
           }
-        } catch (error) {
-          console.error('Error during OTP verification:', error);
+        );
+    
+        if (response.status === 200) {
+          // If verification is successful, navigate to the next screen (e.g., HomeScreen)
+          const result = response.data;
+          const accessToken = result.data.accessToken;
+          const refreshToken = result.data.refreshToken;
+          const credits = result.data.user.credits;
+          const userId = result.data.user._id;
+          const userName = result.data.user.name;
+          const userDate = result.data.user.createdAt;
+          const userNumber = 1;
+          // Setting the value for 'loginId' key
+          
+          // console.log('User Details:', result.message.user);
+          // console.log('Access Token:', accessToken);
+          // console.log('Credits:', credits);
+          // console.log('UserId', userId);
+          // console.log('UserName..', userName);
+          // console.log('Refresh Token:', result.message.refreshToken);
+    
+          await AsyncStorage.setItem('accessToken', accessToken);
+          await AsyncStorage.setItem('refreshToken', refreshToken);
+          await AsyncStorage.setItem('userId', userId);
+          await AsyncStorage.setItem('userName', userName);
+          await AsyncStorage.setItem('userDate', userDate);
+          await AsyncStorage.setItem('credits', credits.toString());
+          await AsyncStorage.setItem('userNumber', userNumber.toString());
+  
+          navigation.navigate('MainScreen');
+        } else {
+          // If verification fails, handle the error (show an alert, etc.)
+          console.error('OTP verification failed');
         }
-      };
+      } catch (error) {
+        // Handle any errors that occurred during the process
+       
+        alert(error.response.data.message)
+      }
+    };
+
+
+
     
   
     return (
@@ -81,7 +164,7 @@ const LoginOtp = ({ route,navigation }) => {
         backgroundColor: 'white',
         width: 50,
         justifyContent: 'center',
-        borderWidth: 0.5,
+        borderWidth: 1,
         borderStyle: 'solid',
         fontSize: 15,
         height:55,

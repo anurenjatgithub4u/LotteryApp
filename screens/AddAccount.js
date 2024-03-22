@@ -77,10 +77,7 @@ const AddAccount = () => {
    <View style={{padding:'5%',paddingTop:'12%'}}>
    <TouchableOpacity onPress={()=> navigation.navigate('Redeem')} >
 
-<MaterialIcons name="keyboard-arrow-left" size={35} color="black" style={{
-     
-     marginLeft: 10// Add marginLeft to push the icon to the left
-   }}
+<MaterialIcons name="keyboard-arrow-left" size={35} color="black" 
    
    />
    </TouchableOpacity>

@@ -229,7 +229,7 @@ const PlayedGame = ({ route }) => {
 
 
 
-
+<TouchableOpacity  onPress={()=>navigation.navigate('ALScreen')}>
 <LinearGradient  colors={['#F0C735', '#D98F39']}  style={styles.doneButton}>
 
    <TouchableOpacity  onPress={()=>navigation.navigate('ALScreen')}>
@@ -237,7 +237,7 @@ const PlayedGame = ({ route }) => {
    <Text  style={{alignSelf:'center',  color:'white'}}>Play again</Text>
    </TouchableOpacity>
 </LinearGradient>
-
+</TouchableOpacity>
 
       {/* Add more details as needed */}
     </View>
