@@ -1,4 +1,3 @@
-
 import { useNavigation } from "@react-navigation/native";
 import React, { useRef, useState, useEffect } from "react";
 import {
@@ -8,6 +7,7 @@ import {
   TouchableOpacity,
   Modal,
   ActivityIndicator,
+  Dimensions
 } from "react-native";
 import { TextInput, Button } from "react-native-paper";
 import axios from "axios";
@@ -23,6 +23,11 @@ import {
   responsiveWidth,
 } from "react-native-responsive-dimensions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Spinner from 'react-native-loading-spinner-overlay';
+import { LinearGradient } from "expo-linear-gradient";
+const { width, height } = Dimensions.get("window");
+const SCREEN_WIDTH = width < height ? width : height;
+
 const ForgotPasswordTwo = () => {
   const [emailFor, setEmailFor] = useState("");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -34,7 +39,7 @@ const ForgotPasswordTwo = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [mobileNumberLogin, setMobileNumberLogin] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [loadingReset, setLoadingReset]  = useState(false)
   const [buttonPressed, setButtonPressed] = useState(false);
 
   const CustomPicker = ({ visible, onClose, onSelect, data }) => {
@@ -90,7 +95,7 @@ const ForgotPasswordTwo = () => {
     try {
       // Validate email
 
- 
+      setLoadingReset(true)
       const userEmail = await AsyncStorage.getItem("userEmail");
       const number = `${selectedCountry}${mobileNumberLogin}`;
       // Make API request to the server to send OTP
@@ -108,7 +113,7 @@ const ForgotPasswordTwo = () => {
       
         const userId = response.data.message;
         setButtonPressed(true);
-       
+        setLoadingReset(false)
         // Set the user data to be used in the OTPVerificationScreen
         setUserData(userId);
         console.log("hello", userId);
@@ -195,7 +200,9 @@ const ForgotPasswordTwo = () => {
       // Validate OTP
       // You may want to add validation for each digit in the OTP array
       if (!userData) {
-        console.error("User data is null or missing userId");
+        
+        alert("User data is null or missing userId")
+        setLoading(false);
         // Handle the case where user data is not available
         return;
       }
@@ -223,7 +230,7 @@ const ForgotPasswordTwo = () => {
         navigation.navigate("ResetPassword", userData);
       } else {
         console.log("Failed to verify OTP");
-
+        setLoading(false);
         // Handle failure, you may want to show an error message
       }
     } catch (error) {
@@ -236,7 +243,7 @@ const ForgotPasswordTwo = () => {
   };
 
   return (
-    <KeyboardAwareScrollView>
+    <KeyboardAwareScrollView  style={{backgroundColor:'white'}}>
       <View
         style={{
           flex: 1,
@@ -245,6 +252,8 @@ const ForgotPasswordTwo = () => {
           paddingLeft: 16,
           paddingTop: "12%",
           paddingRight: 16,
+          backgroundColor:'white',
+         
         }}
       >
         <View
@@ -303,10 +312,10 @@ const ForgotPasswordTwo = () => {
           />
         </View>
 
-        <Text style={{ marginVertical: 10, color: "#31A062" }}>OR</Text>
+        <Text style={{  color: "#31A062" ,textAlignVertical:'center',marginTop:'5%'}}>OR</Text>
 
         <View
-          style={{ flexDirection: "row", alignItems: "center", marginTop: 10 }}
+          style={{ flexDirection: "row", alignItems: "center", marginTop: '1%' }}
         >
           <View
             style={{
@@ -314,7 +323,7 @@ const ForgotPasswordTwo = () => {
               backgroundColor: "white",
               marginTop: 15,
               width: "20%",
-              marginBottom: 10,
+              marginBottom: 15,
               marginRight: 15,
               height: 60,
               borderWidth: 1,
@@ -370,7 +379,7 @@ const ForgotPasswordTwo = () => {
         </View>
 
 
-        <Button
+        {/* <Button
           mode="contained"
           onPress={handleReset}
           disabled={buttonPressed} // Disable the button when it's pressed
@@ -388,10 +397,58 @@ const ForgotPasswordTwo = () => {
             marginTop: 15,
           }}
         >
-          Reset Link
-        </Button>
+        {loadingReset ? (
+    <ActivityIndicator color="#FFFFFF" size="large" />
+  ) : (
+    <Text style={{ color: "#FFFFFF" }}>Send Link</Text>
+  )}
+        </Button> */}
 
-        <Text style={{ marginVertical: 30, fontSize: 18 }}>ENTER OTP</Text>
+<TouchableOpacity  onPress={handleReset}
+
+style={{
+  backgroundColor: buttonPressed
+  ? "rgba(49, 160, 98, 0.33)"
+  : "#31A062", // Change color when pressed
+  width: '100%',
+  height:60,
+  
+  marginVertical: 10,
+  marginTop: 15,
+  borderRadius:20,
+  alignItems:'center',
+  justifyContent:'center'
+}}
+>
+
+
+  
+<LinearGradient colors={buttonPressed ? ["rgba(49, 160, 98, 0.33)", "rgba(49, 160, 98, 0.33)"] : ["#31A062", "#31A062"]}   style={{
+        backgroundColor: buttonPressed
+        ? "rgba(49, 160, 98, 0.33)"
+        : "#31A062", // Change color when pressed
+        width: '100%',
+        height:60,
+        
+        marginVertical: 10,
+        marginTop: 15,
+        borderRadius:20,
+        alignItems:'center',
+        justifyContent:'center'
+      }}>
+        <TouchableOpacity disabled={buttonPressed} 
+        
+        onPress={handleReset}>
+        {loadingReset ? (
+    <ActivityIndicator color="#FFFFFF" size="small" />
+  ) : (
+    <Text style={styles.doneButtonText}>Send Link</Text>
+  )}
+        </TouchableOpacity>
+      </LinearGradient>
+</TouchableOpacity>
+
+        <Text style={{  fontSize: 25,fontWeight:700 ,marginTop:'15%',marginBottom:'7%'}}>ENTER OTP</Text>
 
         <View style={styles.otpContainer}>
           {[1, 2, 3, 4, 5, 6].map((digit, index) => (
@@ -409,7 +466,7 @@ const ForgotPasswordTwo = () => {
                 height: 58.5,
                 borderRadius: 15,
                 margin: responsiveHeight(0.4),
-                marginTop: 15,
+              
                 color: "white", // Text color
                 overflow: "hidden",
               }}
@@ -437,37 +494,45 @@ const ForgotPasswordTwo = () => {
           ))}
         </View>
 
+<TouchableOpacity onPress={handleVerifyOtp}  style={{
+        backgroundColor: '#31A062',
+        width: '100%',
+        height:60,
+        marginVertical: 10,
+        marginTop: 15,
+        borderRadius:20,
+        alignItems:'center',
+        justifyContent:'center'
+      }}>
+
+
+<LinearGradient colors={["#31A062", "#31A062"]}   style={{
+        backgroundColor: '#31A062',
+        width: '100%',
+        height:60,
+        marginVertical: 10,
+        marginTop: 15,
+        borderRadius:20,
+        alignItems:'center',
+        justifyContent:'center'
+      }}>
+        <TouchableOpacity onPress={handleVerifyOtp}>
         {loading ? (
-          <ActivityIndicator
-            style={{ marginTop: 15 }}
-            color="#31A062"
-            size="large"
-          />
-        ) : (
-          <Button
-            mode="contained"
-            onPress={handleVerifyOtp}
-            contentStyle={{
-              height: 60,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            style={{
-              backgroundColor: "#31A062",
-              width: "100%",
-              marginVertical: 10,
-              marginTop: 15,
-            }}
-            disabled={loading}
-          >
-            Reset Password
-          </Button>
-        )}
+    <ActivityIndicator color="#FFFFFF" size="small" />
+  ) : (
+    <Text style={styles.doneButtonText}>Reset Password</Text>
+  )}
+        </TouchableOpacity>
+      </LinearGradient>
+
+
+</TouchableOpacity>
+
+
       </View>
     </KeyboardAwareScrollView>
   );
 };
-
 const styles = StyleSheet.create({
   circleText: {
     backgroundColor: "white",
@@ -483,6 +548,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     borderRadius: 25,
+  },
+  doneButtonText: {
+    color: "#fff",
+    fontSize: SCREEN_WIDTH * 0.04,
+    alignSelf: "center",
   },
   forgotpasswordText: {
     // Add this line to align text to the left

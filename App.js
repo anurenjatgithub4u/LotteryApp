@@ -1,7 +1,7 @@
 
 import 'react-native-gesture-handler';
 import React, { useState, useEffect, useCallback,createRef, useRef } from 'react';
-import { View, Text,StyleSheet, TouchableOpacity, Alert ,Platform,ActivityIndicator } from 'react-native';
+import { View, Text,StyleSheet, TouchableOpacity, Alert ,Platform,ActivityIndicator,Dimensions } from 'react-native';
 import * as Font from 'expo-font';
 import { Entypo } from '@expo/vector-icons';
 import * as SplashScreen from 'expo-splash-screen';
@@ -41,7 +41,9 @@ import BuyCredits from './screens/BuyCredits';
 import ChooseLevel from './screens/ChooseLevel';
 import FaqPage from './screens/FaqPage';
 
-
+import { LinearGradient } from "expo-linear-gradient";
+const { width, height } = Dimensions.get("window");
+const SCREEN_WIDTH = width < height ? width : height;
 
 import ContactinfoScreen from './screens/ContactinfoScreen';
 import PurchaseScreen from './screens/PurchaseScreen';
@@ -305,7 +307,7 @@ const OTPVerificationScreen = ({ route,navigation }) => {
 
         
         await new Promise(resolve => setTimeout(resolve, 2000));
-         navigation.navigate('MainScreen', { screen: 'MainScreen' });
+         navigation.navigate('Home', { screen: 'Hom' });
       } else {
         // If verification fails, handle the error (show an alert, etc.)
         const errorMessage = response.data.message; // Extract error message from response body
@@ -371,26 +373,26 @@ style={{ borderColor: 'black',
         ))}
       </View>
 
-      {loading ? (
-    <ActivityIndicator style={{ marginTop: 15 }} color="#31A062" size="large" />
+      <LinearGradient colors={["#31A062", "#31A062"]}   style={{
+        backgroundColor: '#31A062',
+        width: '100%',
+        height:60,
+        marginVertical: 10,
+        marginTop: 15,
+        borderRadius:20,
+        alignItems:'center',
+        justifyContent:'center'
+      }}>
+        <TouchableOpacity onPress={handleVerification}>
+        {loading ? (
+    <ActivityIndicator color="#FFFFFF" size="small" />
   ) : (
-      <Button mode="contained" onPress={handleVerification}  contentStyle={{
-    height: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-  }}
-  style={{
-    backgroundColor: '#31A062',
-    width: '90%',
-    marginVertical: 10,
-    marginTop: 15,
-    alignSelf:'center',
-    borderRadius:20
-  }}>
-       <Text  style={{alignSelf:'center'}}> Verify OTP</Text>
-      </Button>
-
+    <Text style={{ color: "#fff",
+    fontSize: SCREEN_WIDTH * 0.04,
+    alignSelf: "center",}}>Verify OTP</Text>
   )}
+        </TouchableOpacity>
+      </LinearGradient>
     </View>
   );
 };

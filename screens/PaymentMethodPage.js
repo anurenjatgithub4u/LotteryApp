@@ -9,6 +9,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useFocusEffect } from "@react-navigation/native";
 import  { Paystack , paystackProps}  from 'react-native-paystack-webview';
 import { View, TouchableOpacity,Text ,TextInput } from 'react-native';
+import { KeyboardAwareScrollView } from "@codler/react-native-keyboard-aware-scroll-view";
 
 
 const PaymentMethodPage = () => {
@@ -239,6 +240,11 @@ const handlePaystackSuccess = async (res) => {
 
     const paystackWebViewRefUSSD = useRef(paystackProps.PayStackRef); 
   return (
+
+
+
+
+    <KeyboardAwareScrollView>
     <View style={styles.container}>
 
 
@@ -427,6 +433,7 @@ const handlePaystackSuccess = async (res) => {
         Kiosk Code
       </Button>
     </View>
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -434,7 +441,8 @@ const styles = {
   container: {
     flex: 1,
     marginTop:'12%',
-    padding: 16,
+    paddingLeft: 16,
+    paddingRight:16
   },
   title: {
     fontSize: 20,

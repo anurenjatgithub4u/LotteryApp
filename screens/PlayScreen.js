@@ -565,7 +565,7 @@ const handleNumberClick = (number) => {
         justifyContent: "space-between",
       }}
     >
-      <Text style={styles.title}>Play Game</Text>
+      <Text style={styles.title}>Play game</Text>
 
       <EvilIcons name="bell" size={30} style={styles.bell} color="white" onPress={()=> navigation.navigate('NotificationScreen') }/>
       <AntDesign
@@ -646,16 +646,18 @@ const handleNumberClick = (number) => {
 
       {/* Console log the selected numbers */}
 
-      {loading ? (
-    <ActivityIndicator style={{ marginTop: 15 }} color="white" size="large" />
-  ) : (
+  
 
       <LinearGradient colors={["#F0C735", "#D98F39"]} style={styles.doneButton}>
         <TouchableOpacity onPress={validateAndCreateGame}>
-          <Text style={styles.doneButtonText}>Done</Text>
+        {loading ? (
+    <ActivityIndicator color="#FFFFFF" size="small" />
+  ) : (
+    <Text style={styles.doneButtonText}>Done</Text>
+  )}
         </TouchableOpacity>
       </LinearGradient>
-  )}
+ 
     </View>
 
 
@@ -704,7 +706,7 @@ const styles = StyleSheet.create({
     marginBottom:'2%',
     marginTop:'3%',
     alignSelf: "flex-start",
-    marginLeft:'2%'
+    marginLeft:'4%'
   },
   selectedNumbersContainer: {
     flexDirection: "row",

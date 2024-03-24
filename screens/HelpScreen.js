@@ -187,7 +187,7 @@ import { StatusBar } from "expo-status-bar";
 
 
   
-      <Text style={{ fontSize: 31, fontWeight: '700' ,marginLeft: "6%",}}>Help & FAQs</Text>
+      <Text style={{ fontSize: 31, fontWeight: '700' ,marginLeft: "5%",}}>Help & FAQs</Text>
   
       <View style={styles.searchContainer}>
       <TextInput

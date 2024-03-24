@@ -363,7 +363,23 @@ const GameScreen = () => {
     // Fetch user games data when the component mounts
     fetchData();
   }, []);  
-
+  function hexToPercentage(hexColor) {
+    // Parse the hexadecimal color string to get RGB components
+    const red = parseInt(hexColor.slice(1, 3), 16);
+    const green = parseInt(hexColor.slice(3, 5), 16);
+    const blue = parseInt(hexColor.slice(5, 7), 16);
+  
+    // Calculate percentages
+    const redPercentage = (red / 255) * 100;
+    const greenPercentage = (green / 255) * 100;
+    const bluePercentage = (blue / 255) * 100;
+  
+    // Return percentages as a string
+    return `${redPercentage.toFixed(2)}% ${greenPercentage.toFixed(2)}% ${bluePercentage.toFixed(2)}%`;
+  }
+  
+  // Usage
+  const percentageRepresentation = hexToPercentage('#D9D9D9');
 
   const handleClearFilters = () => {
     setDate(new Date());
@@ -418,7 +434,7 @@ const GameScreen = () => {
       
 
 
-      <Text style={styles.MainheaderText}>Your Games</Text>
+      <Text style={styles.MainheaderText}>Your games</Text>
 
       <View
   style={{
@@ -434,54 +450,91 @@ const GameScreen = () => {
   style={{
     flexDirection: "row",
     
-    justifyContent: "space-between",
-    marginBottom: '3%'
+    justifyContent: "flex-start",
+    marginBottom: '3%',
+    alignItems:'flex-start'
   }}
 >
 
-  <View style={{ flexDirection: "column",marginRight:'25%',alignSelf:'flex-start',}}>
-    <Pressable onPress={toggleDatePicker}>
-     
-      <View style={styles.datePickerContainer}>
-        <View style={styles.iconTextContainer}>
-          <AntDesign name="calendar" size={24} color="black" style={{ marginLeft: 14 }} />
-          <TextInput
-            placeholder="Start Date"
-            value={selectedDate}
-            onChangeText={setSelectedDate}
-            placeholderTextColor="#11182744"
-            editable={false}
-            style={styles.textInput}
-          />
-        </View>
-      </View>
-    </Pressable>
+{/* <LinearGradient
+      colors={['#D9D9D9', '#eeeeee']}
+      
+      style={{width:'50%',height:43,borderRadius:10,marginRight:'23%'}}
+    >
+      <TouchableOpacity
+        onPress={ 
+          // Handle date selection here, for example, show a date picker
+          // For demonstration purposes, I'm just setting a sample date
+          toggleDatePicker
+        }
+        style={{ flexDirection: 'row', alignItems: 'center', padding: 8 }}
+      >
+   <View  style={{flexDirection:'row'}}>
 
-   
-  </View>
+   <AntDesign name="calendar" size={24} color="black" style={{ marginLeft: 8 ,marginRight:10}} />
+        {selectedDate ? (
+          <Text >{selectedDate}</Text>
+        ) : (
+          <Text style={{ color: '#11182744' }}>Start Date</Text>
+        )}
+   </View>
+        
+      </TouchableOpacity>
+    </LinearGradient> */}
 
-  <View style={{ flexDirection: "column",
- }}>
-    <Pressable onPress={toggleEndDatePicker}>
-      {/* End Date */}
-      <View style={styles.datePickerContainer}>
-        <View style={styles.iconTextContainer}>
-          <AntDesign name="calendar" size={24} color="black" style={{ marginRight: 1, marginLeft: 8 }} />
-          <TextInput
-            placeholder="End Date"
-            value={endSelecteddate}
-            onChangeText={setEndSelecetedDate}
-            placeholderTextColor="#11182744"
-            editable={false}
-            style={styles.textInput}
-          />
-        </View>
-      </View>
-    </Pressable>
 
-   
-  </View>
+<LinearGradient
+      colors={['#D9D9D9', '#eeeeee']}
+      
+      style={{width:'55%',height:43,borderRadius:5,marginRight:'11%',borderWidth:.5,borderColor:'#828282'}}
+    >
+      <TouchableOpacity
+        onPress={ 
+          // Handle date selection here, for example, show a date picker
+          // For demonstration purposes, I'm just setting a sample date
+          toggleDatePicker
+        }
+        style={{ flexDirection: 'row', alignItems: 'center', padding: 8 }}
+      >
+        <AntDesign name="calendar" size={24} color="black" style={{ marginLeft: 8 ,marginRight:10}} />
+        {selectedDate ? (
+          <Text>{selectedDate}</Text>
+        ) : (
+          <Text style={{ color: '#11182744' }}>Start Date</Text>
+        )}
+        
+      </TouchableOpacity>
+    </LinearGradient>
+    <LinearGradient
+      colors={['#D9D9D9', '#eeeeee']}
+      
+      style={{width:'55%',height:43,borderRadius:5,borderWidth:.5,borderColor:'#828282'}}
+    >
+      <TouchableOpacity
+        onPress={ 
+          // Handle date selection here, for example, show a date picker
+          // For demonstration purposes, I'm just setting a sample date
+          toggleEndDatePicker
+        }
+        style={{ flexDirection: 'row', alignItems: 'center', padding: 8 }}
+      >
+        <AntDesign name="calendar" size={24} color="black" style={{ marginLeft: 8 ,marginRight:10}} />
+        {endSelecteddate ? (
+          <Text>{endSelecteddate}</Text>
+        ) : (
+          <Text style={{ color: '#11182744' }}>End Date</Text>
+        )}
+        
+      </TouchableOpacity>
+    </LinearGradient>
+
+
+  
 </View>
+
+
+
+
 
 {showPicker && (
       <CommonDateTimePicker value={date} onChange={onChange} />
@@ -870,7 +923,7 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     borderWidth: 1,
-    height: 58.5,
+    height: 55.5,
     backgroundColor:'#828282' ,
     borderStyle: 'solid',
     fontSize: 15,
@@ -886,7 +939,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     color: '#F8F8FF',
-   
+    width:'50%',
     height: 60.5,
     backgroundColor:'#D9D9D9' 
   },
@@ -944,9 +997,9 @@ const styles = StyleSheet.create({
   MainheaderText: {
     fontSize: 30,
     fontWeight: "bold",
-    marginBottom: 10,
-    marginStart: 10,
-    marginLeft: "6%", // Add margin bottom for spacing,
+    marginBottom: '5%',
+   
+    marginLeft: "5%", // Add margin bottom for spacing,
   },
   headerText: {
     fontSize: 15,

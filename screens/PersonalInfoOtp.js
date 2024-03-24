@@ -1,18 +1,22 @@
 import React, { useState , useRef } from 'react';
-import { View, Text, TextInput, Button, Alert , StyleSheet,TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, Alert , StyleSheet,TouchableOpacity ,Dimensions,ActivityIndicator} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import axios from 'axios';
-
+import { LinearGradient } from "expo-linear-gradient";
+const { width, height } = Dimensions.get("window");
+const SCREEN_WIDTH = width < height ? width : height;
 
 const PersonalInfoOtp = ({ route, navigation }) => {
   const { email, name, mobileNumber } = route.params;
+  const [loading, setLoading] = useState(false);
   const [otp, setOtp] = useState('');
    console.log("mob num", mobileNumber)
 
    const handleVerifyOtp = async () => {
     try {
+      setLoading(true)
       const enteredOTP = otpDigits.join('');
       const userId = await AsyncStorage.getItem('userId');
       const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`;
@@ -76,7 +80,7 @@ const PersonalInfoOtp = ({ route, navigation }) => {
 
   return (
 
-    <View  >
+    <View  style={{paddingLeft:16,paddingRight:16}}  >
 
 
 <TouchableOpacity onPress={()=> navigation.navigate('ContactInfo')} >
@@ -95,7 +99,7 @@ const PersonalInfoOtp = ({ route, navigation }) => {
 
 <View  
 
-style={{ flexDirection: 'row', marginTop: 10,alignItems:'center',padding:'4%'}}>
+style={{ flexDirection: 'row', marginTop: 10,alignItems:'center'}}>
    
       {otpDigits.map((digit, index) => (
         <View key={index}
@@ -138,24 +142,24 @@ style={{ flexDirection: 'row', marginTop: 10,alignItems:'center',padding:'4%'}}>
       </View>
 
 
-      <TouchableOpacity
-
-      
-        style={{
-            backgroundColor: '#31A062',
-            width: '90%',
-            marginVertical: 10,
-            marginTop: 15,
-            alignSelf:'center',
-            height: 60,
-            borderRadius:20
-        }
-    }
-        
-        onPress={handleVerifyOtp}
-      >
-        <Text style={{ color: 'white', fontSize: 18,alignSelf:'center',marginTop:15 }}>Verify OTP</Text>
-      </TouchableOpacity>
+      <LinearGradient colors={["#31A062", "#31A062"]}   style={{
+        backgroundColor: '#31A062',
+        width: '100%',
+        height:60,
+        marginVertical: 10,
+        marginTop: 15,
+        borderRadius:20,
+        alignItems:'center',
+        justifyContent:'center'
+      }}>
+        <TouchableOpacity onPress={handleVerifyOtp}>
+        {loading ? (
+    <ActivityIndicator color="#FFFFFF" size="small" />
+  ) : (
+    <Text style={styles.doneButtonText}>Verify OTP</Text>
+  )}
+        </TouchableOpacity>
+      </LinearGradient>
 
      
       </View>
@@ -167,4 +171,12 @@ style={{ flexDirection: 'row', marginTop: 10,alignItems:'center',padding:'4%'}}>
 
 export default PersonalInfoOtp
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+
+  doneButtonText: {
+    color: "#fff",
+    fontSize: SCREEN_WIDTH * 0.04,
+    alignSelf: "center",
+  },
+
+})

@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useCallback,createRef } from 'react';
-import { View, Text,StyleSheet,TouchableOpacity,Modal,ActivityIndicator,Platform  } from 'react-native';
+import { View, Text,StyleSheet,TouchableOpacity,Modal,ActivityIndicator,Platform ,Dimensions } from 'react-native';
 import * as Font from 'expo-font';
 import { Entypo } from '@expo/vector-icons';
 import * as SplashScreen from 'expo-splash-screen';
@@ -25,6 +25,10 @@ import { StatusBar } from "expo-status-bar";
 import { FontAwesome } from '@expo/vector-icons';
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
+import Spinner from 'react-native-loading-spinner-overlay';
+import { LinearGradient } from "expo-linear-gradient";
+const { width, height } = Dimensions.get("window");
+const SCREEN_WIDTH = width < height ? width : height;
 
 const CustomPicker = ({ visible, onClose, onSelect, data }) => {
   return (
@@ -566,28 +570,42 @@ style={{ borderColor: 'black',
 
 </View>
 
-{loading ? (
-    <ActivityIndicator style={{ marginTop: 15 }} color="#31A062" size="large" />
-  ) : (
-    <Button
-      mode="contained"
-      onPress={loginUser}
-      contentStyle={{
-        height: 60,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-      style={{
+
+<TouchableOpacity onPress={loginUser}
+
+style={{
         backgroundColor: '#31A062',
         width: '100%',
+        height:60,
         marginVertical: 10,
         marginTop: 15,
-      }}
-      disabled={loading}
-    >
-      Login
-    </Button>
+        borderRadius:20,
+        alignItems:'center',
+        justifyContent:'center'
+      }}>
+
+
+<LinearGradient colors={["#31A062", "#31A062"]}   style={{
+        backgroundColor: '#31A062',
+        width: '100%',
+        height:60,
+        marginVertical: 10,
+        marginTop: 15,
+        borderRadius:20,
+        alignItems:'center',
+        justifyContent:'center'
+      }}>
+        <TouchableOpacity onPress={loginUser}>
+        {loading ? (
+    <ActivityIndicator color="#FFFFFF" size="small" />
+  ) : (
+    <Text style={styles.doneButtonText}>Login</Text>
   )}
+        </TouchableOpacity>
+      </LinearGradient>
+</TouchableOpacity>
+
+
 
       <Text style={{ marginVertical: 10, color: '#31A062' }} onPress={() => navigation.navigate('Register')}>
        Create an account?
@@ -607,6 +625,11 @@ const styles = StyleSheet.create({
     lineHeight: 100,
     fontSize: 20,
     marginTop: -20, // Adjust the negative margin top to move the circle upward
+  },
+  doneButtonText: {
+    color: "#fff",
+    fontSize: SCREEN_WIDTH * 0.04,
+    alignSelf: "center",
   },
   selectedCountryText: {
     fontSize: 16,

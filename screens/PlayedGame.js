@@ -188,7 +188,8 @@ const PlayedGame = ({ route }) => {
     style={{
      
      
-      padding:responsiveHeight(2),
+      paddingLeft:responsiveHeight(3),
+      paddingRight:responsiveHeight(3),
       paddingTop: "12%",
     }}>
       <StatusBar backgroundColor={"transparent"} translucent />

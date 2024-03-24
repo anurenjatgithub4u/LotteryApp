@@ -78,6 +78,13 @@ const GameDetailsPage = ({ route }) => {
     
 });
 
+const formattedAnounceMentDateTime = new Date(game.announcementDate).toLocaleString("en-GB", {
+    
+  hour: "numeric",
+  minute: "numeric",
+  
+});
+
   const formattedAnnouncementDate = new Date(game.announcementDate).toLocaleDateString('en-GB', {
     day: 'numeric',
     month: 'long',
@@ -207,7 +214,11 @@ const GameDetailsPage = ({ route }) => {
      <Text style={{ fontSize: 16, fontWeight: 400, marginTop: 20, color:'white' }}>
           Winners will be announced on
         </Text>
-        <Text style={styles.dateTextTwo}>{formattedAnnouncementDate}</Text>
+
+        <View  style={{flexDirection:'row'}}>
+        <Text style={styles.dateTextTwo}>{formattedAnnouncementDate},{formattedAnounceMentDateTime}</Text>
+       
+        </View>
     
     </>
    )
@@ -294,7 +305,18 @@ const styles = StyleSheet.create({
     
   },
   dateTextTwo: {
-    fontSize: 32,
+    fontSize: 30,
+  
+    
+    marginTop:5,
+   
+    color:'white',
+
+    
+  },
+
+  TimeTextTwo: {
+    fontSize: 28,
   
     
     marginTop:5,
@@ -344,16 +366,15 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "400",
     lineHeight: 44,
-    letterSpacing: 0,
+   
     textAlign: "left",
     // Add any other styles for yourGameText if needed
   },
   container: {
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+   
     marginTop: 10,
-    alignSelf:'flex-start'
+   
     
   },
   numberBox: {
@@ -362,7 +383,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
     borderColor: "white",
-    margin: responsiveWidth(1.25),
+   
+    marginRight:responsiveWidth(2),
+    marginTop:responsiveWidth(1.25),
+    marginBottom:responsiveWidth(1.25),
     alignItems: "center",
     justifyContent: "center",
     alignSelf:'flex-start'

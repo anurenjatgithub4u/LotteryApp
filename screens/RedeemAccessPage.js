@@ -236,13 +236,14 @@ useFocusEffect(
         style={{
           flexDirection: 'row',
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'flex-start',
          
           paddingTop:'15%',
+          marginBottom:'5%'
         }}
       >
 
-        <TouchableOpacity  style={{alignSelf:'flex-start',right:responsiveWidth(28),paddingLeft:'2%'}}
+        <TouchableOpacity  style={{alignSelf:'flex-start'}}
         
         onPress={() => navigation.navigate('Profile')}>
           <MaterialIcons
@@ -254,7 +255,7 @@ useFocusEffect(
             }}
           />
         </TouchableOpacity>
-        <Text style={{ fontWeight: '700', fontSize: 17 }}>Redeem Amount</Text>
+        <Text style={{ fontWeight: '700', fontSize: 17,textAlign: 'center' ,flex: 1,}}>Redeem Amount</Text>
       </View>
 
       

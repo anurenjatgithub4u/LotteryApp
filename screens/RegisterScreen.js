@@ -1,7 +1,7 @@
 
 
 import React, { useState,useEffect } from 'react';
-import { View, Text, StyleSheet,TouchableOpacity,Modal,ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet,TouchableOpacity,Modal,ActivityIndicator ,Dimensions} from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import {CountryPicker} from "react-native-country-codes-picker";
 import { useNavigation } from '@react-navigation/native';
@@ -14,8 +14,9 @@ import { KeyboardAwareScrollView } from '@codler/react-native-keyboard-aware-scr
 import { CheckBox } from 'react-native-elements';
 import { MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-
+import { LinearGradient } from "expo-linear-gradient";
+const { width, height } = Dimensions.get("window");
+const SCREEN_WIDTH = width < height ? width : height;
 const CustomPicker = ({ visible, onClose, onSelect, data }) => {
   return (
     <Modal
@@ -464,28 +465,47 @@ style={{ borderColor: 'black',
       </Text>
       
     </View>
- {loading ? (
-    <ActivityIndicator style={{ marginTop: 15 }} color="#31A062" size="large" />
-  ) : (
-    <Button
-      mode="contained"
-      onPress={handleRegister}
-      contentStyle={{
-        height: 60,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-      style={{
+
+
+
+
+    
+
+
+
+   <TouchableOpacity onPress={handleRegister} style={{
         backgroundColor: '#31A062',
         width: '100%',
+        height:60,
         marginVertical: 10,
         marginTop: 15,
-      }}
-      disabled={loading}
-    >
-      Create Account
-    </Button>
+        borderRadius:20,
+        alignItems:'center',
+        justifyContent:'center'
+      }}>
+
+
+   <LinearGradient colors={["#31A062", "#31A062"]}   style={{
+        backgroundColor: '#31A062',
+        width: '100%',
+        height:60,
+        marginVertical: 10,
+        marginTop: 15,
+        borderRadius:20,
+        alignItems:'center',
+        justifyContent:'center'
+      }}>
+        <TouchableOpacity onPress={handleRegister}>
+        {loading ? (
+    <ActivityIndicator color="#FFFFFF" size="small" />
+  ) : (
+    <Text style={styles.doneButtonText}>Create Account</Text>
   )}
+        </TouchableOpacity>
+      </LinearGradient>
+   </TouchableOpacity>
+ 
+
 
 <View style={{ flex:1  }}>
   <Text style={{ marginVertical: 10 ,textAlign:'center'  ,color: '#31A062'}}>
@@ -517,6 +537,20 @@ const styles = StyleSheet.create({
     marginTop: 7,
     marginRight: 10,
    
+  },
+  doneButtonText: {
+    color: "#fff",
+    fontSize: SCREEN_WIDTH * 0.04,
+    alignSelf: "center",
+  },
+  doneButton: {
+    backgroundColor: "#F0C735",
+    paddingVertical: SCREEN_WIDTH * 0.015,
+    paddingHorizontal: SCREEN_WIDTH * 0.05,
+    borderRadius: SCREEN_WIDTH * 0.01,
+   
+    width: "85%",
+    marginTop: SCREEN_WIDTH * 0.05,
   },
   createaccountText: {
     

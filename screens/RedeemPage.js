@@ -113,13 +113,13 @@ const RedeemPage = () => {
         style={{
           flexDirection: 'row',
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'flex-start',
          
           paddingTop:'15%',
         }}
       >
 
-        <TouchableOpacity  style={{alignSelf:'flex-start',right:responsiveWidth(28)}}
+        <TouchableOpacity  style={{alignSelf:'flex-start'}}
         
         onPress={() => navigation.navigate('Profile')}>
           <MaterialIcons
@@ -131,7 +131,7 @@ const RedeemPage = () => {
             }}
           />
         </TouchableOpacity>
-        <Text style={{ fontWeight: '700', fontSize: 17 }}>Bank Accounts</Text>
+        <Text style={{ fontWeight: '700', fontSize: 17,textAlign: 'center' ,flex: 1,}}>Bank Accounts</Text>
       </View>
 
       
@@ -176,7 +176,7 @@ const RedeemPage = () => {
           }}
           style={{
             backgroundColor: '#31A062',
-            width: '100%',
+            width: '90%',
             marginVertical: 10,
             marginTop: 15,
             alignSelf: 'center',

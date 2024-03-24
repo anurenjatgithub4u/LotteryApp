@@ -79,13 +79,13 @@ const PurchaseScreen = () => {
         style={{
           flexDirection: 'row',
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'flex-start',
          
           paddingTop:'15%',
         }}
       >
 
-        <TouchableOpacity  style={{alignSelf:'flex-start',right:responsiveWidth(28)}}
+        <TouchableOpacity  style={{alignSelf:'flex-start'}}
         
         onPress={() => navigation.navigate('Profile')}>
           <MaterialIcons
@@ -97,15 +97,14 @@ const PurchaseScreen = () => {
             }}
           />
         </TouchableOpacity>
-        <Text style={{ fontWeight: '700', fontSize: 17 }}>My Purchases</Text>
+        <Text style={{ fontWeight: '700', fontSize: 17,textAlign: 'center' ,flex: 1,}}>My Purchase</Text>
       </View>
-
 
     {loading ? (
       <ActivityIndicator size="large" color="#0000ff" style={{ marginTop: 20 }} />
     ) : (
       <ScrollView style={{ marginBottom: 150 }}>
-        {purchases.map((purchase) => (
+        {purchases.slice().reverse().map((purchase) => (
           <View key={purchase._id}>
             <View style={{ flexDirection: 'row', alignItems: 'center' ,justifyContent:'space-between'}}>
               <Image

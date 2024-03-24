@@ -236,14 +236,13 @@ useEffect(() => {
         style={{
           flexDirection: 'row',
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'flex-start',
          
           paddingTop:'15%',
         }}
       >
 
-        <TouchableOpacity  style={{alignSelf:'flex-start',right:responsiveWidth(28)
-      }}
+        <TouchableOpacity  style={{alignSelf:'flex-start'}}
         
         onPress={() => navigation.navigate('Profile')}>
           <MaterialIcons
@@ -255,7 +254,7 @@ useEffect(() => {
             }}
           />
         </TouchableOpacity>
-        <Text style={{ fontWeight: '700', fontSize: 17 }}>Personal Info</Text>
+        <Text style={{ fontWeight: '700', fontSize: 17,textAlign: 'center' ,flex: 1,}}>Personal Info</Text>
       </View>
 
       

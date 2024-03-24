@@ -97,7 +97,13 @@ const HomeScreen = ({goToGameScreen }) => {
     }
   };
 
-  
+  function numberWithCommas(x) {
+    if (x.toString().length <= 3) {
+      return x.toString(); // No formatting needed for numbers with 3 or fewer digits
+    } else {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); // Formatting for numbers with more than 3 digits
+    }
+  }
 
 
   
@@ -473,7 +479,7 @@ const HomeScreen = ({goToGameScreen }) => {
       { !previousWinningContinentNumbers ? (
         <ActivityIndicator style={{ marginLeft: 20, alignSelf: 'center' }} size="small" color="white" />
       ) : (
-        <Text style={{ color: 'white', marginBottom: responsiveFontSize(1), marginLeft: '2%', }}>Winning Amount: {ContinentSymbol}{ContinentWinningAmount}</Text>
+        <Text style={{ color: 'white', marginBottom: responsiveFontSize(1), marginLeft: '2%', }}>Winning Amount  {ContinentSymbol}{numberWithCommas(ContinentWinningAmount)}</Text>
       )}
     </View>
 
@@ -528,7 +534,7 @@ const HomeScreen = ({goToGameScreen }) => {
       { !previousWinningNumbers ? (
         <ActivityIndicator style={{ marginLeft: 20, alignSelf: 'center' }} size="small" color="white" />
       ) : (
-        <Text  style={{color:'white',marginBottom:responsiveFontSize(1),marginLeft:'2%'}}>Winning Amount : {CountrySymbol}{CountryWinningAmount}</Text>
+        <Text  style={{color:'white',marginBottom:responsiveFontSize(1),marginLeft:'2%'}}>Winning Amount  {CountrySymbol}{numberWithCommas(CountryWinningAmount)}</Text>
       )}
     </View>
 
@@ -822,7 +828,7 @@ const styles = StyleSheet.create({
   yohaveText: {
     width: 354,
     height: 41,
-    top: 10,
+    top: 15,
     marginStart: wp("2%"),
     
     fontSize: 16, // Adjust the font size as needed

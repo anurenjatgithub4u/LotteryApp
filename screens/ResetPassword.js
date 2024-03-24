@@ -2,14 +2,16 @@
 
 
 import React, { useState,useEffect } from 'react';
-import { View, Text, StyleSheet,TouchableOpacity,ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet,TouchableOpacity,ActivityIndicator,Dimensions } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { responsiveFontSize, responsiveHeight, responsiveScreenWidth, responsiveWidth } from "react-native-responsive-dimensions";
 import { FontAwesome } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
-
+import { LinearGradient } from "expo-linear-gradient";
+const { width, height } = Dimensions.get("window");
+const SCREEN_WIDTH = width < height ? width : height;
 
 
 const ResetPassword = ({route}) => {
@@ -194,27 +196,27 @@ console.log(userId);
 
       {/* Submit Button */}
 
-      {loading ? (
-    <ActivityIndicator style={{ marginTop: 15 }} color="#31A062" size="large" />
-  ) : (
-      <Button mode="contained" onPress={handleResetPassword} contentStyle={{
-    height: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-  }}
-  style={{
-    backgroundColor: '#31A062',
-    width: '100%',
-    marginVertical: 10,
-    marginTop: 15,
-  }}
-  disabled={loading}
-  >
-    
-        Reset Password
-      </Button>
 
+
+      <LinearGradient colors={["#31A062", "#31A062"]}   style={{
+        backgroundColor: '#31A062',
+        width: '100%',
+        height:60,
+        marginVertical: 10,
+        marginTop: 15,
+        borderRadius:20,
+        alignItems:'center',
+        justifyContent:'center'
+      }}>
+        <TouchableOpacity onPress={handleResetPassword}>
+        {loading ? (
+    <ActivityIndicator color="#FFFFFF" size="small" />
+  ) : (
+    <Text style={styles.doneButtonText}>Reset Password</Text>
   )}
+        </TouchableOpacity>
+      </LinearGradient>
+
 
 
 
@@ -246,7 +248,12 @@ const styles = StyleSheet.create({
 
     fontSize: 34, // Adjust the font size as needed
     fontWeight: 'bold',
-    marginBottom:50
+    marginBottom:45
+  },
+  doneButtonText: {
+    color: "#fff",
+    fontSize: SCREEN_WIDTH * 0.04,
+    alignSelf: "center",
   },
   createaccountTextTwo: {
     
@@ -254,7 +261,7 @@ const styles = StyleSheet.create({
     width: 354,
     height: 22,
     top: 1,
-    left: 38,
+    left: 30,
   
     fontSize: 13,
     marginBottom: 20,

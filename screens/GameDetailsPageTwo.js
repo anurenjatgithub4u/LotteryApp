@@ -81,7 +81,12 @@ const GameDetailsPageTwo = ({ route }) => {
     minute: "numeric",
     
 });
-
+const formattedAnounceMentDateTime = new Date(game.announcementDate).toLocaleString("en-GB", {
+    
+  hour: "numeric",
+  minute: "numeric",
+  
+});
 
   const formattedAnnouncementDate = new Date(game.announcementDate).toLocaleDateString('en-GB', {
     day: 'numeric',
@@ -208,7 +213,7 @@ const GameDetailsPageTwo = ({ route }) => {
      <Text style={{ fontSize: 16, fontWeight: 400, marginTop: 20, color:'white' }}>
           Winners will be announced on
         </Text>
-        <Text style={styles.dateTextTwo}>{formattedAnnouncementDate}</Text>
+        <Text style={styles.dateTextTwo}>{formattedAnnouncementDate},{formattedAnounceMentDateTime}</Text>
     
     </>
    )
@@ -272,7 +277,7 @@ const styles = StyleSheet.create({
     // Add any other styles for yourGameText if needed
   },
   dateTextTwo: {
-    fontSize: 32,
+    fontSize: 30,
    
     
     marginTop:5,
@@ -355,7 +360,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
     borderColor: "white",
-    margin: responsiveWidth(1.25),
+    marginRight:responsiveWidth(2),
+    marginTop:responsiveWidth(1.25),
+    marginBottom:responsiveWidth(1.25),
     alignItems: "center",
     justifyContent: "center",
     

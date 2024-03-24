@@ -526,7 +526,13 @@ useEffect(() => {
     setCommonLevel(3);
   };
   
-
+  function numberWithCommas(x) {
+    if (x.toString().length <= 3) {
+      return x.toString(); // No formatting needed for numbers with 3 or fewer digits
+    } else {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); // Formatting for numbers with more than 3 digits
+    }
+  }
   
 
  
@@ -599,7 +605,7 @@ useEffect(() => {
           Continental
           {'\n'}
           <Text style={[ styles.buttonTextSmallTwo,{color:commonArea==1 ? 'white' : 'white'} ] }>
-          Win up to : {ContinentSymbol}{ContinentWinningAmount}
+          Win up to  {ContinentSymbol}{numberWithCommas(ContinentWinningAmount)}
     </Text>
         </Text>
       </TouchableHighlight>
@@ -618,7 +624,7 @@ useEffect(() => {
           National
           {'\n'}
           <Text style={[styles.buttonTextSmallTwo, {color:commonArea==2 ? 'white' : 'white'}]}>
-      Win up to : {CountrySymbol}{CountryWinningAmount}
+      Win up to  {CountrySymbol}{numberWithCommas(CountryWinningAmount)}
     </Text>
         </Text>
       </TouchableHighlight>
@@ -640,14 +646,15 @@ useEffect(() => {
    
     
     {commonArea === 0 ? null : (
-      <Text style={[
-        styles.buttonTextLevelThree,
-        { color: commonArea === 0 ? 'white' : 'white' },
-      ]}>
-        {commonArea === 1
-          ? `${creditsForContinentLevelOne } Credits Win Upto , ${ContinentSymbol}${ContinentWinningAmount/4}`
-          : `${ creditsForCountryLevelOne} Credits Win Upto , ${CountrySymbol}${CountryWinningAmount/4}`}
-      </Text>
+     <Text style={[
+      styles.buttonTextLevelThree,
+      { color: commonArea === 0 ? 'white' : 'white' },
+    ]}>
+      {commonArea === 1
+        ? `${creditsForContinentLevelOne} Credits Win Upto ${ContinentSymbol}${numberWithCommas(ContinentWinningAmount/4)}`
+        : `${creditsForCountryLevelOne} Credits Win Upto ${CountrySymbol}${numberWithCommas(CountryWinningAmount/4)}`
+    }
+    </Text>
     )}
   </Text>
 </TouchableHighlight>
@@ -674,8 +681,8 @@ useEffect(() => {
         { color: commonArea === 0 ? 'white' : 'white' },
       ]}>
         {commonArea === 1
-          ? `${ creditsForContinentLevelTwo} Credits Win Upto , ${ContinentSymbol}${ContinentWinningAmount/2}`
-          : `${creditsForCountryLevelTwo } Credits Win Upto , ${CountrySymbol}${CountryWinningAmount/2}`}
+          ? `${ creditsForContinentLevelTwo} Credits Win Upto ${ContinentSymbol}${numberWithCommas(ContinentWinningAmount/2)}`
+          : `${creditsForCountryLevelTwo } Credits Win Upto ${CountrySymbol}${numberWithCommas(CountryWinningAmount/2)}`}
       </Text>
     )}
   </Text>
@@ -701,8 +708,8 @@ useEffect(() => {
         { color: commonArea === 0 ? 'white' : 'white' },
       ]}>
         {commonArea === 1
-          ? `${creditsForContinentLevelThree } Credits Win Upto , ${ContinentSymbol}${ContinentWinningAmount}`
-          : `${creditsForCountryLevelThree} Credits Win Upto , ${CountrySymbol}${CountryWinningAmount}`}
+          ? `${creditsForContinentLevelThree } Credits Win Upto ${ContinentSymbol}${numberWithCommas(ContinentWinningAmount)}`
+          : `${creditsForCountryLevelThree} Credits Win Upto ${CountrySymbol}${numberWithCommas(CountryWinningAmount)}`}
       </Text>
     )}
   </Text>

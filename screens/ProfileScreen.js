@@ -214,7 +214,7 @@ return(
           </View>
         </View>
 
-<Text  style={{fontSize:31,fontWeight:'700',marginLeft:30}}>Profile</Text>
+<Text  style={{fontSize:31,fontWeight:'700',marginLeft:'5%'}}>Profile</Text>
 
     <View style={styles.profilePictureContainer}>
       <Image
