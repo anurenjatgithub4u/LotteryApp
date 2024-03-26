@@ -260,7 +260,7 @@ console.log("password",password)
         return;
       }
   
-      const response = await axios.post('https://lottery-backend-tau.vercel.app/api/v1/user/login', {
+      const response = await axios.post('https://lottery-backend-dev-tau.vercel.app/api/v1/user/login', {
         email,
         password,
         pushNotificationToken: token,

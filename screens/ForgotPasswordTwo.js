@@ -379,32 +379,9 @@ const ForgotPasswordTwo = () => {
         </View>
 
 
-        {/* <Button
-          mode="contained"
-          onPress={handleReset}
-          disabled={buttonPressed} // Disable the button when it's pressed
-          contentStyle={{
-            height: 60,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-          style={{
-            backgroundColor: buttonPressed
-              ? "rgba(49, 160, 98, 0.33)"
-              : "#31A062", // Change color when pressed
-            width: "100%",
-            marginVertical: 10,
-            marginTop: 15,
-          }}
-        >
-        {loadingReset ? (
-    <ActivityIndicator color="#FFFFFF" size="large" />
-  ) : (
-    <Text style={{ color: "#FFFFFF" }}>Send Link</Text>
-  )}
-        </Button> */}
+       
 
-<TouchableOpacity  onPress={handleReset}
+       < TouchableOpacity  onPress={handleReset} disabled={buttonPressed}
 
 style={{
   backgroundColor: buttonPressed

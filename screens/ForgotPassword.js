@@ -404,7 +404,7 @@ const ForgotPassword = () => {
   )}
         </Button> */}
 
-<TouchableOpacity  onPress={handleReset}
+<TouchableOpacity  onPress={handleReset} disabled={buttonPressed}
 
 style={{
   backgroundColor: buttonPressed

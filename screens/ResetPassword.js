@@ -197,8 +197,21 @@ console.log(userId);
       {/* Submit Button */}
 
 
+<TouchableOpacity onPress={handleResetPassword} style={{
+        backgroundColor: '#31A062',
+        width: '100%',
+        height:60,
+        marginVertical: 10,
+        marginTop: 15,
+        borderRadius:20,
+        alignItems:'center',
+        justifyContent:'center'
+      }}>
 
-      <LinearGradient colors={["#31A062", "#31A062"]}   style={{
+
+
+
+<LinearGradient colors={["#31A062", "#31A062"]}   style={{
         backgroundColor: '#31A062',
         width: '100%',
         height:60,
@@ -216,6 +229,8 @@ console.log(userId);
   )}
         </TouchableOpacity>
       </LinearGradient>
+
+</TouchableOpacity>
 
 
 

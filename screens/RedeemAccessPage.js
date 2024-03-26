@@ -260,7 +260,7 @@ useFocusEffect(
 
       
 
-   
+
     
           <TextInput
             style={styles.inputField}
@@ -268,6 +268,9 @@ useFocusEffect(
             value={CountrySymbol +redeemAmt}
             onChangeText={handleAmountChange}
           />
+
+
+          <Text  style={{marginLeft:10,paddingLeft:10}}>Total Winnings:</Text>
 
 {bankAccounts.length === 0 ? (
         <Text style={{ paddingLeft: 20, paddingTop: 20 }}>Add Bank Account To Redeem</Text>
