@@ -73,34 +73,6 @@ const PlayScreen = ({route }) => {
 
 
 
-  const handleSelectBoxClick = (index) => {
-    // Set the highlighted index for the initial selection of empty boxes
-    setHighlightedIndex(index);
-    console.log("highlited Index", highlightedIndex)
-    console.log("selected numbers again", selectedNumbers)
-    console.log("total numbers again", selectedNumbers.length)
-  };
-
-const handleNumberClick = (number) => {
-  if (highlightedIndex !== null && selectedNumbers.length < 6) {
-    setSelectedNumbers((prevNumbers) => {
-      const newNumbers = [...prevNumbers];
-      newNumbers[highlightedIndex] = number;
-      return newNumbers;
-    });
-
-    // Move highlight to the next box
-    setHighlightedIndex((prevIndex) =>
-      prevIndex < 5 ? prevIndex + 1 : prevIndex
-    );
-  } else {
-    setSelectedNumbers((prevNumbers) => {
-      const newNumbers = [...prevNumbers];
-      newNumbers[highlightedIndex] = number;
-      return newNumbers;
-    });
-  }
-};
 
 
   // Add an effect to update totalSelectedNumbers whenever selectedNumbers changes
@@ -136,14 +108,16 @@ const handleNumberClick = (number) => {
   
       const level = 1;
       const userNewCredits = 0;
-      const gameNumber = selectedNumbers;
+      const gameNumber = selectedNumbers; // Assuming selectedNumbers is an array
+gameNumber.sort((a, b) => a - b);
+
       console.log("GameType......", areaText, userId, level, creditsMain, gameNumber);
   const levelValue = await AsyncStorage.getItem('level');
       setLoading(true);
   
-   
+     const url = "https://lottery-backend-tau.vercel.app/api/v1/user/game/new-game"
       const response = await axios.post(
-        "https://lottery-backend-tau.vercel.app/api/v1/user/game/new-game",
+        url,
         {
           userId,
           gameLevel: parseInt(levelText, 10),
@@ -527,6 +501,37 @@ const handleNumberClick = (number) => {
   }, []);
 
 
+
+  const handleSelectBoxClick = (index) => {
+    // Set the highlighted index for the initial selection of empty boxes
+    setHighlightedIndex(index);
+    console.log("highlited Index", highlightedIndex)
+    console.log("selected numbers again", selectedNumbers)
+    console.log("total numbers again", selectedNumbers.length)
+  };
+
+const handleNumberClick = (number) => {
+  if (highlightedIndex !== null && selectedNumbers.length < 6) {
+    setSelectedNumbers((prevNumbers) => {
+      const newNumbers = [...prevNumbers];
+      newNumbers[highlightedIndex] = number;
+      return newNumbers;
+    });
+
+    // Move highlight to the next box
+    setHighlightedIndex((prevIndex) =>
+      prevIndex < 5 ? prevIndex + 1 : prevIndex
+    );
+  } else {
+    setSelectedNumbers((prevNumbers) => {
+      const newNumbers = [...prevNumbers];
+      newNumbers[highlightedIndex] = number;
+      return newNumbers;
+    });
+  }
+};
+
+
   return (
 
 
@@ -583,39 +588,43 @@ const handleNumberClick = (number) => {
         {" "}
         {areaText}, Level{levelText}, {genearalSymbol}{winnerAmt}
       </Text>
-     
-      <View
-        style={{
-          flexDirection: "row",
-          
-         
-          alignItems: "center",
-        }}
-      >
-        {[...Array(6).keys()].map((index) => (
-          <TouchableOpacity
-            key={index}
-            onPress={() => handleSelectBoxClick(index)}
-            style={{
-              width: SCREEN_WIDTH * 0.11,
-              height: SCREEN_WIDTH * 0.11,
-              borderRadius: SCREEN_WIDTH * 0.02,
-              margin: SCREEN_WIDTH * 0.015,
-              justifyContent: "center",
-              alignItems: "center",
-              borderWidth: 2,
-              borderColor: highlightedIndex === index ? "white" : "white",
-              backgroundColor:
-                highlightedIndex === index ? "#31A062" : "#BA8DF3",
-              alignSelf: "center",
-            }}
-          >
-            <Text style={{ color: "white" }}>
-              {selectedNumbers.length > index ? selectedNumbers[index] : ""}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <View style={{ flexDirection: "column", alignItems: "center" }}>
+  {/* UI for displaying selected numbers */}
+  <View
+    style={{
+      flexDirection: "row",
+      alignItems: "center",
+    }}
+  >
+    {selectedNumbers
+      .sort((a, b) => a - b) // Sort the selected numbers in ascending order
+      .slice(0, 6) // Take the first six sorted numbers
+      .map((number, index) => (
+        <TouchableOpacity
+          key={index}
+          onPress={() => handleSelectBoxClick(index)}
+          style={{
+            width: SCREEN_WIDTH * 0.11,
+            height: SCREEN_WIDTH * 0.11,
+            borderRadius: SCREEN_WIDTH * 0.02,
+            margin: SCREEN_WIDTH * 0.015,
+            justifyContent: "center",
+            alignItems: "center",
+            borderWidth: 2,
+            borderColor: highlightedIndex === index ? "white" : "white",
+            backgroundColor:
+              highlightedIndex === index ? "#31A062" : "#BA8DF3",
+            alignSelf: "center",
+          }}
+        >
+          <Text style={{ color: "white" }}>{number}</Text>
+        </TouchableOpacity>
+      ))}
+  </View>
+  {/* Display the sorted selected numbers array */}
+
+</View>
+
 
       <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: 'center', alignItems: 'center', paddingTop:10 }}>
   {[...Array(60).keys()].map((number, index) => (

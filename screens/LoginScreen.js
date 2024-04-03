@@ -260,7 +260,7 @@ console.log("password",password)
         return;
       }
   
-      const response = await axios.post('https://lottery-backend-dev-tau.vercel.app/api/v1/user/login', {
+      const response = await axios.post('https://lottery-backend-dev.vercel.app/api/v1/auth/login', {
         email,
         password,
         pushNotificationToken: token,
@@ -608,7 +608,7 @@ style={{
 
 
       <Text style={{ marginVertical: 10, color: '#31A062' }} onPress={() => navigation.navigate('Register')}>
-       Create an account?
+       Create An Account?
       </Text>
       <Text style={{ marginVertical: 10  , color: '#31A062' }}  onPress={() => navigation.navigate('ForgotPassword')}>Forgot Password?</Text>
       

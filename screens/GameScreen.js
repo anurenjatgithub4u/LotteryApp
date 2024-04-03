@@ -51,18 +51,19 @@ const GameScreen = () => {
   const [isThereIsGame, setIsThereIsGame] = useState(false); 
   const [radioGames, setRadioGames] = useState(true);
   const [showAllGames, setShowAllGames] = useState(true);
-
+const [byWinner, setByWinner] = useState(false);
   const handleOnPressStartDate = () => {
     setOpenStartDatePicker(!openStartDatePicker);
   };
   const toggleDatePicker = () => {
     setShowPicker(!showPicker);
     console.log("date1...",date)
-    setShowAllGames(false);
+    setByWinner(false)
     setEndShowPicker(false);
   };
 
   const onChange = ({ type }, selectedDate) => {
+    setShowAllGames(false);
     if (type == "set") {
       const currentDate = selectedDate;
       setDate(currentDate);
@@ -81,6 +82,7 @@ const GameScreen = () => {
 
   const handleChangeStartDate = (date) => {
     setStartedDate(date);
+    setShowAllGames(false);
     console.log("Selected Start Date:", date);
     // Close the modal after selecting a date
   };
@@ -96,9 +98,10 @@ const GameScreen = () => {
   const [endshowPicker, setEndShowPicker] = useState(false);
 
   const toggleEndDatePicker = () => {
+    setShowAllGames(false);
     setEndShowPicker(!endshowPicker);
      setShowPicker(false);
-    
+    setByWinner(false)
     console.log("dateee.." , endSetDate)
   };
   const navigateToNotificationScreen = () => {
@@ -109,6 +112,7 @@ const GameScreen = () => {
   };
 
   const onEndChange = ({ type }, endSelecteddate) => {
+    setShowAllGames(false);
     if (type == "set") {
       const currentDateEnd = endSelecteddate;
       setEndSetDate(currentDateEnd);
@@ -121,12 +125,16 @@ const GameScreen = () => {
       setEndShowPicker(false);
     }
   };
+
+  
   const handleChangeEndDate = (date) => {
+    setShowAllGames(false);
     setEndDate(date);
     console.log("Selected Start Date:", date);
     // Close the modal after selecting a date
   };
   const handleOnPressEndDate = () => {
+    setShowAllGames(false);
     setOpenEndDatePicker(!openEndDatePicker);
   };
   // Reset startedDate to null when modal is closed
@@ -146,39 +154,6 @@ const GameScreen = () => {
     navigation.navigate("GameDetailsPage", { game });
   };
 
-  const filterGamesByDateRange = (game) => {
-    const createdAtDate = new Date(game.createdAt);
-    console.log("CreatedAtDate:", createdAtDate);
-  
-    // Convert date to the format YYYY-MM-DD for accurate comparison
-    const startDateDate =
-      date !== "DD/MM/YYYY"  ? new Date(date) : null;
-    const endDateDate =
-      endSetDate !== "DD/MM/YYYY" ? new Date(endSetDate) : null;
-
-
-      if (startDateDate) {
-        startDateDate.setHours(0, 0, 0, 0);
-      }
-  
-    if (startDateDate && endDateDate) {
-      // If both start and end dates are selected, filter games within the date range
-      return (
-        createdAtDate >= startDateDate &&
-        createdAtDate <= endDateDate
-      );
-    } else if (startDateDate) {
-      // If only start date is selected, filter games on or after the start date
-      return createdAtDate  >= startDateDate ;
-    } else if (endDateDate) {
-      // If only end date is selected, filter games on or before the end date
-      return createdAtDate <= endDateDate;
-    } else {
-      // If no date range is selected, show all games
-      return true;
-    }
-  };
-
 
   const filterGamesByWinner = (game) => {
     if (showWinners) {
@@ -187,6 +162,48 @@ const GameScreen = () => {
       return game.isWinner === true; // Show all games
     }
   };
+  const filterGamesByDateRange = (game) => {
+    const createdAtDate = new Date(game.createdAt);
+    console.log("CreatedAtDate:", createdAtDate);
+
+    // Convert date to the format YYYY-MM-DD for accurate comparison
+    const startDateDate =
+      date !== "DD/MM/YYYY" ? new Date(date) : null;
+    const endDateDate =
+      endSetDate !== "DD/MM/YYYY" ? new Date(endSetDate) : null;
+
+    if (startDateDate) {
+      startDateDate.setHours(0, 0, 0, 0);
+    }
+
+    if (byWinner) {
+      return filterGamesByWinner(game);
+    } else {
+      if (startDateDate && endDateDate) {
+        // If both start and end dates are selected, filter games within the date range
+        return (
+          createdAtDate >= startDateDate &&
+          createdAtDate <= endDateDate
+        );
+      } else if (startDateDate) {
+        // If only start date is selected, filter games on or after the start date
+        return (
+          createdAtDate >= startDateDate
+        );
+      } else if (endDateDate) {
+        // If only end date is selected, filter games on or before the end date
+        return (
+          createdAtDate <= endDateDate
+        );
+      } else {
+        // If no date range is selected, show all games
+        return true;
+      }
+    }
+  };
+
+
+ 
 
 
 
@@ -240,6 +257,7 @@ const GameScreen = () => {
   
 
   const CommonDateTimePicker = ({ value, onChange }) => (
+    
     <View style={{ justifyContent: 'center', alignItems: 'center' }}>
       
       <DateTimePicker
@@ -391,7 +409,9 @@ const GameScreen = () => {
   // Function to handle radio button press
   const handleRadioButtonPress = () => {
     setShowWinners((prev) => !prev); 
-    setRadioGames((prev) => !prev); // Toggle between true and false
+    setRadioGames((prev) => !prev); 
+
+    setByWinner(true)
   };
   useEffect(() => {
     setOpenStartDatePicker(false); // Ensure initial state
@@ -627,9 +647,10 @@ const GameScreen = () => {
 
 <ScrollView style={{ marginBottom: 10, marginTop: hp(0.01) }}   showsVerticalScrollIndicator={false}>
 
-{showAllGames ? (
+{showAllGames && radioGames ? (
   <>
-    {showAllGames && radioGames ? (
+
+{showAllGames && radioGames ? (
       [...userGames].reverse().map((game, index) => (
         <LinearGradient
           key={index}
@@ -640,34 +661,35 @@ const GameScreen = () => {
             key={index}
             onPress={() => goToGameDetails(game)}
           >
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginBottom: "2%",
-              }}
-            >
-              <Text style={styles.createdAtText}>
-                {game.gameType},
-              </Text>
+             <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                   
+                    marginBottom: "2%",
+                  }}
+                >
+                   <Text style={styles.createdAtText}>
+                    {game.gameType},
+                  </Text>
 
-              <Text style={styles.createdAtLevel}>
-                Level {game.gameLevel},
-              </Text>
-              <Text style={styles.createdAtLevel}>
-                {new Date(game.createdAt).toLocaleDateString("en-GB", {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                })},
-              </Text>
+                  <Text style={styles.createdAtLevel}>
+                   Level {game.gameLevel},
+                  </Text>
+                  <Text style={styles.createdAtLevel}>
+                    {new Date(game.createdAt).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })},
+                  </Text>
 
-              <Text  style={styles.createdAtLevel}>{new Date(game.createdAt).toLocaleTimeString("en-GB", {
-                hour: "numeric",
-                minute: "numeric",
-                hour12: true, 
-              })}</Text>
-            </View>
+                  <Text  style={styles.createdAtLevel}>{new Date(game.createdAt).toLocaleTimeString("en-GB", {
+  hour: "numeric",
+  minute: "numeric",
+  hour12: true, 
+})}</Text>
+                </View>
 
             <View style={styles.container}>
               {game.selectedNumbers.map((number, index) => (
@@ -679,34 +701,35 @@ const GameScreen = () => {
           </TouchableOpacity>
         </LinearGradient>
       ))
-    ) :(
-      [...userGames].reverse()
-        
-        .filter(filterGamesByWinner).filter(filterGamesByDateRange)
-       
-        .map((game, index) => (
-          <LinearGradient
+    ) : (
+
+      [...userGames].reverse().
+      filter(filterGamesByWinner)
+      
+      .map((game, index) => (
+        <LinearGradient
+          key={index}
+          colors={game.isWinner ? ["#F0C735", "#D98F39"] : ["#BA8DF3", "#615EE2"]}
+          style={styles.mainCard}
+        >
+          <TouchableOpacity
             key={index}
-            colors={game.isWinner ? ["#F0C735", "#D98F39"] : ["#BA8DF3", "#615EE2"]}
-            style={styles.mainCard}
+            onPress={() => goToGameDetails(game)}
           >
-            <TouchableOpacity
-              key={index}
-              onPress={() => goToGameDetails(game)}
-            >
-              <View
+             <View
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
+                 
                   marginBottom: "2%",
                 }}
               >
-                <Text style={styles.createdAtText}>
+                 <Text style={styles.createdAtText}>
                   {game.gameType},
                 </Text>
-    
+
                 <Text style={styles.createdAtLevel}>
-                  Level {game.gameLevel},
+                 Level {game.gameLevel},
                 </Text>
                 <Text style={styles.createdAtLevel}>
                   {new Date(game.createdAt).toLocaleDateString("en-GB", {
@@ -715,27 +738,28 @@ const GameScreen = () => {
                     year: "numeric",
                   })},
                 </Text>
-    
-                <Text  style={styles.createdAtLevel}>{new Date(game.createdAt).toLocaleTimeString("en-GB", {
-                  hour: "numeric",
-                  minute: "numeric",
-                  hour12: true, 
-                })}</Text>
-              </View>
-    
-              <View style={styles.container}>
-                {game.selectedNumbers.map((number, index) => (
-                  <View key={index} style={styles.numberBox}>
-                    <Text style={styles.numberText}>{number}</Text>
-                  </View>
-                ))}
-              </View>
-            </TouchableOpacity>
-          </LinearGradient>
-        ))
-    )} 
 
-    {(userGames.filter(filterGamesByWinner).filter(filterGamesByDateRange).length === 0) && (
+                <Text  style={styles.createdAtLevel}>{new Date(game.createdAt).toLocaleTimeString("en-GB", {
+hour: "numeric",
+minute: "numeric",
+hour12: true, 
+})}</Text>
+              </View>
+
+            <View style={styles.container}>
+              {game.selectedNumbers.map((number, index) => (
+                <View key={index} style={styles.numberBox}>
+                  <Text style={styles.numberText}>{number}</Text>
+                </View>
+              ))}
+            </View>
+          </TouchableOpacity>
+        </LinearGradient>
+      ))
+    
+    )}
+
+    {(userGames.length === 0) && (
       <Text style={styles.noWinnersText}>No Games found</Text>
     )}
   </>
@@ -753,33 +777,34 @@ const GameScreen = () => {
             onPress={() => goToGameDetails(game)}
           >
             <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginBottom: "2%",
-              }}
-            >
-              <Text style={styles.createdAtText}>
-                {game.gameType},
-              </Text>
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                   
+                    marginBottom: "2%",
+                  }}
+                >
+                   <Text style={styles.createdAtText}>
+                    {game.gameType},
+                  </Text>
 
-              <Text style={styles.createdAtLevel}>
-                Level {game.gameLevel},
-              </Text>
-              <Text style={styles.createdAtLevel}>
-                {new Date(game.createdAt).toLocaleDateString("en-GB", {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                })},
-              </Text>
+                  <Text style={styles.createdAtLevel}>
+                   Level {game.gameLevel},
+                  </Text>
+                  <Text style={styles.createdAtLevel}>
+                    {new Date(game.createdAt).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })},
+                  </Text>
 
-              <Text  style={styles.createdAtLevel}>{new Date(game.createdAt).toLocaleTimeString("en-GB", {
-                hour: "numeric",
-                minute: "numeric",
-                hour12: true, 
-              })}</Text>
-            </View>
+                  <Text  style={styles.createdAtLevel}>{new Date(game.createdAt).toLocaleTimeString("en-GB", {
+  hour: "numeric",
+  minute: "numeric",
+  hour12: true, 
+})}</Text>
+                </View>
 
             <View style={styles.container}>
               {game.selectedNumbers.map((number, index) => (
@@ -793,7 +818,7 @@ const GameScreen = () => {
       ))
     ) : (
       [...userGames].reverse()
-        .filter(filterGamesByWinner)
+       
         .filter(filterGamesByDateRange)
         .map((game, index) => (
           <LinearGradient
@@ -806,33 +831,34 @@ const GameScreen = () => {
               onPress={() => goToGameDetails(game)}
             >
               <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: "2%",
-                }}
-              >
-                <Text style={styles.createdAtText}>
-                  {game.gameType},
-                </Text>
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                   
+                    marginBottom: "2%",
+                  }}
+                >
+                   <Text style={styles.createdAtText}>
+                    {game.gameType},
+                  </Text>
 
-                <Text style={styles.createdAtLevel}>
-                  Level {game.gameLevel},
-                </Text>
-                <Text style={styles.createdAtLevel}>
-                  {new Date(game.createdAt).toLocaleDateString("en-GB", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })},
-                </Text>
+                  <Text style={styles.createdAtLevel}>
+                   Level {game.gameLevel},
+                  </Text>
+                  <Text style={styles.createdAtLevel}>
+                    {new Date(game.createdAt).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })},
+                  </Text>
 
-                <Text  style={styles.createdAtLevel}>{new Date(game.createdAt).toLocaleTimeString("en-GB", {
-                  hour: "numeric",
-                  minute: "numeric",
-                  hour12: true, 
-                })}</Text>
-              </View>
+                  <Text  style={styles.createdAtLevel}>{new Date(game.createdAt).toLocaleTimeString("en-GB", {
+  hour: "numeric",
+  minute: "numeric",
+  hour12: true, 
+})}</Text>
+                </View>
 
               <View style={styles.container}>
                 {game.selectedNumbers.map((number, index) => (
@@ -846,7 +872,7 @@ const GameScreen = () => {
         ))
     )}
 
-    {(userGames.filter(filterGamesByDateRange).filter(filterGamesByWinner).length === 0) && (
+    {(userGames.filter(filterGamesByWinner).length === 0) && (
       <Text style={styles.noWinnersText}>No Games found</Text>
     )}
   </>
@@ -856,8 +882,9 @@ const GameScreen = () => {
 
 
 
-
 </ScrollView>
+
+
 
 
       )}

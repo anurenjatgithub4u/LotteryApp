@@ -209,7 +209,7 @@ const HomeScreen = ({goToGameScreen }) => {
     const storedAccessToken = await AsyncStorage.getItem("accessToken");
     const userId = await AsyncStorage.getItem("userId");
 
-    const url = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-game/${userId}`;
+    const url = `https://lottery-backend-dev.vercel.app/api/v1/user/game/get-game/${userId}`;
 
     try {
       const response = await fetch(url, {
@@ -485,7 +485,7 @@ const HomeScreen = ({goToGameScreen }) => {
 
     {previousWinningContinentNumbers && previousWinningContinentNumbers.length ? (
       <>
-        <Text style={styles.createdAtText}>Continent winning numbers</Text>
+        <Text style={styles.createdAtText}>Continental Winning Numbers</Text>
         <NumberRow numbers={previousWinningContinentNumbers} />
       </>
     ) : (
@@ -540,7 +540,7 @@ const HomeScreen = ({goToGameScreen }) => {
 
     {previousWinningNumbers && previousWinningNumbers.length ? (
       <>
-        <Text style={styles.createdAtText}>{countryName} winning numbers</Text>
+        <Text style={styles.createdAtText}>{countryName} Winning Numbers</Text>
         <NumberRow numbers={previousWinningNumbers} />
       </>
     ) : (
@@ -645,11 +645,11 @@ const HomeScreen = ({goToGameScreen }) => {
 {loading ? (
   <ActivityIndicator size="large" color="white" />// Replace with your loading icon component
 ) : userGames.length === 0 || userGames === null ? (
-  <Text style={styles.previousgames}>No Previous Games</Text>
+  <Text style={styles.previousgames}>You Have No Previous Games</Text>
 ) : userGames.length < 5 ? (
   <Text style={styles.previousgames}>Previous Games</Text>
 ) : (
-  <Text style={styles.previousgames}>Previous 5 Games</Text>
+  <Text style={styles.previousgames}>Your Previous 5 Games</Text>
 )}
 
       
@@ -664,7 +664,7 @@ const HomeScreen = ({goToGameScreen }) => {
         <AntDesign
           name="arrowright"
           style={{ marginLeft: wp("1%") }}
-          size={24}
+          size={20}
           color="#FE555D"
         />
       </TouchableOpacity>
@@ -852,15 +852,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   previousgames: {
-    fontSize: hp("2.8%"), // Adjust the percentage as needed
+    fontSize: hp("2.6%"), // Adjust the percentage as needed
     fontWeight: "bold",
-    textAlign: "left",
-   
+    
     
     marginStart: wp("2%"),
   },
   seeAll: {
-    fontSize: hp("2.0%"), // Adjust the percentage as needed
+    fontSize: hp("1.8%"), // Adjust the percentage as needed
     fontWeight: "bold",
     textAlign: "left",
     marginRight: wp("1%"),

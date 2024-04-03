@@ -8,9 +8,37 @@ import {
   responsiveFontSize,
 } from "react-native-responsive-dimensions";
 import * as Device from "expo-device";
+import { BackHandler } from "react-native";
+
 import * as Notifications from "expo-notifications";
 const ProfileLandingTesting = () => {
   const navigation = useNavigation();
+
+
+  useEffect(() => {
+    
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        // Handle back button press
+        // Here, you can add your logic to close the app
+        // For example, you might want to show an exit confirmation dialog
+        // If the screen is the Login screen, you can close the app
+        if (navigation.isFocused()) {
+          // Close the app (exit)
+          navigation.navigate("ALScreen");
+          return true; // Prevent default behavior (exit the app)
+        }
+
+        // If it's not the Login screen, let the default back button behavior occur
+        return false;
+      }
+    );
+
+    // Clean up the event listener on component unmount
+    return () => backHandler.remove();
+  }, [navigation]);
+
   // const [expoPushToken, setExpoPushToken] = useState("");
   // useEffect(() => {
   //   console.log("Registering for push notifications...");
@@ -140,10 +168,10 @@ const ProfileLandingTesting = () => {
     >
 <Image source={{ uri: imageUrl }} style={{ width: '50%', height: responsiveHeight(40),marginTop:responsiveHeight(5) }} />
       <Text style={{ fontSize: responsiveFontSize(3.5), fontWeight: "bold" }}>
-        Win big With{" "}
+        Win Big With{" "}
       </Text>
       <Text style={{ fontSize: responsiveFontSize(3.5), fontWeight: "bold" }}>
-        Afro lottery system
+        Afro Lottery System
       </Text>
       <Text
         style={{

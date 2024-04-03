@@ -19,7 +19,7 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import { useFocusEffect } from "@react-navigation/native";
 import { responsiveHeight } from 'react-native-responsive-dimensions';
 import { Alert } from 'react-native';
-
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 
 const ProfileScreen = () => {
@@ -381,7 +381,7 @@ const styles = StyleSheet.create({
     paddingTop: '12%', 
   },
   profilePictureContainer: {
-    marginBottom: 10,
+    marginBottom: verticalScale(3),
     alignSelf:'center'
   },
   profilePicture: {
@@ -399,7 +399,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#555',
     alignSelf:'center',
-    marginBottom:20
+    marginBottom:verticalScale(20)
   },
 
   bell: {
