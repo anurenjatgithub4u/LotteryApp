@@ -17,6 +17,9 @@ import {
 import { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Constants from 'expo-constants';
+
+
 const SCREEN_WIDTH = width < height ? width : height;
 
 
@@ -97,10 +100,15 @@ const formattedAnounceMentDateTime = new Date(game.announcementDate).toLocaleStr
     const storedAccessToken = await AsyncStorage.getItem("accessToken");
     const userId = await AsyncStorage.getItem("userId");
 
-    const url = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+    const prod = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
 
+
+    const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+    const isProduction = Constants.executionEnvironment === 'standalone';
+
+    const baseURLGameWinNum = isProduction ? prod : dev
     try {
-      const response = await fetch(url, {
+      const response = await fetch(prod, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -192,7 +200,7 @@ const formattedAnounceMentDateTime = new Date(game.announcementDate).toLocaleStr
       </TouchableOpacity>
       <Text style={styles.yourGameText}>Your Game</Text>
 
-      <Text style={styles.dateText}> {formattedDate} , {formattedDateTime}</Text>
+      <Text style={styles.dateText}> {formattedDate} ,{formattedDateTime}</Text>
 
       {/* Display the game data in your UI */}
 
@@ -360,6 +368,8 @@ const styles = StyleSheet.create({
     width: responsiveWidth(90),
     alignSelf: "center",
     marginTop: hp("3%"),
+    borderWidth:.5,
+    borderColor:'#ac76f1'
   },
   dateText: {
     // Add marginLeft

@@ -6,9 +6,14 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { responsiveFontSize, responsiveHeight, responsiveScreenWidth, responsiveWidth } from "react-native-responsive-dimensions";
+import Constants from 'expo-constants';
+
+
 
 const Notification = () => {
   const [notifications, setNotifications] = useState([]);
+
+  const colors = ['#add8e6', '#90ee90', '#ffff99', '#ffc0cb'];
     const navigation = useNavigation();
     const [loading, setLoading] = useState(true);
     useEffect(() => {
@@ -16,9 +21,20 @@ const Notification = () => {
         try {
           const storedAccessToken = await AsyncStorage.getItem('accessToken');
           const userIds = await AsyncStorage.getItem('userId');
-          const url = `https://lottery-backend-tau.vercel.app/api/v1/user/get-notifications/${userIds}`;
+
+
+
+          const prod = `https://lottery-backend-tau.vercel.app/api/v1/user/get-notifications/${userIds}`;
+
+          const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/get-notifications/${userIds}`;
+     
+          const isProduction = Constants.executionEnvironment === 'standalone';
+
+          const baseURL = isProduction ? prod : dev
+
+
           
-          const response = await fetch(url, {
+          const response = await fetch(prod, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -83,51 +99,60 @@ const Notification = () => {
     // Example usage:
 
     return (
-      <View  style={{padding:5,paddingRight:'5%'}}>
+      <View  style={{padding:5,paddingRight:'5%',paddingLeft:'5%'}}>
       <TouchableOpacity onPress={() => navigation.navigate('Hom')}>
         <MaterialIcons
           name="keyboard-arrow-left"
           size={35}
           color="black"
-          style={{ marginLeft: 10, paddingTop: '12%' }}
+          style={{ paddingTop: '12%' }}
         />
       </TouchableOpacity>
   
   
-      <Text style={styles.myPurchase}>Notification</Text>
+      <Text style={styles.myPurchase}>Notifications</Text>
   
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" style={{ marginTop: 20 }} />
       ) : (
         <ScrollView style={{ marginBottom: 150 }}>
-          {notifications.map((notification, index) => (
-     <View key={index}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',marginTop:responsiveHeight(1),marginBottom:responsiveHeight(1) }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Image
-            source={{
-              uri: 'https://www.europeanbusinessreview.com/wp-content/uploads/2020/01/ThinkstockPhotos-172587244-1.jpg',
-            }}
-            style={styles.profilePicture}
-          />
-
-          <View style={{ flexDirection: 'column', alignItems: 'center', marginTop: 10 }}>
-          <Text style={styles.detailsText}>
-  {truncateText(notification.content, [4, 3, 3])}
-</Text>
-          </View>
-        </View>
-
-        <Text style={styles.timeText}>{getTimeAgoText(notification.createdAt)}</Text>
-      </View>
-      
-      <View style={styles.underline} />
+        {notifications.map((notification, index) => {
+          // Calculate color index based on the length of the colors array
+          const colorIndex = index % colors.length;
+          return (
+            <View key={index} style={[styles.cardContainer,  { backgroundColor: notification.content === 'You are the winner' ? '#add8e6' : colors[colorIndex] }]}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  {notification.content === 'You are the winner' ? (
+                    <Image
+                      source={{
+                        uri: 'https://cdn.picpng.com/award/award-gold-winner-badge-92377.png',
+                      }}
+                      style={styles.profilePicture}
+                    />
+                  ) : (
+                    <Image
+                      source={{
+                        uri: 'https://www.europeanbusinessreview.com/wp-content/uploads/2020/01/ThinkstockPhotos-172587244-1.jpg',
+                      }}
+                      style={styles.profilePicture}
+                    />
+                  )}
   
+                  <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+                    <Text style={styles.detailsText}>
+                      {truncateText(notification.content, [4, 3, 3])}
+                    </Text>
+                  </View>
+                </View>
   
-              
+                <Text style={styles.timeText}>{getTimeAgoText(notification.createdAt)}</Text>
+              </View>
             </View>
-          ))}
-        </ScrollView>
+          );
+        })}
+      </ScrollView>
+      
       )}
     </View>
     
@@ -137,6 +162,33 @@ const Notification = () => {
 export default Notification
 
 const styles = StyleSheet.create({
+
+
+
+  cardContainer: {
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 1,
+    marginTop:15,
+    height:100,
+   
+    elevation: 3, // for Android shadow
+    shadowColor: '#000', // for iOS shadow
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.10,
+    shadowRadius: 3.84,
+  },
+  cardContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: responsiveHeight(1),
+    marginBottom: responsiveHeight(1),
+  },
 
   container: {
       flexDirection: 'row', // Make sure the children are laid out in a row
@@ -148,29 +200,34 @@ const styles = StyleSheet.create({
     myPurchase: {
       fontSize: 34,
       fontWeight: '700',
-      marginStart:'5%'
+      marginStart:'5%',
+      marginBottom:'2%'
       
     },
     
     profilePicture: {
-      width: 70,
-      height: 50,
+      width: 65,
+      height: 40,
       borderRadius: 20,
       alignSelf:'center',
       justifyContent:"center",
       alignItems:'center',
-      paddingTop:80,
-      marginTop:responsiveHeight(2),
-      paddingLeft:32,
+      paddingTop:75,
+      
+      paddingLeft:25,
       paddingStart:32,
-      marginLeft:'5%'
+      marginLeft:'2%',
+      marginRight:'2%'
     },
 
     detailsText:{
       marginStart:10,
-      fontSize:17,
+      fontSize:16,
       fontWeight:'400',
-      alignSelf:'flex-start'
+      alignSelf:'flex-start',
+      marginBottom:'3%'
+      
+
     },
     underline: {
       borderBottomColor: 'black',
@@ -182,8 +239,8 @@ const styles = StyleSheet.create({
 timeText:{
   fontSize:13,
   fontWeight:'300',
-  marginBottom:responsiveWidth(3),
-  marginRight:'4%'
+  marginBottom:responsiveWidth(14),
+  marginRight:'1%'
   
  
 }

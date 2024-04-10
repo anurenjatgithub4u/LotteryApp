@@ -10,6 +10,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import  { Paystack , paystackProps}  from 'react-native-paystack-webview';
 import { View, TouchableOpacity,Text ,TextInput } from 'react-native';
 import { KeyboardAwareScrollView } from "@codler/react-native-keyboard-aware-scroll-view";
+import Constants from 'expo-constants';
 
 
 const PaymentMethodPage = () => {
@@ -25,11 +26,18 @@ useFocusEffect(
   React.useCallback(() => {
     const fetchPersonalDetails = async () => {
       const userId = await AsyncStorage.getItem("userId");
-      const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+      const prod = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+
+      const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+
+      const isProduction = Constants.executionEnvironment === 'standalone';
+
+      const baseURL = isProduction ? prod : dev
+
       const storedAccessToken = await AsyncStorage.getItem("accessToken");
 
       try {
-        const response = await fetch(apiUrl, {
+        const response = await fetch(prod, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -88,8 +96,15 @@ const handlePaystackSuccess = async (res) => {
     // Call the addCredits endpoint
     try {
 
+
+  const prod = 'https://lottery-backend-tau.vercel.app/api/v1/user/add-credits'
+  const dev = 'https://lottery-backend-dev.vercel.app/api/v1/user/add-credits'
+
+  const isProduction = Constants.executionEnvironment === 'standalone';
+
+  const baseURL = isProduction ? prod : dev
   
-      const response = await fetch('https://lottery-backend-tau.vercel.app/api/v1/user/add-credits', {
+      const response = await fetch(prod, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -138,8 +153,19 @@ const handlePaystackSuccess = async (res) => {
       const transactionReference = res.transactionRef.reference; // Replace with the actual key in the response
   
       // Call the addCredits endpoint
+
+     
       try {
-        const response = await fetch('https://lottery-backend-tau.vercel.app/api/v1/user/add-credits', {
+
+        const prod = 'https://lottery-backend-tau.vercel.app/api/v1/user/add-credits'
+        const dev = 'https://lottery-backend-dev.vercel.app/api/v1/user/add-credits'
+      
+        const isProduction = Constants.executionEnvironment === 'standalone';
+      
+        const baseURL = isProduction ? prod : dev
+
+
+        const response = await fetch(prod, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -191,7 +217,14 @@ const handlePaystackSuccess = async (res) => {
   
       // Call the addCredits endpoint
       try {
-        const response = await fetch('https://lottery-backend-tau.vercel.app/api/v1/user/add-credits', {
+
+        const prod = 'https://lottery-backend-tau.vercel.app/api/v1/user/add-credits'
+        const dev = 'https://lottery-backend-dev.vercel.app/api/v1/user/add-credits'
+      
+        const isProduction = Constants.executionEnvironment === 'standalone';
+      
+        const baseURL = isProduction ? prod : dev
+        const response = await fetch(prod, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

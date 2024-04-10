@@ -12,6 +12,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useFocusEffect } from "@react-navigation/native";
 import { Alert } from 'react-native';
 import { responsiveFontSize, responsiveHeight, responsiveScreenWidth, responsiveWidth } from "react-native-responsive-dimensions";
+import Constants from 'expo-constants';
 
 
 
@@ -83,10 +84,15 @@ const areaType = route.params;
     const storedAccessToken = await AsyncStorage.getItem("accessToken");
     const userId = await AsyncStorage.getItem("userId");
 
-    const url = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+    const prod = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+
+    const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+    const isProduction = Constants.executionEnvironment === 'standalone';
+
+    const baseURL = isProduction ? prod : dev
 
     try {
-      const response = await fetch(url, {
+      const response = await fetch(prod, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -145,11 +151,16 @@ const areaType = route.params;
     React.useCallback(() => {
       const fetchPersonalDetails = async () => {
         const userId = await AsyncStorage.getItem("userId");
-        const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`;
+        const prod = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`;
+        const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/personal-details/${userId}`;
+
+        const isProduction = Constants.executionEnvironment === 'standalone';
+
+        const baseURL = isProduction ? prod : dev
         const storedAccessToken = await AsyncStorage.getItem("accessToken");
 
         try {
-          const response = await fetch(apiUrl, {
+          const response = await fetch(prod, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -820,7 +831,9 @@ const styles = StyleSheet.create({
     marginTop: 15,
     padding: 10,
     alignItems: 'center',
-    borderRadius:10
+    borderRadius:10,
+    borderWidth:2,
+    borderColor:'#e1b411'
   },
   buttonContainerTwo: {
     backgroundColor: '#31A062',

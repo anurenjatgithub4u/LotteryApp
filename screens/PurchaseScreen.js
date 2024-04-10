@@ -6,6 +6,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from "expo-status-bar";
 import { responsiveFontSize, responsiveHeight ,responsiveWidth} from "react-native-responsive-dimensions";
+import Constants from 'expo-constants';
+
 
 const PurchaseScreen = () => {
 
@@ -19,12 +21,19 @@ const PurchaseScreen = () => {
       const storedAccessToken = await AsyncStorage.getItem('accessToken');
       const userId = await AsyncStorage.getItem('userId');
       // const userId = "65939884a0aa91a1529e275c";
-      const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/get-purchases/${userId}`;
+      const prod = `https://lottery-backend-tau.vercel.app/api/v1/user/get-purchases/${userId}`;
+
+      const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/get-purchases/${userId}`;
+
+
+      const isProduction = Constants.executionEnvironment === 'standalone';
+
+      const baseURL = isProduction ? prod : dev
 
       try {
         const token = storedAccessToken; // Replace with your actual authorization token
 
-        const response = await fetch(apiUrl, {
+        const response = await fetch(prod, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${storedAccessToken}`,
@@ -49,7 +58,7 @@ const PurchaseScreen = () => {
     fetchPurchases();
   }, []);
 
-
+  const colors = ['#add8e6', '#90ee90', '#ffff99', '#ffc0cb'];
 
   const getTimeAgoText = (purchaseDate) => {
     const purchaseDateObj = new Date(purchaseDate);
@@ -75,12 +84,12 @@ const PurchaseScreen = () => {
 
   return (
     <View style={{ flex:1, paddingLeft: 16 , paddingRight:16 }}>
-<View
+      <View
         style={{
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'flex-start',
-         
+         marginBottom:'5%',
           paddingTop:'15%',
         }}
       >
@@ -97,16 +106,17 @@ const PurchaseScreen = () => {
             }}
           />
         </TouchableOpacity>
-        <Text style={{ fontWeight: '700', fontSize: 17,textAlign: 'center' ,flex: 1,}}>My Purchase</Text>
+        <Text style={{ fontWeight: '700', fontSize: 17,textAlign: 'center' ,flex: 1}}>My Purchases</Text>
       </View>
 
-    {loading ? (
-      <ActivityIndicator size="large" color="#0000ff" style={{ marginTop: 20 }} />
-    ) : (
-      <ScrollView style={{ marginBottom: 150 }}>
-        {purchases.slice().reverse().map((purchase) => (
-          <View key={purchase._id}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' ,justifyContent:'space-between'}}>
+  
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" style={{ marginTop: 20 }} />
+      ) : (
+        <ScrollView style={{ marginBottom: 100 }}>
+        {purchases.slice().reverse().map((purchase, index) => (
+          <View key={purchase._id} style={[styles.cardContainer, { backgroundColor: colors[index % colors.length] }]}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
               <Image
                 source={{
                   uri: 'https://www.europeanbusinessreview.com/wp-content/uploads/2020/01/ThinkstockPhotos-172587244-1.jpg',
@@ -116,19 +126,15 @@ const PurchaseScreen = () => {
 
               <View style={{ flexDirection: 'column', alignItems: 'center', marginTop: 10 }}>
                 <Text style={styles.detailsText}>You Purchased {purchase.creditsPurchased}</Text>
-                <Text style={styles.detailsText}>Via {purchase.modeOfTransaction}</Text>
+                <Text style={styles.detailsTextTwo}>Via {purchase.modeOfTransaction}</Text>
               </View>
               <Text style={styles.timeText}>{getTimeAgoText(purchase.date)}</Text>
             </View>
-
-
-            <View style={styles.underline} />
           </View>
         ))}
       </ScrollView>
-    )}
-  </View>
-  
+      )}
+    </View>
   );
 }
 
@@ -141,6 +147,32 @@ const styles = StyleSheet.create({
         
       },
 
+      
+  cardContainer: {
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 1,
+    marginTop:15,
+    height:100,
+   
+    elevation: 3, // for Android shadow
+    shadowColor: '#000', // for iOS shadow
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.10,
+    shadowRadius: 3.84,
+  },
+  cardContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: responsiveHeight(1),
+    marginBottom: responsiveHeight(1),
+  },
+
 
       myPurchase: {
         fontSize: 34,
@@ -150,12 +182,12 @@ const styles = StyleSheet.create({
       },
       
       profilePicture: {
-        width: 70,
-        height: 70,
+        width: 65,
+        height: 60,
         borderRadius: 20,
         
         paddingTop:80,
-        marginTop:40,
+        
         paddingLeft:32,
         paddingStart:32,
         
@@ -163,9 +195,19 @@ const styles = StyleSheet.create({
 
       detailsText:{
         marginStart:10,
-        fontSize:17,
+        fontSize:16,
         fontWeight:'400',
-        alignSelf:'flex-start'
+        alignSelf:'flex-start',
+        
+        
+      },
+
+      detailsTextTwo:{
+        marginStart:10,
+        fontSize:16,
+        fontWeight:'400',
+        alignSelf:'flex-start',
+        marginBottom:'10%'
         
       },
       underline: {
@@ -178,9 +220,9 @@ const styles = StyleSheet.create({
   timeText:{
     fontSize:13,
     fontWeight:'300',
-    marginBottom:30,
+    marginBottom:'15%',
     paddingLeft:10,
-    marginLeft:10
+    marginLeft:'5%'
   }
 
 })

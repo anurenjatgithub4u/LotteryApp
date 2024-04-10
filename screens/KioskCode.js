@@ -6,6 +6,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { Alert } from 'react-native';
 import {  Button } from "react-native-paper";
+import Constants from 'expo-constants';
 
 const KioskCode = () => {
   const [couponCodee, setCouponCode] = useState('');
@@ -14,7 +15,12 @@ const KioskCode = () => {
 
     const storedAccessToken = await AsyncStorage.getItem('accessToken');
       const userIds = await AsyncStorage.getItem('userId');
-    const apiUrl = "https://lottery-backend-tau.vercel.app/api/v1/user/add-credits-using-coupon"; // Replace with your actual API endpoint URL
+    const prod = "https://lottery-backend-tau.vercel.app/api/v1/user/add-credits-using-coupon"; // Replace with your actual API endpoint URL
+    const dev = "https://lottery-backend-dev.vercel.app/api/v1/user/add-credits-using-coupon";
+    const isProduction = Constants.executionEnvironment === 'standalone';
+
+          const baseURL = isProduction ? prod : dev
+
     const codee ="53QC0B15"
     const requestOptions = {
       method: "POST",
@@ -26,7 +32,7 @@ const KioskCode = () => {
     };
   
     try {
-      const response = await fetch(apiUrl, requestOptions);
+      const response = await fetch(prod, requestOptions);
   
       if (!response.ok) {
         const errorData = await response.json();

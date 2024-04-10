@@ -14,7 +14,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { StatusBar } from "expo-status-bar";
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
 
-
+import Constants from 'expo-constants';
 
 
 const { width, height } = Dimensions.get('window');
@@ -133,10 +133,15 @@ const PlayedGame = ({ route }) => {
     const storedAccessToken = await AsyncStorage.getItem("accessToken");
     const userId = await AsyncStorage.getItem("userId");
 
-    const url = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+    const prod = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
 
+    
+    const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+    const isProduction = Constants.executionEnvironment === 'standalone';
+
+    const baseURL = isProduction ? prod : dev
     try {
-      const response = await fetch(url, {
+      const response = await fetch(prod, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -351,7 +356,9 @@ const styles = StyleSheet.create({
     elevation: 3,
     backgroundColor: '#F0C735',
     marginTop:30,
-    alignSelf:'center'
+    alignSelf:'center',
+    borderWidth:.5,
+    borderColor:'#ac76f1'
   },
   dateText: {
     fontSize: 32,
@@ -382,7 +389,9 @@ const styles = StyleSheet.create({
     alignSelf:'center',
     alignItems:'center',
     justifyContent:'center',
-    marginTop:30
+    marginTop:30,
+    borderWidth:.5,
+    borderColor:'#e1b411'
   },
 });
 

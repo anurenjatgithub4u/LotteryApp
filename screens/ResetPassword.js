@@ -10,6 +10,8 @@ import { responsiveFontSize, responsiveHeight, responsiveScreenWidth, responsive
 import { FontAwesome } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from "expo-linear-gradient";
+import Constants from 'expo-constants';
+
 const { width, height } = Dimensions.get("window");
 const SCREEN_WIDTH = width < height ? width : height;
 
@@ -41,7 +43,18 @@ console.log(userId);
       }
       
       // Make API request to update the password
-      const response = await axios.post('https://lottery-backend-tau.vercel.app/api/v1/user/recover-password/reset-password', {
+
+      const prod ='https://lottery-backend-tau.vercel.app/api/v1/user/recover-password/reset-password'
+
+      const dev ='https://lottery-backend-dev.vercel.app/api/v1/user/recover-password/reset-password'
+
+
+      const isStandaloneApp = Constants.appOwnership === 'standalone';
+      const isProduction = isStandaloneApp && !__DEV__;
+
+      const baseURL = isProduction ? prod : dev
+
+      const response = await axios.post(prod, {
         userId: userId, // replace with the actual user ID
         password: newPassword,
         

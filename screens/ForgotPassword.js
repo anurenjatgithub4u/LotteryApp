@@ -25,6 +25,9 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Spinner from 'react-native-loading-spinner-overlay';
 import { LinearGradient } from "expo-linear-gradient";
+import Constants from 'expo-constants';
+
+
 const { width, height } = Dimensions.get("window");
 const SCREEN_WIDTH = width < height ? width : height;
 
@@ -79,8 +82,15 @@ const ForgotPassword = () => {
 
   const fetchCountries = async () => {
     try {
+
+      const prod = "https://lottery-backend-tau.vercel.app//api/v1/admin/get-country"
+    
+      const dev = "https://lottery-backend-dev.vercel.app//api/v1/admin/get-country";
+        const isProduction = Constants.executionEnvironment === 'standalone';
+
+        const baseURL = isProduction ? prod : dev
       const response = await axios.get(
-        "https://lottery-backend-tau.vercel.app//api/v1/admin/get-country"
+        prod
       );
       const countriesData = response.data.message;
       setCountries(countriesData);
@@ -98,9 +108,18 @@ const ForgotPassword = () => {
       setLoadingReset(true)
       const userEmail = await AsyncStorage.getItem("userEmail");
       const number = `${selectedCountry}${mobileNumberLogin}`;
+
+      const prod ="https://lottery-backend-tau.vercel.app/api/v1/user/recover-password/forget-password"
+
+      const dev = "https://lottery-backend-dev.vercel.app/api/v1/user/recover-password/forget-password"
+
+      const isStandaloneApp = Constants.appOwnership === 'standalone';
+      const isProduction = isStandaloneApp && !__DEV__;
+
+      const baseURL = isProduction ? prod : dev
       // Make API request to the server to send OTP
       const response = await axios.post(
-        "https://lottery-backend-tau.vercel.app/api/v1/user/recover-password/forget-password",
+        prod,
         {
           email: emailFor,
           currentEmail: emailFor,
@@ -209,8 +228,20 @@ const ForgotPassword = () => {
 
       // Make API request to the server to verify OTP
       console.log(userData);
+
+      
+      const prod ="https://lottery-backend-tau.vercel.app/api/v1/user/recover-password/verify-otp-reset"
+
+      const dev = "https://lottery-backend-dev.vercel.app/api/v1/user/recover-password/verify-otp-reset"
+
+      const isStandaloneApp = Constants.appOwnership === 'standalone';
+const isProduction = isStandaloneApp && !__DEV__;
+
+      const baseURL = isProduction ? prod : dev
+
+
       const response = await axios.post(
-        "https://lottery-backend-tau.vercel.app/api/v1/user/recover-password/verify-otp-reset",
+        prod,
         {
           email: emailFor,
           otp: otp, // Convert the array of digits to a string
@@ -404,48 +435,25 @@ const ForgotPassword = () => {
   )}
         </Button> */}
 
-<TouchableOpacity  onPress={handleReset} disabled={buttonPressed}
-
-style={{
-  backgroundColor: buttonPressed
-  ? "rgba(49, 160, 98, 0.33)"
-  : "#31A062", // Change color when pressed
-  width: '100%',
-  height:60,
-  
-  marginVertical: 10,
-  marginTop: 15,
-  borderRadius:20,
-  alignItems:'center',
-  justifyContent:'center'
-}}
+<TouchableOpacity
+  onPress={handleReset}
+  disabled={buttonPressed}
+  style={{
+    backgroundColor: buttonPressed ? "rgba(49, 160, 98, 0.33)" : "#31A062", // Change color when pressed
+    width: '100%',
+    height: 60,
+    marginVertical: 10,
+    marginTop: 15,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center'
+  }}
 >
-
-
-  
-<LinearGradient colors={buttonPressed ? ["rgba(49, 160, 98, 0.33)", "rgba(49, 160, 98, 0.33)"] : ["#31A062", "#31A062"]}   style={{
-        backgroundColor: buttonPressed
-        ? "rgba(49, 160, 98, 0.33)"
-        : "#31A062", // Change color when pressed
-        width: '100%',
-        height:60,
-        
-        marginVertical: 10,
-        marginTop: 15,
-        borderRadius:20,
-        alignItems:'center',
-        justifyContent:'center'
-      }}>
-        <TouchableOpacity disabled={buttonPressed} 
-        
-        onPress={handleReset}>
-        {loadingReset ? (
+  {loadingReset ? (
     <ActivityIndicator color="#FFFFFF" size="small" />
   ) : (
     <Text style={styles.doneButtonText}>Send Link</Text>
   )}
-        </TouchableOpacity>
-      </LinearGradient>
 </TouchableOpacity>
 
         <Text style={{  fontSize: 25,fontWeight:700 ,marginTop:'15%',marginBottom:'7%'}}>ENTER OTP</Text>

@@ -26,6 +26,11 @@ import {
 import { StatusBar } from "expo-status-bar";
 import { Alert } from 'react-native';
 import { responsiveFontSize } from "react-native-responsive-dimensions";
+import Constants from 'expo-constants';
+
+
+
+
 
 const { width, height } = Dimensions.get("window");
 const SCREEN_WIDTH = width < height ? width : height;
@@ -109,13 +114,21 @@ const HomeScreen = ({goToGameScreen }) => {
   
   useFocusEffect(
     React.useCallback(() => {
-      const fetchPersonalDetails = async () => {
+      const fetchWinningNumbers = async () => {
         const userId = await AsyncStorage.getItem("userId");
-        const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+        const prod = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+
+        const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+
+
+             
+    const isProduction = Constants.executionEnvironment === 'standalone';
+
+    const baseURLGameWinNum = isProduction ? prod : dev
         const storedAccessToken = await AsyncStorage.getItem("accessToken");
 
         try {
-          const response = await fetch(apiUrl, {
+          const response = await fetch(prod, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -145,26 +158,30 @@ const HomeScreen = ({goToGameScreen }) => {
           console.log("credits credits credits credits credits credits credits", data.message.ContinentWinningAmount);
           // Additional fields can be set here based on your API response
         } catch (error) {
-          console.error("Error fetching personal details:", error.message);
+          console.error("Error fetching winning numbers", error.message);
         }
       };
 
-      fetchPersonalDetails();
+      fetchWinningNumbers();
     }, []) // Empty dependency array means this effect will only run once when the component mounts
   );
 
   const logout = async () => {
     try {
       // Replace 'YOUR_BACKEND_URL' with the actual URL of your backend server.
-      const backendURL = "https://lottery-backend-tau.vercel.app/api/v1/auth";
+      const prod = "https://lottery-backend-tau.vercel.app/api/v1/auth/logout";
+      const dev = "https://lottery-backend-dev.vercel.app/api/v1/auth/logout"
 
+      const isProduction = Constants.executionEnvironment === 'standalone';
+
+      const baseURLLogout = isProduction ? prod : dev
       const refreshToken = await AsyncStorage.getItem("refreshToken");
       const accessToken = await AsyncStorage.getItem("accessToken");
       // Assuming you have the refreshToken stored in a variable.
       const userNumber = 0;
       // Make a POST request to the logout endpoint with the refreshToken in the request body.
       const response = await axios.post(
-        `${backendURL}/logout`,
+        prod,
         { refreshToken },
         {
           headers: {
@@ -209,10 +226,16 @@ const HomeScreen = ({goToGameScreen }) => {
     const storedAccessToken = await AsyncStorage.getItem("accessToken");
     const userId = await AsyncStorage.getItem("userId");
 
-    const url = `https://lottery-backend-dev.vercel.app/api/v1/user/game/get-game/${userId}`;
+    const prod = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-game/${userId}`;
+
+    const dev =`https://lottery-backend-dev.vercel.app/api/v1/user/game/get-game/${userId}`
+
+    const isProduction = Constants.executionEnvironment === 'standalone';
+
+      const baseURL = isProduction ? prod : dev
 
     try {
-      const response = await fetch(url, {
+      const response = await fetch(prod, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -250,11 +273,21 @@ const HomeScreen = ({goToGameScreen }) => {
     React.useCallback(() => {
       const fetchPersonalDetails = async () => {
         const userId = await AsyncStorage.getItem("userId");
-        const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`;
+        const prod = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`;
+
+        const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/personal-details/${userId}`;
+
+
+        
+    const isProduction = Constants.executionEnvironment === 'standalone';
+
+    const baseURLPersonalDetails = isProduction ? prod : dev
+
+        
         const storedAccessToken = await AsyncStorage.getItem("accessToken");
         
         try {
-          const response = await fetch(apiUrl, {
+          const response = await fetch(prod, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -328,7 +361,7 @@ const HomeScreen = ({goToGameScreen }) => {
       await AsyncStorage.setItem('level', '0');
 
       // Navigate to ALScreen
-      navigation.navigate('ALScreen');
+      navigation.navigate('GameRules');
     } catch (error) {
       console.error('Error setting value for "area" or navigating to ALScreen:', error.message);
     }
@@ -689,7 +722,8 @@ const HomeScreen = ({goToGameScreen }) => {
             <LinearGradient
               key={index}
               colors={game.isWinner ? ["#F0C735", "#D98F39"] : ["#BA8DF3", "#615EE2"]}
-              style={styles.mainCard}
+              style={{ ...styles.mainCard, borderColor: game.isWinner ? '#e1b411' : '#ac76f1' ,borderWidth:1}}
+
             >
               <TouchableOpacity
                 key={index}
@@ -893,7 +927,19 @@ const styles = StyleSheet.create({
     elevation: 3,
     flex: 1,// Responsive height using heightPercentageToDP
     alignSelf:'center',
-    alignItems:'flex-start'
+    alignItems:'flex-start',
+    borderWidth: 1,
+    borderColor:'#278060',
+
+    
+    shadowColor: '#000', // for iOS shadow
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+   
   },
   playNowcard: {
     width: wp("33%"), // Adjust the percentage as needed
@@ -901,7 +947,9 @@ const styles = StyleSheet.create({
     padding: wp("4%"), // Responsive padding
     borderRadius: wp("2%"), // Responsive borderRadius
     backgroundColor: "#F0C735",
-    elevation: 3,
+ 
+    elevation:3,
+
     // Responsive height using heightPercentageToDP
     paddingLeft: wp("4%"), // Responsive paddingLeft
     marginRight: wp("10%"), // Responsive marginRight
@@ -909,6 +957,9 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     marginStart: wp("2%"),
     minHeight: hp("6%"),
+    borderWidth: 1,
+    borderColor:'#278060'
+   
   },
   buycreditscard: {
     width: wp("33%"), // Adjust the percentage as needed
@@ -922,6 +973,8 @@ const styles = StyleSheet.create({
     marginRight: wp("1%"), // Responsive marginRight
     marginLeft: wp("10%"), // Responsive marginLeft
     alignSelf: "flex-start",
+    borderWidth:1,
+    borderColor:'#e1b411'
   },
   buycreditscardTwo: {
     width: wp("23%"), // Adjust the percentage as needed

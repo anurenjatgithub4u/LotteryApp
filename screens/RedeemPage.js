@@ -13,7 +13,7 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 
-
+import Constants from 'expo-constants';
 
 
 const RedeemPage = () => {
@@ -24,11 +24,15 @@ const RedeemPage = () => {
 
   const fetchBankAccounts = async () => {
     const user = await AsyncStorage.getItem('userId');
-    const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/get-bank-account/${user}`;
-    const storedAccessToken = await AsyncStorage.getItem('accessToken');
+    const prod = `https://lottery-backend-tau.vercel.app/api/v1/user/get-bank-account/${user}`;
 
+    const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/get-bank-account/${user}`;
+    const storedAccessToken = await AsyncStorage.getItem('accessToken');
+    const isProduction = Constants.executionEnvironment === 'standalone';
+
+    const baseURL = isProduction ? prod : dev
     try {
-      const response = await fetch(apiUrl, {
+      const response = await fetch(prod, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${storedAccessToken}`,

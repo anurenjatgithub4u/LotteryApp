@@ -14,7 +14,7 @@ import {
 } from "react-native-responsive-screen";
 
 import { responsiveFontSize, responsiveHeight ,responsiveWidth} from "react-native-responsive-dimensions";
-
+import Constants from 'expo-constants';
 
 
 const ContactinfoScreen = () => {
@@ -78,10 +78,15 @@ const updateDetails = async () => {
   console.log("current email" , accountHolderEmail)
   try {
     const userId = await AsyncStorage.getItem('userId');
-    const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`; // Replace with your actual API endpoint
+    const prod = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`;
+    
+    const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/personal-details/${userId}`;
+      const isProduction = Constants.executionEnvironment === 'standalone';
+
+      const baseURL = isProduction ? prod : dev
     const storedAccessToken = await AsyncStorage.getItem('accessToken');
     await AsyncStorage.setItem('userEmail', accountHolderEmail);
-    const response = await fetch(apiUrl, {
+    const response = await fetch(prod, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -118,10 +123,16 @@ const updateDetails = async () => {
 const updateEmail = async () => {
   try {
     const userId = await AsyncStorage.getItem('userId');
-    const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`; // Replace with your actual API endpoint
+    const prod = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`;
+    
+    const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/personal-details/${userId}`;
+      const isProduction = Constants.executionEnvironment === 'standalone';
+
+      const baseURL = isProduction ? prod : dev
+  // Replace with your actual API endpoint
     const storedAccessToken = await AsyncStorage.getItem('accessToken');
     await AsyncStorage.setItem('userEmail', accountHolderEmail);
-    const response = await fetch(apiUrl, {
+    const response = await fetch(prod, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -158,10 +169,15 @@ const updateEmail = async () => {
 const updateMobile = async () => {
   try {
     const userId = await AsyncStorage.getItem('userId');
-    const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`; // Replace with your actual API endpoint
+    const prod = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`;
+    
+    const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/personal-details/${userId}`;
+      const isProduction = Constants.executionEnvironment === 'standalone';
+
+      const baseURL = isProduction ? prod : dev
     const storedAccessToken = await AsyncStorage.getItem('accessToken');
     await AsyncStorage.setItem('userEmail', accountHolderEmail);
-    const response = await fetch(apiUrl, {
+    const response = await fetch(prod, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -198,11 +214,17 @@ const updateMobile = async () => {
 useEffect(() => {
   const fetchPersonalDetails = async () => {
     const userId = await AsyncStorage.getItem('userId');
-    const apiUrl = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`;
+    const prod = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`;
+
+    const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/personal-details/${userId}`;
+
+    const isProduction = Constants.executionEnvironment === 'standalone';
+
+    const baseURL = isProduction ? prod : dev
     const storedAccessToken = await AsyncStorage.getItem('accessToken');
     
     try {
-      const response = await fetch(apiUrl, {
+      const response = await fetch(prod, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

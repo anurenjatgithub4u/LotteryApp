@@ -6,7 +6,7 @@ import { Appbar, Button } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MaterialIcons } from '@expo/vector-icons';
 import { KeyboardAwareScrollView } from '@codler/react-native-keyboard-aware-scroll-view';
-
+import Constants from 'expo-constants';
 
 const AddAccount = () => {
   const [accountHolderName, setAccountHolderName] = useState('');
@@ -36,12 +36,18 @@ const AddAccount = () => {
     }));
    
     try {
-      const apiUrl = 'https://lottery-backend-tau.vercel.app/api/v1/user/add-bank-account';
+      const prod = 'https://lottery-backend-tau.vercel.app/api/v1/user/add-bank-account';
+
+      const dev = 'https://lottery-backend-dev.vercel.app/api/v1/user/add-bank-account';
+
+
       const authToken = 'your-auth-token'; // Replace with your actual authorization token
-  
+      const isProduction = Constants.executionEnvironment === 'standalone';
+
+      const baseURL = isProduction ? prod : dev
       const storedAccessToken = await AsyncStorage.getItem('accessToken');
       const userId = await AsyncStorage.getItem('userId');
-      const response = await fetch(apiUrl, {
+      const response = await fetch(prod, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

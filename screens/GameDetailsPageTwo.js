@@ -30,6 +30,9 @@ import {
   responsiveHeight,
   responsiveWidth,
 } from "react-native-responsive-dimensions";
+
+import Constants from 'expo-constants';
+
 const SCREEN_WIDTH = width < height ? width : height;
 const { width, height } = Dimensions.get("window");
 
@@ -81,6 +84,7 @@ const GameDetailsPageTwo = ({ route }) => {
     minute: "numeric",
     
 });
+
 const formattedAnounceMentDateTime = new Date(game.announcementDate).toLocaleString("en-GB", {
     
   hour: "numeric",
@@ -94,14 +98,21 @@ const formattedAnounceMentDateTime = new Date(game.announcementDate).toLocaleStr
     year: 'numeric',
   });
 
+  console.log("game details",game.gameType,game.prizeMoney)
+
   const fetchPreviousGameWinningNumbers = async () => {
     const storedAccessToken = await AsyncStorage.getItem("accessToken");
     const userId = await AsyncStorage.getItem("userId");
 
-    const url = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+    const prod = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
 
+
+    const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+    const isProduction = Constants.executionEnvironment === 'standalone';
+
+    const baseURLGameWinNum = isProduction ? prod : dev
     try {
-      const response = await fetch(url, {
+      const response = await fetch(prod, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -131,7 +142,7 @@ const formattedAnounceMentDateTime = new Date(game.announcementDate).toLocaleStr
       try {
         const data = await fetchPreviousGameWinningNumbers();
 
-     
+
         if(game.gameType === "Africa"){
           if(game.isDrawPerformed === true){
             setPreviousWinningNumbers(data.message.continent || []);
@@ -141,6 +152,9 @@ const formattedAnounceMentDateTime = new Date(game.announcementDate).toLocaleStr
             setPreviousWinningNumbers(data.message.country || []);
           }
         }
+
+
+       
 
         setContinentSymbol(data.message.ContinentCurrencySymbol);
         setPreviousWinningContinentNumbers(data.message.continent || []);
@@ -192,7 +206,6 @@ const formattedAnounceMentDateTime = new Date(game.announcementDate).toLocaleStr
 
       <Text style={styles.dateText}> {formattedDate} ,{formattedDateTime}</Text>
 
-
       {/* Display the game data in your UI */}
 
       <LinearGradient
@@ -213,7 +226,11 @@ const formattedAnounceMentDateTime = new Date(game.announcementDate).toLocaleStr
      <Text style={{ fontSize: 16, fontWeight: 400, marginTop: 20, color:'white' }}>
           Winners will be announced on
         </Text>
+
+        <View  style={{flexDirection:'row'}}>
         <Text style={styles.dateTextTwo}>{formattedAnnouncementDate},{formattedAnounceMentDateTime}</Text>
+       
+        </View>
     
     </>
    )
@@ -226,6 +243,9 @@ const formattedAnounceMentDateTime = new Date(game.announcementDate).toLocaleStr
 
 
       </LinearGradient>
+
+
+
 
       {game.isDrawPerformed ?(
    <>
@@ -249,6 +269,10 @@ const formattedAnounceMentDateTime = new Date(game.announcementDate).toLocaleStr
         </TouchableOpacity>
       </LinearGradient>
 
+
+
+
+
   </>
    ):(
 
@@ -261,6 +285,11 @@ const formattedAnounceMentDateTime = new Date(game.announcementDate).toLocaleStr
 
    }
 
+
+
+      
+
+     
     
     </View>
   );
@@ -276,9 +305,31 @@ const styles = StyleSheet.create({
 
     // Add any other styles for yourGameText if needed
   },
+
+  
+  doneButtonTwo: {
+    backgroundColor: "#F0C735",
+    
+    alignSelf:'center',
+    width: "100%",
+    height:'4%',
+    marginTop:'5%'
+    
+  },
   dateTextTwo: {
     fontSize: 30,
+  
+    
+    marginTop:5,
    
+    color:'white',
+
+    
+  },
+
+  TimeTextTwo: {
+    fontSize: 28,
+  
     
     marginTop:5,
    
@@ -301,13 +352,6 @@ const styles = StyleSheet.create({
     height: 36,
     borderRadius: 10,
   },
-  createdAtLevel: {
-    fontSize: 15,
-    
-    marginBottom: 5,
-    color: "white",
-    paddingRight:'1%'
-  },
   doneButtonText: {
     color: "#fff",
     marginTop: 5,
@@ -328,30 +372,23 @@ const styles = StyleSheet.create({
     width: responsiveWidth(90),
     alignSelf: "center",
     marginTop: hp("3%"),
+    borderWidth:.5,
+    borderColor:'#ac76f1'
   },
   dateText: {
     // Add marginLeft
     fontSize: 30,
     fontWeight: "400",
     lineHeight: 44,
-    letterSpacing: 0,
+   
     textAlign: "left",
     // Add any other styles for yourGameText if needed
   },
   container: {
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+   
     marginTop: 10,
-    alignSelf:'flex-start'
-  },
-  doneButtonTwo: {
-    backgroundColor: "#F0C735",
-    
-    alignSelf:'center',
-    width: "100%",
-    height:'4%',
-    marginTop:'5%'
+   
     
   },
   numberBox: {
@@ -360,12 +397,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
     borderColor: "white",
+   
     marginRight:responsiveWidth(2),
     marginTop:responsiveWidth(1.25),
     marginBottom:responsiveWidth(1.25),
     alignItems: "center",
     justifyContent: "center",
-    
+    alignSelf:'flex-start'
   },
   numberText: {
     fontSize: 12,
@@ -379,6 +417,7 @@ const styles = StyleSheet.create({
 
     marginStart: 10,
   },
+  
   YourNumber: {
     fontSize: 16,
     fontWeight: "500",

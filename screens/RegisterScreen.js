@@ -15,6 +15,9 @@ import { CheckBox } from 'react-native-elements';
 import { MaterialIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from "expo-linear-gradient";
+import Constants from 'expo-constants';
+
+
 const { width, height } = Dimensions.get("window");
 const SCREEN_WIDTH = width < height ? width : height;
 const CustomPicker = ({ visible, onClose, onSelect, data }) => {
@@ -71,72 +74,7 @@ const RegisterScreen = () => {
 };
 
 
-  // const handleRegister = async () => {
-  //   try {
-  //     // Validate inp
-  //     setLoading(true);
-  //     await AsyncStorage.setItem('registeredEmail', email);
-  //     if (!name || !email || !password || !mobileNumber || !selectedCountry || !checked) {
-  //       Alert.alert(
-  //         '',
-  //         'Please fill in all fields and accept the terms and conditions',
-  //         [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
-  //       );
-  //       return;
-  //     }
   
-  //     const mobileWithCountry = `${selectedCountry}${mobileNumber}`;
-  
-  //     console.log('Selected Country:', mobileWithCountry);
-  
-  //     // Make API request to register user using Axios
-  //     const response = await axios.post('https://lottery-backend-tau.vercel.app/api/v1/user/register', {
-  //       email,
-  //       mobileNumber: mobileWithCountry,
-  //       name:name
-  //     });
-  
-  //     if (response.data.statusCode === 200) {
-  //       console.log('Registration successful:', response.data.message);
-  
-  //       // Navigate to OTP screen with additional information
-  //       navigation.navigate('OTP', {
-  //         email,
-  //         name,
-  //         password,
-  //         mobileNumber: mobileWithCountry,
-  //         selectedCountry
-  //       });
-  
-  //       // Additional logic if needed
-  //     } else if (response.data.statusCode === 400 ) {
-  //       console.log('Registration failed:', response.data.message);
-  //       Alert.alert(
-  //         '',
-  //         'Email is already registered. Please use a different email.',
-  //         [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
-  //       );
-  //     } else {
-  //       console.log('Registration failed:', response.data.message);
-  //       // Alert.alert(
-  //       //   '',
-  //       //   'Registration Failed',
-  //       //   [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
-  //       // );
-  //       alert(error.response.data.message)
-  //     }
-  //   }catch (error) {
-  //     console.log('Registration failed:',error);
-  //     Alert.alert(
-  //       '',
-  //       error.response.data.message,
-  //       [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
-  //     );
-  //   }finally {
-  //     // Set loading to false regardless of whether login was successful or not
-  //     setLoading(false);
-  //   }
-  // };
   const handleRegister = async () => {
     try {
       // Validate inp
@@ -156,7 +94,16 @@ const RegisterScreen = () => {
       console.log('Selected Country:', mobileWithCountry);
   
       // Make API request to register user using Axios
-      const response = await axios.post('https://lottery-backend-tau.vercel.app/api/v1/user/register', {
+
+      const prod ='https://lottery-backend-tau.vercel.app/api/v1/user/register'
+
+      const dev = 'https://lottery-backend-dev.vercel.app/api/v1/auth/register'
+
+      const isProduction = Constants.executionEnvironment === 'standalone';
+
+      const baseURL = isProduction ? prod : dev
+
+      const response = await axios.post(prod, {
         email,
         mobileNumber: mobileWithCountry,
         name:name

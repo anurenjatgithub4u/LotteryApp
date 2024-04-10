@@ -27,6 +27,14 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import Spinner from 'react-native-loading-spinner-overlay';
 import { LinearGradient } from "expo-linear-gradient";
+import Constants from 'expo-constants';
+//  import baseURL from '../config';
+
+
+
+
+
+
 const { width, height } = Dimensions.get("window");
 const SCREEN_WIDTH = width < height ? width : height;
 
@@ -72,6 +80,17 @@ const LoginScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
+
+
+
+
+
+
+  // Now you can use `apiUrl` throughout your app to fetch data or make requests.
+  
+  
+
+
 
   useEffect(() => {
     fetchCountries();
@@ -171,6 +190,8 @@ const LoginScreen = ({ navigation }) => {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       console.log('LoginScreen focused');
+      console.log("api url",baseURL)
+     
     });
   
     return unsubscribe;
@@ -199,6 +220,18 @@ const LoginScreen = ({ navigation }) => {
     getRegisteredEmail();
   }, []);
     
+
+
+  
+  const prod ='https://lottery-backend-tau.vercel.app/api/v1/auth/login'
+
+  const dev = 'https://lottery-backend-dev.vercel.app/api/v1/auth/login'
+
+  const isStandaloneApp = Constants.appOwnership === 'standalone';
+const isProduction = isStandaloneApp && !__DEV__;
+
+  const baseURL = isProduction ? prod : dev
+
   const handleLogin = async () => {
 
 
@@ -259,8 +292,12 @@ console.log("password",password)
         );
         return;
       }
+
+
+
+
   
-      const response = await axios.post('https://lottery-backend-dev.vercel.app/api/v1/auth/login', {
+      const response = await axios.post(prod, {
         email,
         password,
         pushNotificationToken: token,

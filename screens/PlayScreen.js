@@ -25,6 +25,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { BackHandler } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Alert } from 'react-native';
+import Constants from 'expo-constants';
 
 
 import {
@@ -115,9 +116,16 @@ gameNumber.sort((a, b) => a - b);
   const levelValue = await AsyncStorage.getItem('level');
       setLoading(true);
   
-     const url = "https://lottery-backend-tau.vercel.app/api/v1/user/game/new-game"
+     const prod = "https://lottery-backend-tau.vercel.app/api/v1/user/game/new-game"
+
+     const dev = "https://lottery-backend-dev.vercel.app/api/v1/user/game/new-game"
+
+
+     const isProduction = Constants.executionEnvironment === 'standalone';
+
+     const baseURL = isProduction ? prod : dev
       const response = await axios.post(
-        url,
+        prod,
         {
           userId,
           gameLevel: parseInt(levelText, 10),
@@ -203,7 +211,12 @@ gameNumber.sort((a, b) => a - b);
   const logout = async () => {
     try {
       // Replace 'YOUR_BACKEND_URL' with the actual URL of your backend server.
-      const backendURL = "https://lottery-backend-tau.vercel.app/api/v1/auth";
+      const prod = "https://lottery-backend-tau.vercel.app/api/v1/auth";
+
+      const dev = "https://lottery-backend-dev.vercel.app/api/v1/auth";
+      const isProduction = Constants.executionEnvironment === 'standalone';
+
+    const baseURL = isProduction ? prod : dev
 
       const refreshToken = await AsyncStorage.getItem("refreshToken");
       const accessToken = await AsyncStorage.getItem("accessToken");
@@ -211,7 +224,7 @@ gameNumber.sort((a, b) => a - b);
 
       // Make a POST request to the logout endpoint with the refreshToken in the request body.
       const response = await axios.post(
-        `${backendURL}/logout`,
+        `${prod}/logout`,
         { refreshToken },
         {
           headers: {
@@ -249,10 +262,17 @@ gameNumber.sort((a, b) => a - b);
     const storedAccessToken = await AsyncStorage.getItem("accessToken");
     const userId = await AsyncStorage.getItem("userId");
 
-    const url = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+    const prod = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+
+    const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
+
+
+    const isProduction = Constants.executionEnvironment === 'standalone';
+
+    const baseURL = isProduction ? prod : dev
 
     try {
-      const response = await fetch(url, {
+      const response = await fetch(prod, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -512,6 +532,15 @@ gameNumber.sort((a, b) => a - b);
 
 const handleNumberClick = (number) => {
   if (highlightedIndex !== null && selectedNumbers.length < 6) {
+
+
+
+    if (selectedNumbers.includes(number)) {
+      alert("Number already selected. Please choose a different number.");
+      return; // Don't proceed further
+    }
+
+
     setSelectedNumbers((prevNumbers) => {
       const newNumbers = [...prevNumbers];
       newNumbers[highlightedIndex] = number;
@@ -762,11 +791,14 @@ const styles = StyleSheet.create({
    
     width: "85%",
     marginTop: SCREEN_WIDTH * 0.05,
+    borderWidth:2,
+    borderColor:'#e1b411'
   },
   doneButtonText: {
     color: "#fff",
     fontSize: SCREEN_WIDTH * 0.04,
     alignSelf: "center",
+   
   },
   selectedNumberBoxSelected: {
     borderColor: "white",

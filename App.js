@@ -34,6 +34,9 @@ import ALSScreen from './screens/ALSScreen';
 import PaymentMethodPage from './screens/PaymentMethodPage';
 import LottieView from 'lottie-react-native';
 
+
+import Constants from 'expo-constants';
+
 //import * as Sentry from "@sentry/react-native";
 import { ToastProvider } from 'react-native-toast-message';
 import PayStack from './screens/PayStack';
@@ -72,6 +75,7 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import MyCardComponent from './screens/ALSScreen';
 import RedeemAmountAccessPage from './screens/RedeemAccessPage';
+import GameRules from './screens/GameRules';
 
 
 // Sentry.init({
@@ -271,9 +275,18 @@ const OTPVerificationScreen = ({ route,navigation }) => {
       // Combine the OTP digits
       const enteredOTP = otpDigits.join('');
       console.log('Entered OTP:', selectedCountry);
+
+
+      const prod ='https://lottery-backend-tau.vercel.app/api/v1/user/verify-otp'
+
+      const dev = 'https://lottery-backend-dev.vercel.app/api/v1/user/verify-otp'
+
+      const isProduction = Constants.executionEnvironment === 'standalone';
+
+      const baseURL = isProduction ? prod : dev
   
       // Make a request to your server to verify the OTP
-      const response = await axios.post('https://lottery-backend-tau.vercel.app/api/v1/user/verify-otp', {
+      const response = await axios.post(prod, {
         email, // Replace with the actual email
         otp: enteredOTP,
         name, // Replace with the actual name
@@ -559,6 +572,9 @@ const App = () => {
         <Stack.Screen name='SplashScreenTesting' component={SplashScreenTesting} options={{ headerShown: false }}/>
 
         <Stack.Screen name='Notification' component={Notification} options={{ headerShown: false }} />
+
+
+        <Stack.Screen name='GameRules' component={GameRules} options={{ headerShown: false }} />
 
         <Stack.Screen name='PersonalInfoOtp' component={PersonalInfoOtp} options={{ headerShown: false }}/>
 

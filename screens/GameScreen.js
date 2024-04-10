@@ -34,6 +34,8 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 
+import Constants from 'expo-constants';
+
 const { width, height } = Dimensions.get("window");
 const SCREEN_WIDTH = width < height ? width : height;
 const GameScreen = () => {
@@ -274,15 +276,19 @@ const [byWinner, setByWinner] = useState(false);
   const logout = async () => {
     try {
       // Replace 'YOUR_BACKEND_URL' with the actual URL of your backend server.
-      const backendURL = "https://lottery-backend-tau.vercel.app/api/v1/auth";
-      const userNumber = 0;
+      const prod = "https://lottery-backend-tau.vercel.app/api/v1/auth/logout";
+      const dev = "https://lottery-backend-dev.vercel.app/api/v1/auth/logout"
+
+      const isProduction = Constants.executionEnvironment === 'standalone';
+
+      const baseURLLogout = isProduction ? prod : dev
       const refreshToken = await AsyncStorage.getItem("refreshToken");
       const accessToken = await AsyncStorage.getItem("accessToken");
       // Assuming you have the refreshToken stored in a variable.
-
+      const userNumber = 0;
       // Make a POST request to the logout endpoint with the refreshToken in the request body.
       const response = await axios.post(
-        `${backendURL}/logout`,
+        prod,
         { refreshToken },
         {
           headers: {
@@ -314,10 +320,17 @@ const [byWinner, setByWinner] = useState(false);
     const storedAccessToken = await AsyncStorage.getItem("accessToken");
     const userId = await AsyncStorage.getItem("userId");
 
-    const url = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-game/${userId}`;
+    const prod = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-game/${userId}`;
+
+    const dev =`https://lottery-backend-dev.vercel.app/api/v1/user/game/get-game/${userId}`
+
+    const isProduction = Constants.executionEnvironment === 'standalone';
+
+      const baseURL = isProduction ? prod : dev
+
 
     try {
-      const response = await fetch(url, {
+      const response = await fetch(prod, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -655,7 +668,7 @@ const [byWinner, setByWinner] = useState(false);
         <LinearGradient
           key={index}
           colors={game.isWinner ? ["#F0C735", "#D98F39"] : ["#BA8DF3", "#615EE2"]}
-          style={styles.mainCard}
+          style={{ ...styles.mainCard, borderColor: game.isWinner ? '#e1b411' : '#ac76f1' ,borderWidth:1}}
         >
           <TouchableOpacity
             key={index}
@@ -710,7 +723,7 @@ const [byWinner, setByWinner] = useState(false);
         <LinearGradient
           key={index}
           colors={game.isWinner ? ["#F0C735", "#D98F39"] : ["#BA8DF3", "#615EE2"]}
-          style={styles.mainCard}
+          style={{ ...styles.mainCard, borderColor: game.isWinner ? '#e1b411' : '#ac76f1' ,borderWidth:1}}
         >
           <TouchableOpacity
             key={index}
@@ -770,7 +783,7 @@ hour12: true,
         <LinearGradient
           key={index}
           colors={game.isWinner ? ["#F0C735", "#D98F39"] : ["#BA8DF3", "#615EE2"]}
-          style={styles.mainCard}
+          style={{ ...styles.mainCard, borderColor: game.isWinner ? '#e1b411' : '#ac76f1' ,borderWidth:1}}
         >
           <TouchableOpacity
             key={index}
@@ -824,7 +837,7 @@ hour12: true,
           <LinearGradient
             key={index}
             colors={game.isWinner ? ["#F0C735", "#D98F39"] : ["#BA8DF3", "#615EE2"]}
-            style={styles.mainCard}
+            style={{ ...styles.mainCard, borderColor: game.isWinner ? '#e1b411' : '#ac76f1' ,borderWidth:1}}
           >
             <TouchableOpacity
               key={index}

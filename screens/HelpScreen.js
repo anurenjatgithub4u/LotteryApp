@@ -36,36 +36,39 @@ import { StatusBar } from "expo-status-bar";
   const logout = async () => {
     try {
       // Replace 'YOUR_BACKEND_URL' with the actual URL of your backend server.
-      const backendURL = 'https://lottery-backend-tau.vercel.app/api/v1/auth';
-      
-      const refreshToken = await AsyncStorage.getItem('refreshToken');
-      const accessToken = await AsyncStorage.getItem('accessToken');
+      const prod = "https://lottery-backend-tau.vercel.app/api/v1/auth/logout";
+      const dev = "https://lottery-backend-dev.vercel.app/api/v1/auth/logout"
+
+      const isProduction = Constants.executionEnvironment === 'standalone';
+
+      const baseURLLogout = isProduction ? prod : dev
+      const refreshToken = await AsyncStorage.getItem("refreshToken");
+      const accessToken = await AsyncStorage.getItem("accessToken");
       // Assuming you have the refreshToken stored in a variable.
       const userNumber = 0;
       // Make a POST request to the logout endpoint with the refreshToken in the request body.
       const response = await axios.post(
-        `${backendURL}/logout`,
+        prod,
         { refreshToken },
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         }
       );
-  
+
       // Check if the logout was successful.
       if (response.status === 200) {
-        console.log('Logged out successfully');
-        navigation.navigate('ProfileLandingTesting');
+        console.log("Logged out successfully");
+        navigation.navigate("ProfileLandingTesting");
         await AsyncStorage.setItem('userNumber', userNumber.toString());
-        // Redirect or perform any other action after successful logout.
       } else {
-        console.error('Logout failed');
+        console.error("Logout failed");
         // Handle logout failure, e.g., display an error message.
       }
     } catch (error) {
-      console.error('Error during logout', error);
+      console.error("Error during logout", error);
       // Handle the error, e.g., display an error message.
     }
   };
