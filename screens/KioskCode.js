@@ -12,53 +12,63 @@ const KioskCode = () => {
   const [couponCodee, setCouponCode] = useState('');
   const navigation = useNavigation();
   const addCreditsUsingCoupon = async (userId, couponCode, authToken) => {
-
     const storedAccessToken = await AsyncStorage.getItem('accessToken');
-      const userIds = await AsyncStorage.getItem('userId');
-    const prod = "https://lottery-backend-tau.vercel.app/api/v1/user/add-credits-using-coupon"; // Replace with your actual API endpoint URL
+    const userIds = await AsyncStorage.getItem('userId');
+    const prod = "https://lottery-backend-tau.vercel.app/api/v1/user/add-credits-using-coupon";
     const dev = "https://lottery-backend-dev.vercel.app/api/v1/user/add-credits-using-coupon";
-    const isProduction = Constants.executionEnvironment === 'standalone';
+    const isStandaloneApp = Constants.appOwnership === 'expo';
+    const baseURL = isStandaloneApp ? dev : prod;
+    const couponCodee = "53QC0B15"; // Ensure the correct variable name is used or passed to the function
 
-          const baseURL = isProduction ? prod : dev
-
-    const codee ="53QC0B15"
     const requestOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        'Authorization': `Bearer ${storedAccessToken}`,
-      },
-      body: JSON.stringify({ userId:userIds, couponCode:couponCodee }),
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${storedAccessToken}`,
+        },
+        body: JSON.stringify({ userId: userIds, couponCode: couponCodee }),
     };
-  
-    try {
-      const response = await fetch(prod, requestOptions);
-  
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message);
-      }
-  
-      const responseData = await response.json();
-      console.log("Success")
-      Alert.alert(
-        '',
-        'Credits Added Successfully',
-        [{ text: 'OK', onPress: () => navigation.navigate("Hom") }]
-      );
-      
-      return responseData;
-    } catch (error) {
-      
 
-      Alert.alert(
-        'Failed',
-        error.message,
-        [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
-      );
-      
+    try {
+        const response = await fetch(baseURL, requestOptions);
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message);
+        }
+
+        const responseData = await response.json();
+        console.log("Success");
+        Alert.alert(
+            '',
+            'Credits Added Successfully',
+            [{ text: 'OK', onPress: () => navigation.navigate("Home") }] // Ensure the correct navigation target ("Home" instead of "Hom")
+        );
+        
+        return responseData;
+    } catch (error) {
+        console.log("Kiosk coupon error", error.message);
+        // Check if the error message indicates an expired token
+        if (error.message.includes("Token expired") || error.message.includes("Unauthorized")) {
+            // Navigate to Login screen
+            
+            await AsyncStorage.removeItem('userId');
+          await AsyncStorage.removeItem('accessToken');
+          await AsyncStorage.removeItem('userNumber');
+          Alert.alert(
+            'Failed',
+            error.message,
+            [{ text: 'OK', onPress: () => navigation.navigate("Login") }]
+        );
+        } else {
+            Alert.alert(
+                'Failed',
+                error.message,
+                [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+            );
+        }
     }
-  };
+};
   
   // Example usage
   

@@ -43,6 +43,11 @@ const GameRules = () => {
           User can't make any changes after clicking the submit button.
         </Text>
         <Text style={styles.rule}>
+  If there are multiple winners the winning amount will be split,winning amount is based on the level played
+</Text>
+
+       
+        <Text style={styles.rule}>
           Game results will be announced in the game page, for more details visit{' '}
           <Text style={styles.link} onPress={handleUrlPress}>www.afrolottery.com</Text>.
         </Text>

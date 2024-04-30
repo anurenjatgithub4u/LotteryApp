@@ -49,12 +49,13 @@ console.log(userId);
       const dev ='https://lottery-backend-dev.vercel.app/api/v1/user/recover-password/reset-password'
 
 
-      const isStandaloneApp = Constants.appOwnership === 'standalone';
-      const isProduction = isStandaloneApp && !__DEV__;
+   
+      const isStandaloneApp = Constants.appOwnership === 'expo';
 
-      const baseURL = isProduction ? prod : dev
 
-      const response = await axios.post(prod, {
+      const baseURL = isStandaloneApp ? dev : prod
+
+      const response = await axios.post(baseURL, {
         userId: userId, // replace with the actual user ID
         password: newPassword,
         

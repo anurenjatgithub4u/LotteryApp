@@ -30,7 +30,7 @@ const SCREEN_WIDTH = width < height ? width : height;
  
 
 
-<View style={{ justifyContent: 'flex-start', paddingHorizontal: 16, paddingTop: '12%',   paddingHorizontal: SCREEN_WIDTH * 0.025,}}>
+<View style={{ justifyContent: 'flex-start', paddingLeft:16,paddingTop:'12%',paddingRight:16}}>
 
 <StatusBar backgroundColor={"transparent"} translucent />
       <View

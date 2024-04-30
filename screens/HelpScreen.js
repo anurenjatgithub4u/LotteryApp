@@ -39,16 +39,18 @@ import { StatusBar } from "expo-status-bar";
       const prod = "https://lottery-backend-tau.vercel.app/api/v1/auth/logout";
       const dev = "https://lottery-backend-dev.vercel.app/api/v1/auth/logout"
 
-      const isProduction = Constants.executionEnvironment === 'standalone';
+   
+      const isStandaloneApp = Constants.appOwnership === 'expo';
 
-      const baseURLLogout = isProduction ? prod : dev
+
+      const baseURL = isStandaloneApp ? dev : prod
       const refreshToken = await AsyncStorage.getItem("refreshToken");
       const accessToken = await AsyncStorage.getItem("accessToken");
       // Assuming you have the refreshToken stored in a variable.
       const userNumber = 0;
       // Make a POST request to the logout endpoint with the refreshToken in the request body.
       const response = await axios.post(
-        prod,
+        baseURL,
         { refreshToken },
         {
           headers: {

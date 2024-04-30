@@ -227,10 +227,10 @@ const LoginScreen = ({ navigation }) => {
 
   const dev = 'https://lottery-backend-dev.vercel.app/api/v1/auth/login'
 
-  const isStandaloneApp = Constants.appOwnership === 'standalone';
-const isProduction = isStandaloneApp && !__DEV__;
+  const isStandaloneApp = Constants.appOwnership === 'expo';
 
-  const baseURL = isProduction ? prod : dev
+
+  const baseURL = isStandaloneApp ? dev : prod
 
   const handleLogin = async () => {
 
@@ -297,7 +297,7 @@ console.log("password",password)
 
 
   
-      const response = await axios.post(prod, {
+      const response = await axios.post(baseURL, {
         email,
         password,
         pushNotificationToken: token,
@@ -424,7 +424,7 @@ console.log("password",password)
 
   return (
 
-    <View style={{ flex:1,alignItems: 'center',justifyContent:'flex-start' , paddingTop: 16,paddingTop:'25%',backgroundColor:"white",paddingLeft:'6%',paddingRight:'6%',paddingBottom:16 }}>
+    <View style={{ flex:1,alignItems: 'center',justifyContent:'flex-start'  ,paddingTop:'25%',backgroundColor:"white",paddingLeft:'6%',paddingRight:'6%',paddingBottom:16 }}>
 
 <StatusBar backgroundColor={"transparent"} translucent />
 
@@ -442,10 +442,10 @@ console.log("password",password)
 
 style={{ borderColor: 'black',
       backgroundColor: 'white',
-      marginTop:15,
+      marginTop:'4%',
       width: '100%',
-      marginBottom: 10,
-      height:60,
+      marginBottom: '3.5%',
+      height:responsiveHeight(7),
       borderWidth: 1,
       borderStyle: 'solid',
       fontSize: 15,
@@ -462,7 +462,7 @@ style={{ borderColor: 'black',
         style={{
           color: 'white',
           backgroundColor: 'white',
-          height:60.5,
+          height:responsiveHeight(7),
         
          }}
         keyboardType="email-address"
@@ -485,7 +485,7 @@ style={{ borderColor: 'black',
       marginTop:15,
       width: '100%',
       marginBottom: 10,
-      height:60,
+      height:responsiveHeight(7),
       borderWidth: 1,
       borderStyle: 'solid',
       fontSize: 15,
@@ -502,7 +502,7 @@ style={{ borderColor: 'black',
         style={{
           color: 'white',
           backgroundColor: 'white',
-          height:60.5,
+          height:responsiveHeight(7),
         
          }}
          activeUnderlineColor="gray"
@@ -512,11 +512,11 @@ style={{ borderColor: 'black',
       />
   <TouchableOpacity
           onPress={() => setShowPassword(!showPassword)}
-          style={{ padding: responsiveWidth(3.7), position: 'absolute', right: 0, }}
+          style={{ marginTop:responsiveWidth(3.5) ,marginRight:responsiveWidth(2.9) ,position: 'absolute', right: 0, }}
         >
           <FontAwesome
             name={showPassword ? 'eye-slash' : 'eye'}
-            size={24}
+            size={23}
             color="black"
           />
         </TouchableOpacity>
@@ -542,7 +542,7 @@ style={{ borderColor: 'black',
     width: '20%',
     marginBottom: 10,
     marginRight:15,
-    height:60,
+    height:responsiveHeight(7),
     borderWidth: 1,
     borderStyle: 'solid',
     fontSize: 15,
@@ -571,7 +571,7 @@ style={{ borderColor: 'black',
     marginTop:15,
     width: '75%',
     marginBottom: 10,
-    height:60,
+    height:responsiveHeight(7),
     borderWidth: 1,
     borderStyle: 'solid',
     fontSize: 15,
@@ -587,7 +587,7 @@ style={{ borderColor: 'black',
       style={{
         color: 'white',
         backgroundColor: 'white',
-        height:60.5,
+        height:responsiveHeight(7),
       
        }}
     activeUnderlineColor="gray"
@@ -613,7 +613,7 @@ style={{ borderColor: 'black',
 style={{
         backgroundColor: '#31A062',
         width: '100%',
-        height:60,
+        height:responsiveHeight(7),
         marginVertical: 10,
         marginTop: 15,
         borderRadius:20,
@@ -625,7 +625,7 @@ style={{
 <LinearGradient colors={["#31A062", "#31A062"]}   style={{
         backgroundColor: '#31A062',
         width: '100%',
-        height:60,
+        height:responsiveHeight(7),
         marginVertical: 10,
         marginTop: 15,
         borderRadius:20,
@@ -677,7 +677,7 @@ const styles = StyleSheet.create({
     
     backgroundColor: 'white',
     height: 51,
-    marginTop: 7,
+    marginTop: 2,
     marginRight: 10,
    
   },
@@ -696,7 +696,7 @@ const styles = StyleSheet.create({
    
     left: 30,
      minHeight: hp("7%"),
-    fontSize: 34, // Adjust the font size as needed
+    fontSize: responsiveFontSize(5), // Adjust the font size as needed
     fontWeight: 'bold',
     bottom:'6%'
    

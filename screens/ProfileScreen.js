@@ -17,11 +17,11 @@ import { logout } from './auth/logout';
 import { StatusBar } from "expo-status-bar";
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { useFocusEffect } from "@react-navigation/native";
-import { responsiveHeight } from 'react-native-responsive-dimensions';
+
 import { Alert } from 'react-native';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import Constants from 'expo-constants';
-
+import { responsiveFontSize, responsiveHeight, responsiveScreenWidth, responsiveWidth } from "react-native-responsive-dimensions";
 
 const ProfileScreen = () => {
 
@@ -112,13 +112,15 @@ const ProfileScreen = () => {
       const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/delete-all-user-data/${user}`;
 
 
-      const isProduction = Constants.executionEnvironment === 'standalone';
+      
+      const isStandaloneApp = Constants.appOwnership === 'expo';
 
-      const baseURL = isProduction ? prod : dev
+
+      const baseURL = isStandaloneApp ? dev : prod
   
       const authToken = 'your_auth_token'; // Replace with your actual authentication token
   
-      const response = await axios.delete(prod, {
+      const response = await axios.delete(baseURL, {
         headers: {
           Authorization: `Bearer ${storedAccessToken}`,
         },
@@ -152,50 +154,56 @@ const ProfileScreen = () => {
       const fetchPersonalDetails = async () => {
         const userId = await AsyncStorage.getItem("userId");
         const prod = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`;
-
         const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/personal-details/${userId}`;
-      const isProduction = Constants.executionEnvironment === 'standalone';
-
-      const baseURL = isProduction ? prod : dev
+        
+        const isStandaloneApp = Constants.appOwnership === 'expo';
+        const baseURL = isStandaloneApp ? dev : prod;
         const storedAccessToken = await AsyncStorage.getItem("accessToken");
-
+  
         try {
-          const response = await fetch(prod, {
+          const response = await fetch(baseURL, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${storedAccessToken}`,
             },
           });
-
+  
           if (!response.ok) {
             const errorData = await response.json();
             throw new Error(`${response.status} - ${errorData.message}`);
           }
-         
-
+  
           const data = await response.json();
-          setUserSince(data.message.createdAt)
-          setUserName(data.message.name);
-          setCredits(data.message.credits);
-          console.log("credits credits credits credits credits credits credits", data.message.name,data);
-          // Additional fields can be set here based on your API response
+  setUserSince(data.message.createdAt)
+  setUserName(data.message.name);
+  setCredits(data.message.credits);
+  console.log("credits credits credits credits credits credits credits", data.message.name,data);
         } catch (error) {
           console.error("Error fetching personal details:", error.message);
+          if (error.message.includes("401 - Unauthorized: Token expired")) {
+            Alert.alert(
+              "Session Expired",
+              "Your session has expired. Please login again.",
+              [
+                { text: "OK", onPress: () => navigation.navigate('Login') }
+              ]
+            );
+          }
         }
       };
-
+  
       fetchPersonalDetails();
     }, []) // Empty dependency array means this effect will only run once when the component mounts
   );
-
+  
   
  
-
+  
  
 return(
   
-  <View style={{ flex:1, padding: 16 ,paddingTop:"12%"}}>
+  <View style={{ flex:1, padding: 16 ,paddingTop:"12%",height:'100%'}}>
   
 
   <StatusBar backgroundColor={"transparent"} translucent />

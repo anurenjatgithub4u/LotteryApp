@@ -99,11 +99,12 @@ const RegisterScreen = () => {
 
       const dev = 'https://lottery-backend-dev.vercel.app/api/v1/auth/register'
 
-      const isProduction = Constants.executionEnvironment === 'standalone';
+      const isStandaloneApp = Constants.appOwnership === 'expo';
 
-      const baseURL = isProduction ? prod : dev
 
-      const response = await axios.post(prod, {
+      const baseURL = isStandaloneApp ? dev : prod
+
+      const response = await axios.post(baseURL, {
         email,
         mobileNumber: mobileWithCountry,
         name:name
@@ -197,7 +198,7 @@ backgroundColor: 'white',
 marginTop:15,
 width: '100%',
 marginBottom: 10,
-height:59.5,
+height:responsiveHeight(7),
 borderWidth: 1,
 borderStyle: 'solid',
 fontSize: 15,
@@ -217,7 +218,7 @@ accessibilityLabel="Name Input"
         style={{
           color: 'white',
           backgroundColor: 'white',
-          height:60.5,
+          height:responsiveHeight(7),
         
          }}
       activeUnderlineColor="gray"
@@ -232,7 +233,7 @@ accessibilityLabel="Name Input"
    marginTop:15,
    width: '100%',
    marginBottom: 10,
-   height:59.5,
+   height:responsiveHeight(7),
    borderWidth: 1,
    borderStyle: 'solid',
    fontSize: 15,
@@ -251,7 +252,7 @@ accessibilityLabel="Email"
       style={{
         color: 'white',
         backgroundColor: 'white',
-        height:60.5,
+        height:responsiveHeight(7),
       
        }}
     activeUnderlineColor="gray"
@@ -272,7 +273,7 @@ accessibilityLabel="Email"
     width: '20%',
     marginBottom: 10,
     marginRight:15,
-    height:59.5,
+    height:responsiveHeight(7),
     borderWidth: 1,
     borderStyle: 'solid',
     fontSize: 15,
@@ -300,7 +301,7 @@ accessibilityLabel="Email"
    marginTop:15,
    width: '75%',
    marginBottom: 10,
-   height:60,
+   height:responsiveHeight(7),
    borderWidth: 1,
    borderStyle: 'solid',
    fontSize: 15,
@@ -333,7 +334,7 @@ accessibilityLabel="Email"
       style={{
         color: 'white',
         backgroundColor: 'white',
-        height:60.5,
+        height:responsiveHeight(7),
       
        }}
     activeUnderlineColor="gray"
@@ -353,7 +354,7 @@ style={{ borderColor: 'black',
       marginTop:15,
       width: '100%',
       marginBottom: 10,
-      height:60,
+      height:responsiveHeight(7),
       borderWidth: 1,
       borderStyle: 'solid',
       fontSize: 15,
@@ -370,7 +371,7 @@ style={{ borderColor: 'black',
         style={{
           color: 'white',
           backgroundColor: 'white',
-          height:60.5,
+          height:responsiveHeight(7),
         
          }}
          activeUnderlineColor="gray"
@@ -423,7 +424,7 @@ style={{ borderColor: 'black',
    <TouchableOpacity onPress={handleRegister} style={{
         backgroundColor: '#31A062',
         width: '100%',
-        height:60,
+        height:responsiveHeight(7),
         marginVertical: 10,
         marginTop: 15,
         borderRadius:20,
@@ -435,7 +436,7 @@ style={{ borderColor: 'black',
    <LinearGradient colors={["#31A062", "#31A062"]}   style={{
         backgroundColor: '#31A062',
         width: '100%',
-        height:60,
+        height:responsiveHeight(7),
         marginVertical: 10,
         marginTop: 15,
         borderRadius:20,

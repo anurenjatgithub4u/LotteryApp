@@ -11,7 +11,7 @@ import  { Paystack , paystackProps}  from 'react-native-paystack-webview';
 import { View, TouchableOpacity,Text ,TextInput } from 'react-native';
 import { KeyboardAwareScrollView } from "@codler/react-native-keyboard-aware-scroll-view";
 import Constants from 'expo-constants';
-
+import { Alert } from 'react-native';
 
 const PaymentMethodPage = () => {
   const [amount, setAmount] = useState('');
@@ -27,17 +27,13 @@ useFocusEffect(
     const fetchPersonalDetails = async () => {
       const userId = await AsyncStorage.getItem("userId");
       const prod = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
-
       const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
-
-      const isProduction = Constants.executionEnvironment === 'standalone';
-
-      const baseURL = isProduction ? prod : dev
-
+      const isStandaloneApp = Constants.appOwnership === 'expo';
+      const baseURL = isStandaloneApp ? dev : prod;
       const storedAccessToken = await AsyncStorage.getItem("accessToken");
 
       try {
-        const response = await fetch(prod, {
+        const response = await fetch(baseURL, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -51,23 +47,31 @@ useFocusEffect(
         }
 
         const data = await response.json();
-       
-        
         setCountrySymbol(data.message.countrySymbol);
-        
-          
-       
-      
         console.log("credits credits credits credits credits credits credits", data.message.countrySymbol);
-        // Additional fields can be set here based on your API response
       } catch (error) {
         console.error("Error fetching personal details:", error.message);
+        if (error.message.includes("401 - Unauthorized: Token expired")) {
+
+          await AsyncStorage.removeItem('userId');
+          await AsyncStorage.removeItem('accessToken');
+          await AsyncStorage.removeItem('userNumber');
+          
+          Alert.alert(
+            "Session Expired",
+            "Your session has expired. Please login again.",
+            [
+              { text: "OK", onPress: () => navigation.navigate('Login') }
+            ]
+          );
+        }
       }
     };
 
     fetchPersonalDetails();
   }, []) // Empty dependency array means this effect will only run once when the component mounts
 );
+
 
 
 const handlePaystackSuccess = async (res) => {
@@ -100,11 +104,11 @@ const handlePaystackSuccess = async (res) => {
   const prod = 'https://lottery-backend-tau.vercel.app/api/v1/user/add-credits'
   const dev = 'https://lottery-backend-dev.vercel.app/api/v1/user/add-credits'
 
-  const isProduction = Constants.executionEnvironment === 'standalone';
+  const isStandaloneApp = Constants.appOwnership === 'expo';
 
-  const baseURL = isProduction ? prod : dev
-  
-      const response = await fetch(prod, {
+
+    const baseURL = isStandaloneApp ? dev : prod
+      const response = await fetch(baseURL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -160,12 +164,11 @@ const handlePaystackSuccess = async (res) => {
         const prod = 'https://lottery-backend-tau.vercel.app/api/v1/user/add-credits'
         const dev = 'https://lottery-backend-dev.vercel.app/api/v1/user/add-credits'
       
-        const isProduction = Constants.executionEnvironment === 'standalone';
-      
-        const baseURL = isProduction ? prod : dev
+        const isStandaloneApp = Constants.appOwnership === 'expo';
 
 
-        const response = await fetch(prod, {
+        const baseURL = isStandaloneApp ? dev : prod
+        const response = await fetch(baseURL, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -221,10 +224,11 @@ const handlePaystackSuccess = async (res) => {
         const prod = 'https://lottery-backend-tau.vercel.app/api/v1/user/add-credits'
         const dev = 'https://lottery-backend-dev.vercel.app/api/v1/user/add-credits'
       
-        const isProduction = Constants.executionEnvironment === 'standalone';
-      
-        const baseURL = isProduction ? prod : dev
-        const response = await fetch(prod, {
+        const isStandaloneApp = Constants.appOwnership === 'expo';
+
+
+        const baseURL = isStandaloneApp ? dev : prod
+        const response = await fetch(baseURL, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

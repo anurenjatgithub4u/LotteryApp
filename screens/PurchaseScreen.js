@@ -26,14 +26,15 @@ const PurchaseScreen = () => {
       const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/get-purchases/${userId}`;
 
 
-      const isProduction = Constants.executionEnvironment === 'standalone';
+      const isStandaloneApp = Constants.appOwnership === 'expo';
 
-      const baseURL = isProduction ? prod : dev
+
+      const baseURL = isStandaloneApp ? dev : prod
 
       try {
         const token = storedAccessToken; // Replace with your actual authorization token
 
-        const response = await fetch(prod, {
+        const response = await fetch(baseURL, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${storedAccessToken}`,

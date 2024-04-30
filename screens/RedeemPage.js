@@ -28,11 +28,12 @@ const RedeemPage = () => {
 
     const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/get-bank-account/${user}`;
     const storedAccessToken = await AsyncStorage.getItem('accessToken');
-    const isProduction = Constants.executionEnvironment === 'standalone';
+    const isStandaloneApp = Constants.appOwnership === 'expo';
 
-    const baseURL = isProduction ? prod : dev
+
+    const baseURL = isStandaloneApp ? dev : prod
     try {
-      const response = await fetch(prod, {
+      const response = await fetch(baseURL, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${storedAccessToken}`,

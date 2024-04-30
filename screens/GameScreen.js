@@ -20,7 +20,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AntDesign } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { MaterialIcons } from "@expo/vector-icons";
-
+import { Alert } from 'react-native';
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { EvilIcons } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
@@ -279,16 +279,18 @@ const [byWinner, setByWinner] = useState(false);
       const prod = "https://lottery-backend-tau.vercel.app/api/v1/auth/logout";
       const dev = "https://lottery-backend-dev.vercel.app/api/v1/auth/logout"
 
-      const isProduction = Constants.executionEnvironment === 'standalone';
+     
+      const isStandaloneApp = Constants.appOwnership === 'expo';
 
-      const baseURLLogout = isProduction ? prod : dev
+
+      const baseURL = isStandaloneApp ? dev : prod
       const refreshToken = await AsyncStorage.getItem("refreshToken");
       const accessToken = await AsyncStorage.getItem("accessToken");
       // Assuming you have the refreshToken stored in a variable.
       const userNumber = 0;
       // Make a POST request to the logout endpoint with the refreshToken in the request body.
       const response = await axios.post(
-        prod,
+        baseURL,
         { refreshToken },
         {
           headers: {
@@ -321,16 +323,12 @@ const [byWinner, setByWinner] = useState(false);
     const userId = await AsyncStorage.getItem("userId");
 
     const prod = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-game/${userId}`;
-
-    const dev =`https://lottery-backend-dev.vercel.app/api/v1/user/game/get-game/${userId}`
-
-    const isProduction = Constants.executionEnvironment === 'standalone';
-
-      const baseURL = isProduction ? prod : dev
-
+    const dev =`https://lottery-backend-dev.vercel.app/api/v1/user/game/get-game/${userId}`;
+    const isStandaloneApp = Constants.appOwnership === 'expo';
+    const baseURL = isStandaloneApp ? dev : prod;
 
     try {
-      const response = await fetch(prod, {
+      const response = await fetch(baseURL, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -339,35 +337,34 @@ const [byWinner, setByWinner] = useState(false);
       });
 
       if (!response.ok) {
-        const userGames = await getUserGames(userId, authToken);
         const errorData = await response.json();
-        console.log("User games:", errorData);
-        const responseData = await response.json();
-        console.log("User games data:", responseData);
-
-        // Update the state with user games data
-        setUserGames(responseData.message);
+        console.error("User games error:", errorData);
+        // Navigate to Login page if specific errors, e.g., auth related
+        if (errorData.message.includes("auth") || errorData.message.includes("token")) {
+          Alert.alert(
+            "Session Expired",
+            "Your session has expired. Please login again.",
+            [
+              { text: "OK", onPress: () => navigation.navigate('Login') }
+            ]
+          );
+          await AsyncStorage.removeItem('userId');
+          await AsyncStorage.removeItem('accessToken');
+          await AsyncStorage.removeItem('userNumber');
+        }
         throw new Error(`Failed to fetch user games: ${errorData.message}`);
       }
 
       const responseData = await response.json();
       console.log("User games data:", responseData);
-      const filteredGames = responseData.message.filter(game => !game.isWinner);
+      // Further handling of response data if needed
 
-      // Set the filtered games to state
-      setFilteredGames(filteredGames);
-      responseData.message.forEach((game) => {
-        // Log the selectedNumbers array for each game
-        console.log("Selected numbers for game:", game.selectedNumbers);
-      });
-      // Log the successful response data
       return responseData;
     } catch (error) {
       console.error("Error while fetching user games:", error.message);
       throw error;
     }
   };
-
   useEffect(() => {
     // Fetch user games data when the component mounts
     const fetchData = async () => {
@@ -1036,7 +1033,7 @@ const styles = StyleSheet.create({
     borderRadius: wp("5%"), // Responsive borderRadius
     
     elevation: 3,
-    height: hp("16%"), 
+   
     backgroundColor: "#F0C735",
 
     flex: 1,
@@ -1112,7 +1109,7 @@ const styles = StyleSheet.create({
     borderRadius: wp("3%"), // Adjust the borderRadius percentage as needed
     borderWidth: 1,
     borderColor: "white",
-    margin: wp("1%"), // Adjust the margin percentage as needed
+    margin: wp("1.7%"), // Adjust the margin percentage as needed
     alignItems: "center",
     justifyContent: "center",
   },

@@ -32,12 +32,13 @@ const RedeemAmountAccessPage = () => {
       const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/get-bank-account/${user}`;
       const storedAccessToken = await AsyncStorage.getItem('accessToken');
 
-      const isProduction = Constants.executionEnvironment === 'standalone';
+      const isStandaloneApp = Constants.appOwnership === 'expo';
 
-      const baseURL = isProduction ? prod : dev
+
+      const baseURL = isStandaloneApp ? dev : prod
   
       try {
-        const response = await fetch(prod, {
+        const response = await fetch(baseURL, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${storedAccessToken}`,
@@ -121,13 +122,14 @@ const RedeemAmountAccessPage = () => {
         const dev = "https://lottery-backend-dev.vercel.app/api/v1/user/redeem-credit"
 
 
-        const isProduction = Constants.executionEnvironment === 'standalone';
+        const isStandaloneApp = Constants.appOwnership === 'expo';
 
-        const baseURL = isProduction ? prod : dev
+
+        const baseURL = isStandaloneApp ? dev : prod
     
 
 
-        const response = await fetch(prod, {
+        const response = await fetch(baseURL, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -165,13 +167,14 @@ useFocusEffect(
 
       const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
 
-      const isProduction = Constants.executionEnvironment === 'standalone';
+      const isStandaloneApp = Constants.appOwnership === 'expo';
 
-      const baseURL = isProduction ? prod : dev
+
+      const baseURL = isStandaloneApp ? dev : prod
       const storedAccessToken = await AsyncStorage.getItem("accessToken");
 
       try {
-        const response = await fetch(prod, {
+        const response = await fetch(baseURL, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -209,16 +212,16 @@ useFocusEffect(
       const userId = await AsyncStorage.getItem("userId");
       const prod = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`;
 
-      const dev = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`;
+      const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/personal-details/${userId}`;
+
+      const isStandaloneApp = Constants.appOwnership === 'expo';
 
 
-      const isProduction = Constants.executionEnvironment === 'standalone';
-
-      const baseURL = isProduction ? prod : dev
+      const baseURL = isStandaloneApp ? dev : prod
       const storedAccessToken = await AsyncStorage.getItem("accessToken");
 
       try {
-        const response = await fetch(prod, {
+        const response = await fetch(baseURL, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

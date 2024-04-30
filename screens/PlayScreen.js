@@ -121,11 +121,12 @@ gameNumber.sort((a, b) => a - b);
      const dev = "https://lottery-backend-dev.vercel.app/api/v1/user/game/new-game"
 
 
-     const isProduction = Constants.executionEnvironment === 'standalone';
+     const isStandaloneApp = Constants.appOwnership === 'expo';
 
-     const baseURL = isProduction ? prod : dev
+
+      const baseURL = isStandaloneApp ? dev : prod
       const response = await axios.post(
-        prod,
+        baseURL,
         {
           userId,
           gameLevel: parseInt(levelText, 10),
@@ -214,9 +215,10 @@ gameNumber.sort((a, b) => a - b);
       const prod = "https://lottery-backend-tau.vercel.app/api/v1/auth";
 
       const dev = "https://lottery-backend-dev.vercel.app/api/v1/auth";
-      const isProduction = Constants.executionEnvironment === 'standalone';
+      const isStandaloneApp = Constants.appOwnership === 'expo';
 
-    const baseURL = isProduction ? prod : dev
+
+      const baseURL = isStandaloneApp ? dev : prod
 
       const refreshToken = await AsyncStorage.getItem("refreshToken");
       const accessToken = await AsyncStorage.getItem("accessToken");
@@ -224,7 +226,7 @@ gameNumber.sort((a, b) => a - b);
 
       // Make a POST request to the logout endpoint with the refreshToken in the request body.
       const response = await axios.post(
-        `${prod}/logout`,
+        `${baseURL}/logout`,
         { refreshToken },
         {
           headers: {
@@ -237,7 +239,7 @@ gameNumber.sort((a, b) => a - b);
       // Check if the logout was successful.
       if (response.status === 200) {
         console.log("Logged out successfully");
-        navigation.navigate("ProfileLanding");
+        navigation.navigate("ProfileLandingTesting");
         // Redirect or perform any other action after successful logout.
       } else {
         console.error("Logout failed");
@@ -267,12 +269,13 @@ gameNumber.sort((a, b) => a - b);
     const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
 
 
-    const isProduction = Constants.executionEnvironment === 'standalone';
+    const isStandaloneApp = Constants.appOwnership === 'expo';
 
-    const baseURL = isProduction ? prod : dev
+
+    const baseURL = isStandaloneApp ? dev : prod
 
     try {
-      const response = await fetch(prod, {
+      const response = await fetch(baseURL, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -520,7 +523,48 @@ gameNumber.sort((a, b) => a - b);
     fetchDataWinnigAmt();
   }, []);
 
+  useEffect(() => {
+    const fetchDataWinnigAmt = async () => {
 
+      
+      try {
+        // Retrieve areaValue and levelValue from AsyncStorage
+        const areaValue = await AsyncStorage.getItem("area");
+        const levelValue = await AsyncStorage.getItem("level");
+    
+        // Set the areaText based on the areaValue
+        let winningAmount = "";
+
+        if (areaValue === "1") {
+          if (levelValue === "1") {
+            winningAmount = ContinentWinningAmount/4;
+          } else if(levelValue === "2") {
+            winningAmount = ContinentWinningAmount/2;
+          } else {
+            winningAmount = ContinentWinningAmount;
+          }
+        } else{
+          if (levelValue === "1") {
+            winningAmount = CountryWinningAmount/4;
+          } else if(levelValue === "2") {
+            winningAmount = CountryWinningAmount/2;
+          } else {
+            winningAmount = CountryWinningAmount;
+          }
+        } 
+
+       
+
+        // Update state variables
+        setwinningAmt(winningAmount);
+      } catch (error) {
+        console.error("Error fetching data from AsyncStorage:", error.message);
+      }
+    };
+
+    // Call the fetchData function when the component mounts
+    fetchDataWinnigAmt();
+  }, []);
 
   const handleSelectBoxClick = (index) => {
     // Set the highlighted index for the initial selection of empty boxes
@@ -570,47 +614,30 @@ const handleNumberClick = (number) => {
 <StatusBar backgroundColor={"transparent"} translucent />
 
       
-      <View
-    style={{
-      flexDirection: "row",
-      alignItems: "flex-start",
-      justifyContent: "flex-start",
-      marginRight: 190,
-      marginTop:'8%'
-    
-    }}
-  >
-    <TouchableOpacity onPress={() => navigation.navigate('ALScreen')}>
-      <MaterialIcons
-        name="keyboard-arrow-left"
-        size={35}
-        color="white"
+<View
         style={{
-          marginLeft: 10,
-         bottom:'5%'
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          marginBottom:'5%',
+          paddingTop:'10%',
         }}
-      />
-    </TouchableOpacity>
+      >
 
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-      }}
-    >
-      <Text style={styles.title}>Play game</Text>
-
-      <EvilIcons name="bell" size={30} style={styles.bell} color="white" onPress={()=> navigation.navigate('NotificationScreen') }/>
-      <AntDesign
-        name="logout"
-        size={19}
-        style={styles.logout}
-        color="white"
-        onPress={logout}
-      />
-    </View>
-  </View>
+        <TouchableOpacity  style={{alignSelf:'flex-start'}}
+        
+        onPress={() => navigation.navigate('ALScreen')}>
+          <MaterialIcons
+            name="keyboard-arrow-left"
+            size={35}
+            color="black"
+            style={{
+               color:'white'
+            }}
+          />
+        </TouchableOpacity>
+        <Text style={{ fontWeight: '700', fontSize: 17,textAlign: 'center' ,flex: 1,color:'white',fontSize: SCREEN_WIDTH * 0.06,}}>Play Game</Text>
+      </View>
 
 
       <Text style={styles.subtitle}>

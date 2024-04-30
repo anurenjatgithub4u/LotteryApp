@@ -281,12 +281,13 @@ const OTPVerificationScreen = ({ route,navigation }) => {
 
       const dev = 'https://lottery-backend-dev.vercel.app/api/v1/user/verify-otp'
 
-      const isProduction = Constants.executionEnvironment === 'standalone';
+      const isStandaloneApp = Constants.appOwnership === 'expo';
 
-      const baseURL = isProduction ? prod : dev
+
+      const baseURL = isStandaloneApp ? dev : prod
   
       // Make a request to your server to verify the OTP
-      const response = await axios.post(prod, {
+      const response = await axios.post(baseURL, {
         email, // Replace with the actual email
         otp: enteredOTP,
         name, // Replace with the actual name

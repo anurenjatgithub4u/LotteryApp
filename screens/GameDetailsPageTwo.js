@@ -108,11 +108,12 @@ const formattedAnounceMentDateTime = new Date(game.announcementDate).toLocaleStr
 
 
     const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
-    const isProduction = Constants.executionEnvironment === 'standalone';
+    const isStandaloneApp = Constants.appOwnership === 'expo';
 
-    const baseURLGameWinNum = isProduction ? prod : dev
+
+    const baseURL = isStandaloneApp ? dev : prod
     try {
-      const response = await fetch(prod, {
+      const response = await fetch(baseURL, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -398,7 +399,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "white",
    
-    marginRight:responsiveWidth(2),
+    marginRight:responsiveWidth(3.5),
     marginTop:responsiveWidth(1.25),
     marginBottom:responsiveWidth(1.25),
     alignItems: "center",

@@ -117,12 +117,13 @@ const ForgotPasswordTwo = () => {
 
       const dev = "https://lottery-backend-dev.vercel.app/api/v1/user/recover-password/forget-password"
 
-      const isProduction = Constants.executionEnvironment === 'standalone';
+      const isStandaloneApp = Constants.appOwnership === 'expo';
 
-        const baseURL = isProduction ? prod : dev
+
+      const baseURL = isStandaloneApp ? dev : prod
       // Make API request to the server to send OTP
       const response = await axios.post(
-        prod,
+        baseURL,
         {
           email: emailFor,
           currentEmail: emailFor,
@@ -237,13 +238,14 @@ const ForgotPasswordTwo = () => {
 
       const dev = "https://lottery-backend-dev.vercel.app/api/v1/user/recover-password/verify-otp-reset"
 
-      const isProduction = Constants.executionEnvironment === 'standalone';
+     
+      const isStandaloneApp = Constants.appOwnership === 'expo';
 
-      const baseURL = isProduction ? prod : dev
 
+      const baseURL = isStandaloneApp ? dev : prod
 
       const response = await axios.post(
-        prod,
+        baseURL,
         {
           email: emailFor,
           otp: otp, // Convert the array of digits to a string

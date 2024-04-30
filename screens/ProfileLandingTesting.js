@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View ,Image,Platform} from "react-native";
-import React, { useState,useEffect,TouchableOpacity } from "react";
+import { StyleSheet, Text, View ,Image,Platform,TouchableOpacity} from "react-native";
+import React, { useState,useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Button } from "react-native-paper";
 import {
@@ -9,6 +9,7 @@ import {
 } from "react-native-responsive-dimensions";
 import * as Device from "expo-device";
 import { BackHandler } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
 import * as Notifications from "expo-notifications";
 const ProfileLandingTesting = () => {
@@ -39,51 +40,7 @@ const ProfileLandingTesting = () => {
     return () => backHandler.remove();
   }, [navigation]);
 
-  // const [expoPushToken, setExpoPushToken] = useState("");
-  // useEffect(() => {
-  //   console.log("Registering for push notifications...");
-  //   registerForPushNotificationsAsync()
-  //     .then((token) => {
-  //       console.log("token: ", token);
-  //       setExpoPushToken(token);
-  //     })
-  //     .catch((err) => console.log(err));
-  // }, []);
-  // async function registerForPushNotificationsAsync() {
-  //   let token;
-  //   if (Platform.OS === "android") {
-  //     await Notifications.setNotificationChannelAsync("default", {
-  //       name: "default",
-  //       importance: Notifications.AndroidImportance.MAX,
-  //       vibrationPattern: [0, 250, 250, 250],
-  //       lightColor: "#FF231F7C",
-  //     });
-  //   }
-  //   if (Device.isDevice) {
-  //     const { status: existingStatus } =
-  //       await Notifications.getPermissionsAsync();
-  //     let finalStatus = existingStatus;
-  //     if (existingStatus !== "granted") {
-  //       const { status } = await Notifications.requestPermissionsAsync();
-  //       finalStatus = status;
-  //     }
-  //     if (finalStatus !== "granted") {
-  //       alert("Failed to get push token for push notification!");
-  //       return;
-  //     }
-  //     // Learn more about projectId:
-  //     // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
-  //     token = (
-  //       await Notifications.getExpoPushTokenAsync({
-  //         projectId: "28ee1909-a4f9-48c6-9992-0571adb39059",
-  //       })
-  //     ).data;
-  //     console.log(token);
-  //   } else {
-  //     alert("Must use physical device for Push Notifications");
-  //   }
-  //   return token;
-  // }
+  
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowAlert: true,
@@ -184,12 +141,22 @@ const ProfileLandingTesting = () => {
       <Text style={{ fontSize: responsiveFontSize(1.6) }}>
         Get started today and try your luck with us{" "}
       </Text>
-      <Button
-        style={{ backgroundColor: "#31A062", marginTop: responsiveHeight(6) ,width:'80%',height:responsiveHeight(7),alignItems:'center',justifyContent:'center'}}
-        onPress={() => navigation.navigate("Register")}
-      >
-        <Text style={{ color: "white" }}>Create Account</Text>
-      </Button>
+
+
+      <TouchableOpacity
+  style={{
+    backgroundColor: "#31A062",
+    marginTop: responsiveHeight(6),
+    width: '80%',
+    height: responsiveHeight(7),
+    alignItems: 'center',
+    justifyContent: 'center',borderRadius:20
+  }}
+  onPress={() => navigation.navigate("Register")}
+>
+  <Text style={{ color: "white" }}>Create Account</Text>
+</TouchableOpacity>
+     
       <Text
         onPress={() => navigation.navigate("Login")}
         style={{ color: "#31A062", fontSize: responsiveFontSize(2), marginTop: responsiveHeight(1)  }}
@@ -202,3 +169,7 @@ const ProfileLandingTesting = () => {
 export default ProfileLandingTesting;
 
 const styles = StyleSheet.create({});
+
+
+
+// "icon": "./assets/lottery-android-icon.png",

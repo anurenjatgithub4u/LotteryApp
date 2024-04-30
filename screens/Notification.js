@@ -28,13 +28,12 @@ const Notification = () => {
 
           const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/get-notifications/${userIds}`;
      
-          const isProduction = Constants.executionEnvironment === 'standalone';
-
-          const baseURL = isProduction ? prod : dev
+          const isStandaloneApp = Constants.appOwnership === 'expo';
 
 
+      const baseURL = isStandaloneApp ? dev : prod
           
-          const response = await fetch(prod, {
+          const response = await fetch(baseURL, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -168,10 +167,12 @@ const styles = StyleSheet.create({
   cardContainer: {
     backgroundColor: '#ffffff',
     borderRadius: 10,
-    padding: 10,
-    marginBottom: 1,
-    marginTop:15,
-    height:100,
+    paddingLeft: responsiveHeight(2),
+    paddingRight: responsiveHeight(2),
+    paddingBottom: responsiveHeight(1),
+    paddingTop:responsiveHeight(1),
+    marginTop:responsiveHeight(2),
+    height:responsiveHeight(13),
    
     elevation: 3, // for Android shadow
     shadowColor: '#000', // for iOS shadow
@@ -198,7 +199,7 @@ const styles = StyleSheet.create({
 
 
     myPurchase: {
-      fontSize: 34,
+      fontSize: responsiveFontSize(4),
       fontWeight: '700',
       marginStart:'5%',
       marginBottom:'2%'
@@ -206,26 +207,23 @@ const styles = StyleSheet.create({
     },
     
     profilePicture: {
-      width: 65,
-      height: 40,
+      width: responsiveWidth(15),
+      height: responsiveHeight(10),
       borderRadius: 20,
       alignSelf:'center',
       justifyContent:"center",
       alignItems:'center',
-      paddingTop:75,
+     
       
-      paddingLeft:25,
-      paddingStart:32,
-      marginLeft:'2%',
-      marginRight:'2%'
+  
     },
 
     detailsText:{
-      marginStart:10,
-      fontSize:16,
+      marginStart:responsiveWidth(5),
+      fontSize:responsiveFontSize(2),
       fontWeight:'400',
-      alignSelf:'flex-start',
-      marginBottom:'3%'
+      alignSelf:'center',
+      marginBottom:responsiveWidth(1)
       
 
     },
@@ -237,9 +235,9 @@ const styles = StyleSheet.create({
       marginTop:10
     },
 timeText:{
-  fontSize:13,
+  fontSize:responsiveFontSize(1.5),
   fontWeight:'300',
-  marginBottom:responsiveWidth(14),
+  marginBottom:responsiveWidth(12),
   marginRight:'1%'
   
  

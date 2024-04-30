@@ -14,7 +14,7 @@ import { Alert } from 'react-native';
 import { responsiveFontSize, responsiveHeight, responsiveScreenWidth, responsiveWidth } from "react-native-responsive-dimensions";
 import Constants from 'expo-constants';
 
-
+// "react-native-country-picker-modal": "^2.0.0",
 
 import {
   widthPercentageToDP as wp,
@@ -87,12 +87,13 @@ const areaType = route.params;
     const prod = `https://lottery-backend-tau.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
 
     const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/game/get-previous-game-winning-numbers/${userId}`;
-    const isProduction = Constants.executionEnvironment === 'standalone';
+    const isStandaloneApp = Constants.appOwnership === 'expo';
 
-    const baseURL = isProduction ? prod : dev
+
+    const baseURL = isStandaloneApp ? dev : prod
 
     try {
-      const response = await fetch(prod, {
+      const response = await fetch(baseURL, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -153,35 +154,42 @@ const areaType = route.params;
         const userId = await AsyncStorage.getItem("userId");
         const prod = `https://lottery-backend-tau.vercel.app/api/v1/user/personal-details/${userId}`;
         const dev = `https://lottery-backend-dev.vercel.app/api/v1/user/personal-details/${userId}`;
-
-        const isProduction = Constants.executionEnvironment === 'standalone';
-
-        const baseURL = isProduction ? prod : dev
+        
+        const isStandaloneApp = Constants.appOwnership === 'expo';
+        const baseURL = isStandaloneApp ? dev : prod;
         const storedAccessToken = await AsyncStorage.getItem("accessToken");
-
+  
         try {
-          const response = await fetch(prod, {
+          const response = await fetch(baseURL, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${storedAccessToken}`,
             },
           });
-
+  
           if (!response.ok) {
             const errorData = await response.json();
             throw new Error(`${response.status} - ${errorData.message}`);
           }
-
+  
           const data = await response.json();
           setCredits(data.message.credits);
           console.log("credits credits credits credits credits credits credits", data.message.credits);
-          // Additional fields can be set here based on your API response
         } catch (error) {
           console.error("Error fetching personal details:", error.message);
+          if (error.message.includes("401 - Unauthorized: Token expired")) {
+            Alert.alert(
+              "Session Expired",
+              "Your session has expired. Please login again.",
+              [
+                { text: "OK", onPress: () => navigation.navigate('Login') }
+              ]
+            );
+          }
         }
       };
-
+  
       fetchPersonalDetails();
     }, []) // Empty dependency array means this effect will only run once when the component mounts
   );
@@ -832,7 +840,7 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     borderRadius:10,
-    borderWidth:2,
+    borderWidth:1,
     borderColor:'#e1b411'
   },
   buttonContainerTwo: {

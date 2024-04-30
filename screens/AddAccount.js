@@ -42,12 +42,13 @@ const AddAccount = () => {
 
 
       const authToken = 'your-auth-token'; // Replace with your actual authorization token
-      const isProduction = Constants.executionEnvironment === 'standalone';
+      const isStandaloneApp = Constants.appOwnership === 'expo';
 
-      const baseURL = isProduction ? prod : dev
+
+      const baseURL = isStandaloneApp ? dev : prod
       const storedAccessToken = await AsyncStorage.getItem('accessToken');
       const userId = await AsyncStorage.getItem('userId');
-      const response = await fetch(prod, {
+      const response = await fetch(baseURL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

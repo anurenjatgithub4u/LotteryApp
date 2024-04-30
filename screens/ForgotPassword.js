@@ -86,11 +86,13 @@ const ForgotPassword = () => {
       const prod = "https://lottery-backend-tau.vercel.app//api/v1/admin/get-country"
     
       const dev = "https://lottery-backend-dev.vercel.app//api/v1/admin/get-country";
-        const isProduction = Constants.executionEnvironment === 'standalone';
+       
+      const isStandaloneApp = Constants.appOwnership === 'expo';
 
-        const baseURL = isProduction ? prod : dev
+
+      const baseURL = isStandaloneApp ? dev : prod
       const response = await axios.get(
-        prod
+        baseURL
       );
       const countriesData = response.data.message;
       setCountries(countriesData);
@@ -113,13 +115,13 @@ const ForgotPassword = () => {
 
       const dev = "https://lottery-backend-dev.vercel.app/api/v1/user/recover-password/forget-password"
 
-      const isStandaloneApp = Constants.appOwnership === 'standalone';
-      const isProduction = isStandaloneApp && !__DEV__;
+      const isStandaloneApp = Constants.appOwnership === 'expo';
 
-      const baseURL = isProduction ? prod : dev
+
+      const baseURL = isStandaloneApp ? dev : prod
       // Make API request to the server to send OTP
       const response = await axios.post(
-        prod,
+        baseURL,
         {
           email: emailFor,
           currentEmail: emailFor,
@@ -213,7 +215,7 @@ const ForgotPassword = () => {
 
 
   const handleVerifyOtp = async () => {
-    console.log("verify otp");
+    console.log("verify otp",otp,emailFor,userData);
     try {
       setLoading(true);
       // Validate OTP
@@ -234,14 +236,17 @@ const ForgotPassword = () => {
 
       const dev = "https://lottery-backend-dev.vercel.app/api/v1/user/recover-password/verify-otp-reset"
 
-      const isStandaloneApp = Constants.appOwnership === 'standalone';
-const isProduction = isStandaloneApp && !__DEV__;
+  
+      const isStandaloneApp = Constants.appOwnership === 'expo';
 
-      const baseURL = isProduction ? prod : dev
+
+      const baseURL = isStandaloneApp ? dev : prod
+
+     
 
 
       const response = await axios.post(
-        prod,
+        baseURL,
         {
           email: emailFor,
           otp: otp, // Convert the array of digits to a string
