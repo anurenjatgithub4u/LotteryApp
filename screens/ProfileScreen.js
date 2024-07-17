@@ -348,25 +348,19 @@ return(
     </Card.Content>
   </Card>
 
-
-  <Card style={styles.card}  onPress={() => navigation.navigate('ForgotPasswordTwo')}>
-    <Card.Content>
-      
-     
-
-    <View style={styles.personalInfoContainer}>
-    <Ionicons name="settings" size={24} color="black" />
-  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-    <Paragraph style={{...styles.personalInfoText,flex:.9}}  >Password</Paragraph>
-    <TouchableOpacity  onPress={() => navigation.navigate('ForgotPasswordTwo')}>
-    <MaterialIcons name="arrow-forward-ios" size={24} color="black" />
-    </TouchableOpacity>
-  </View>
-</View>
-
-
-    </Card.Content>
-  </Card>
+  <Card style={styles.card} onPress={() => navigation.navigate('ForgotPasswordTwo')}>
+      <Card.Content>
+        <View style={styles.personalInfoContainer}>
+          <Ionicons name="settings" size={responsiveFontSize(2.4)} color="black" />
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', flex: 1 }}>
+            <Paragraph style={styles.personalInfoText}>Password</Paragraph>
+            <TouchableOpacity onPress={() => navigation.navigate('ForgotPasswordTwo')}>
+              <MaterialIcons name="arrow-forward-ios" size={responsiveFontSize(2.4)} color="black" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Card.Content>
+    </Card>
 
 
 
@@ -446,19 +440,8 @@ const styles = StyleSheet.create({
     
    
   },
-  personalInfoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-   
-    alignSelf:'center'
-  },
-  personalInfoText: {
-    fontSize: 16,
-    color: '#555',
-    marginLeft: '8%',
-    alignSelf:'flex-end'
-  },
- 
+
+
   
 });
 

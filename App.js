@@ -155,20 +155,17 @@ const Splash = ({ navigation }) => {
   }
 
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'white',
-      }}
+  
+    <View style={styles.containerTwo}
       onLayout={onLayoutRootView}
     >
+   
       <LottieView
         ref={Lottie}
         source={require('./assets/sec.json')}
         autoPlay
         loop={false}
+        style={styles.lottie}
         onAnimationFinish={() => {
           // Animation has finished playing, navigate or perform any other actions
         }}
@@ -199,6 +196,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 10, // Adjust the margin top as needed
     fontSize: 18, // Adjust the font size as needed
+  },
+
+
+  containerTwo: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  lottie: {
+    width: 300,
+    height: 300,
   },
 });
 
@@ -321,7 +330,7 @@ const OTPVerificationScreen = ({ route,navigation }) => {
 
         
         await new Promise(resolve => setTimeout(resolve, 2000));
-         navigation.navigate('Home', { screen: 'Hom' });
+        navigation.navigate('MainScreen');
       } else {
         // If verification fails, handle the error (show an alert, etc.)
         const errorMessage = response.data.message; // Extract error message from response body
@@ -422,14 +431,15 @@ const MainScreen = () => (
       let iconName;
 
       if (route.name === 'Home') {
-        iconName = focused ? 'ios-home' : 'ios-home-outline';
+        iconName = focused ? 'home' : 'home-outline';
       } else if (route.name === 'Game') {
-        iconName = focused ? 'ios-game-controller-outline' : 'ios-game-controller-outline';
+        iconName = focused ? 'game-controller-outline' : 'game-controller-outline'; // Check if this is the correct name
       } else if (route.name === 'Help') {
-        iconName = focused ? 'ios-help-circle' : 'ios-help-circle-outline';
+        iconName = focused ? 'help-circle' : 'help-circle-outline';
       } else if (route.name === 'Profile') {
-        iconName = focused ? 'ios-person' : 'ios-person-outline';
+        iconName = focused ? 'person' : 'person-outline';
       }
+      
 
       // You can return any component that you like here!
       return <Ionicons name={iconName} size={size} color={color} />;

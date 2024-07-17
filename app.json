@@ -2,7 +2,7 @@
   "expo": {
     "name": "Afro Lottery System",
     "slug": "africalotterysystem",
-    "version": "1.0.17",
+    "version": "1.0.20",
     "orientation": "portrait",
     "icon": "./assets/lottery-icon.png",
     "userInterfaceStyle": "light",
@@ -18,7 +18,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.neurospherepvtltd.afrikalottery",
-      "buildNumber":"17"
+      "buildNumber":"20"
     },
     "android": {
       "adaptiveIcon": {
@@ -28,7 +28,7 @@
       "package": "com.neurospherepvtltd.afrikalottery",
       "googleServicesFile": "./google-services.json",
       "useNextNotificationsApi": true,
-      "versionCode": 17 
+      "versionCode": 20
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -17,6 +17,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from "expo-linear-gradient";
 import Constants from 'expo-constants';
 
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+
 
 const { width, height } = Dimensions.get("window");
 const SCREEN_WIDTH = width < height ? width : height;
@@ -191,78 +196,37 @@ const RegisterScreen = () => {
     <Text  style={styles.createaccountText}>Create an Account</Text>
     <Text  style={styles.createaccountTextTwo}>Play the game and get lucky</Text>
 
- 
     <View
-style={{ borderColor: 'black',
-backgroundColor: 'white',
-marginTop:15,
-width: '100%',
-marginBottom: 10,
-height:responsiveHeight(7),
-borderWidth: 1,
-borderStyle: 'solid',
-fontSize: 15,
-borderRadius: 20,
-
-color: 'white',  
-overflow: "hidden",}}
-
-accessible={true}
-accessibilityLabel="Name Input"
->
-
-    <TextInput
+      style={styles.inputContainer}
+      accessible={true}
+      accessibilityLabel="Name Input"
+    >
+      <TextInput
         label="Name"
         value={name}
         onChangeText={setName}
-        style={{
-          color: 'white',
-          backgroundColor: 'white',
-          height:responsiveHeight(7),
-        
-         }}
-      activeUnderlineColor="gray"
-    />
-</View>
-
-
-
-<View
-   style={{ borderColor: 'black',
-   backgroundColor: 'white',
-   marginTop:15,
-   width: '100%',
-   marginBottom: 10,
-   height:responsiveHeight(7),
-   borderWidth: 1,
-   borderStyle: 'solid',
-   fontSize: 15,
-   borderRadius: 20,
-   
-   color: 'white',  
-   overflow: "hidden",}}
-   accessible={true}
-accessibilityLabel="Email"
->
-
-    <TextInput
-      label="Email"
-     
-
-      style={{
-        color: 'white',
-        backgroundColor: 'white',
-        height:responsiveHeight(7),
-      
-       }}
-    activeUnderlineColor="gray"
-      keyboardType="email-address"
-      autoCapitalize="none"
-      value={email}
-      onChangeText={setEmail}
-    />
-
+        style={styles.textInput}
+        activeUnderlineColor="gray"
+      />
     </View>
+
+
+    <View
+      style={styles.inputContainer}
+      accessible={true}
+      accessibilityLabel="Email Input"
+    >
+      <TextInput
+        label="Email"
+        value={email}
+        onChangeText={setEmail}
+        style={styles.textInput}
+        activeUnderlineColor="gray"
+      />
+    </View>
+
+
+
 
 
 <View style={{ flexDirection: 'row', alignItems: 'center', }}>
@@ -304,7 +268,7 @@ accessibilityLabel="Email"
    height:responsiveHeight(7),
    borderWidth: 1,
    borderStyle: 'solid',
-   fontSize: 15,
+   fontSize: wp(3),
    borderRadius: 20,
    
    color: 'white',  
@@ -335,7 +299,7 @@ accessibilityLabel="Email"
         color: 'white',
         backgroundColor: 'white',
         height:responsiveHeight(7),
-      
+        fontSize:wp(3)
        }}
     activeUnderlineColor="gray"
     />
@@ -346,52 +310,38 @@ accessibilityLabel="Email"
 </View>
       
 
-   
-<View
 
-style={{ borderColor: 'black',
-      backgroundColor: 'white',
-      marginTop:15,
-      width: '100%',
-      marginBottom: 10,
-      height:responsiveHeight(7),
-      borderWidth: 1,
-      borderStyle: 'solid',
-      fontSize: 15,
-      borderRadius: 20,
+
+
+<View
+      style={styles.passwordinputContainer}
+      accessible={true}
+      accessibilityLabel="Password Input"
       
-      color: 'white',  
-      overflow: "hidden",}}
-      
-      
-      >
+    >
       <TextInput
-        label="Password"
+       label="Password"
+        activeUnderlineColor="gray"
+        secureTextEntry={!showPassword}
+        value={password}
+        onChangeText={setPassword}
+        style={styles.textInput}
         
-        style={{
-          color: 'white',
-          backgroundColor: 'white',
-          height:responsiveHeight(7),
-        
-         }}
-         activeUnderlineColor="gray"
-         secureTextEntry={!showPassword}
-         value={password}
-         onChangeText={setPassword}
       />
-  <TouchableOpacity
+
+<TouchableOpacity
           onPress={() => setShowPassword(!showPassword)}
           style={{ padding: responsiveWidth(3.7), position: 'absolute', right: 0, }}
         >
           <FontAwesome
             name={showPassword ? 'eye-slash' : 'eye'}
-            size={24}
+            size={wp(5)}
             color="black"
           />
         </TouchableOpacity>
+    </View>
+   
 
-
-      </View>
 
 
 
@@ -474,7 +424,7 @@ style={{ borderColor: 'black',
 
 const styles = StyleSheet.create({
   selectedCountryText: {
-    fontSize: 16,
+    fontSize: wp(3),
     paddingVertical: 10,
     paddingHorizontal: 10,
     
@@ -508,8 +458,8 @@ const styles = StyleSheet.create({
     height: 41,
     bottom:'6%',
     left: 30,
-    marginBottom:10,
-    fontSize: 34, // Adjust the font size as needed
+  
+    fontSize: responsiveFontSize(3.5), // Adjust the font size as needed
     fontWeight: 'bold',
    
   },
@@ -598,6 +548,38 @@ const styles = StyleSheet.create({
     lineHeight: 100,
     fontSize: 20,
     marginTop: -20, // Adjust the negative margin top to move the circle upward
+  },
+
+  inputContainer: {
+    borderColor: 'black',
+    backgroundColor: 'white',
+    marginTop: hp(2),
+    width: '100%',
+    marginBottom: hp(1.5),
+    height: hp(7),
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderRadius: wp(5),
+    overflow: "hidden",
+  },
+  textInput: {
+    color: 'black',
+    backgroundColor: 'white',
+    height: hp(7),
+    fontSize: wp(3),
+  },
+
+  passwordinputContainer: {
+    borderColor: 'black',
+    backgroundColor: 'white',
+    marginTop: hp(2),
+    width: '100%',
+    marginBottom: hp(1.5),
+    height: hp(7),
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderRadius: wp(5),
+    overflow: "hidden",
   },
 });
 

@@ -28,7 +28,7 @@ import * as Notifications from "expo-notifications";
 import Spinner from 'react-native-loading-spinner-overlay';
 import { LinearGradient } from "expo-linear-gradient";
 import Constants from 'expo-constants';
-//  import baseURL from '../config';
+import { KeyboardAwareScrollView } from '@codler/react-native-keyboard-aware-scroll-view';
 
 
 
@@ -424,6 +424,8 @@ console.log("password",password)
 
   return (
 
+    <KeyboardAwareScrollView style={{backgroundColor:'white'}} >
+
     <View style={{ flex:1,alignItems: 'center',justifyContent:'flex-start'  ,paddingTop:'25%',backgroundColor:"white",paddingLeft:'6%',paddingRight:'6%',paddingBottom:16 }}>
 
 <StatusBar backgroundColor={"transparent"} translucent />
@@ -438,91 +440,53 @@ console.log("password",password)
    
 
 
-<View
-
-style={{ borderColor: 'black',
-      backgroundColor: 'white',
-      marginTop:'4%',
-      width: '100%',
-      marginBottom: '3.5%',
-      height:responsiveHeight(7),
-      borderWidth: 1,
-      borderStyle: 'solid',
-      fontSize: 15,
-      borderRadius: 20,
-      
-      color: 'white',  
-      overflow: "hidden",}}
-      
-      
-      >
+    <View
+      style={styles.inputContainer}
+      accessible={true}
+      accessibilityLabel="Name Input"
+    >
       <TextInput
         label="Email"
-        
-        style={{
-          color: 'white',
-          backgroundColor: 'white',
-          height:responsiveHeight(7),
-        
-         }}
-        keyboardType="email-address"
-        autoCapitalize="none"
         value={email}
-        onChangeText={(text) => setEmail(text)}
+        onChangeText={setEmail}
+        style={styles.textInput}
+        activeUnderlineColor="gray"
       />
-      </View>
+    </View>
 
 
 
-   
-   
 
    
-<View
-
-style={{ borderColor: 'black',
-      backgroundColor: 'white',
-      marginTop:15,
-      width: '100%',
-      marginBottom: 10,
-      height:responsiveHeight(7),
-      borderWidth: 1,
-      borderStyle: 'solid',
-      fontSize: 15,
-      borderRadius: 20,
+    <View
+      style={styles.inputContainer}
+      accessible={true}
+      accessibilityLabel="Password Input"
       
-      color: 'white',  
-      overflow: "hidden",}}
-      
-      
-      >
+    >
       <TextInput
-        label="Password"
+       label="Password"
+        activeUnderlineColor="gray"
+        secureTextEntry={!showPassword}
+        value={password}
+        onChangeText={setPassword}
+        style={styles.textInput}
         
-        style={{
-          color: 'white',
-          backgroundColor: 'white',
-          height:responsiveHeight(7),
-        
-         }}
-         activeUnderlineColor="gray"
-         secureTextEntry={!showPassword}
-         value={password}
-         onChangeText={setPassword}
       />
-  <TouchableOpacity
+
+<TouchableOpacity
           onPress={() => setShowPassword(!showPassword)}
-          style={{ marginTop:responsiveWidth(3.5) ,marginRight:responsiveWidth(2.9) ,position: 'absolute', right: 0, }}
+          style={{ padding: responsiveWidth(3.7), position: 'absolute', right: 0, }}
         >
           <FontAwesome
             name={showPassword ? 'eye-slash' : 'eye'}
-            size={23}
+            size={wp(5)}
             color="black"
           />
         </TouchableOpacity>
+    </View>
+   
 
-
-      </View>
 
 
 
@@ -574,7 +538,7 @@ style={{ borderColor: 'black',
     height:responsiveHeight(7),
     borderWidth: 1,
     borderStyle: 'solid',
-    fontSize: 15,
+    
     borderRadius: 20,
     
     color: 'white',  
@@ -588,7 +552,7 @@ style={{ borderColor: 'black',
         color: 'white',
         backgroundColor: 'white',
         height:responsiveHeight(7),
-      
+        fontSize:wp(3)
        }}
     activeUnderlineColor="gray"
       keyboardType="phone-pad" // Use 'phone-pad' keyboard type for mobile numbers
@@ -647,9 +611,11 @@ style={{
       <Text style={{ marginVertical: 10, color: '#31A062' }} onPress={() => navigation.navigate('Register')}>
        Create An Account?
       </Text>
-      <Text style={{ marginVertical: 10  , color: '#31A062' }}  onPress={() => navigation.navigate('ForgotPassword')}>Forgot Password?</Text>
+      <Text style={{  color: '#31A062' }}  onPress={() => navigation.navigate('ForgotPassword')}>Forgot Password?</Text>
       
     </View>
+
+    </KeyboardAwareScrollView>
   );
 };
 const styles = StyleSheet.create({
@@ -669,7 +635,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   selectedCountryText: {
-    fontSize: 16,
+    ontSize: wp(3),
     paddingVertical: 10,
     paddingHorizontal: 10,
     
@@ -696,7 +662,7 @@ const styles = StyleSheet.create({
    
     left: 30,
      minHeight: hp("7%"),
-    fontSize: responsiveFontSize(5), // Adjust the font size as needed
+    fontSize: responsiveFontSize(3.5), // Adjust the font size as needed
     fontWeight: 'bold',
     bottom:'6%'
    
@@ -748,6 +714,25 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     
     borderBottomColor: 'gray',
+  },
+
+  inputContainer: {
+    borderColor: 'black',
+    backgroundColor: 'white',
+    marginTop: hp(2),
+    width: '100%',
+    marginBottom: hp(1.5),
+    height: hp(7),
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderRadius: wp(5),
+    overflow: "hidden",
+  },
+  textInput: {
+    color: 'black',
+    backgroundColor: 'white',
+    height: hp(7),
+    fontSize: wp(3),
   },
 });
 export default LoginScreen;
